@@ -1,0 +1,633 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Battambang', system-ui, -apple-system, sans-serif;
+  --font-battambang: 'Battambang', sans-serif;
+  --font-moul: 'Moul', cursive, serif;
+  --font-muol-light: 'Khmer OS Muol Light', 'Muol Light', 'Khmer OS Muol', 'Moul Light', 'Moul', cursive, serif;
+}
+
+@layer base {
+  html, body {
+    font-family: 'Battambang', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    font-weight: 400;
+  }
+
+  /* Prevent Khmer subscript (ជើងអក្សរ) and accents from getting clipped & remove bolding */
+  h1, h2, h3, h4, h5, h6, p, span, button, a, label, input, select, textarea, strong, b, th, td {
+    line-height: inherit;
+    font-weight: 400;
+  }
+}
+
+.font-moul {
+  font-family: 'Khmer OS Muol Light', 'Muol Light', 'Khmer OS Muol', 'Moul', cursive, serif !important;
+  line-height: 1.8;
+}
+
+.font-muol-light, .font-moul-light {
+  font-family: 'Khmer OS Muol Light', 'Muol Light', 'Khmer OS Muol', 'Moul Light', 'Moul', cursive, serif !important;
+  font-weight: 400 !important;
+  line-height: 1.8;
+}
+
+.font-khmer-title {
+  font-family: 'Moul', 'Battambang', sans-serif !important;
+  line-height: 1.8;
+}
+
+.font-battambang {
+  font-family: 'Battambang', sans-serif !important;
+  line-height: 1.65;
+}
+
+.font-kantumruy {
+  font-family: 'Kantumruy Pro', 'Battambang', sans-serif !important;
+  line-height: 1.65;
+}
+
+.font-serif-luxury {
+  font-family: 'Playfair Display', 'Cinzel', 'Kantumruy Pro', 'Khmer OS Battambang', serif;
+  line-height: 1.65;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+/* Gold Gradient utilities */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #DFBA49 0%, #C89F2A 50%, #A8811A 100%);
+}
+
+.bg-gold-subtle {
+  background: linear-gradient(135deg, #FCF8EE 0%, #F8F1DE 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #B58A1E 0%, #8A6407 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gold-gradient {
+  border-image: linear-gradient(to right, #DFBA49, #F5D77F, #A8811A) 1;
+}
+
+@keyframes zoom0To100 {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-zoom-0-to-100-2s {
+  animation: zoom0To100 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.animate-zoom-0-to-100-3s {
+  animation: zoom0To100 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+@keyframes titleZoomEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) translateZ(0);
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.9));
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) translateZ(0);
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+  }
+  85% {
+    transform: scale(0.97) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.7));
+  }
+}
+
+.animate-title-zoom {
+  animation: titleZoomEntrance 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+@keyframes fade1To0 {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-fade-1-to-0 {
+  animation: fade1To0 3.5s ease-out forwards;
+}
+
+@keyframes gif2FadeOut {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-gif2-fade-out {
+  animation: gif2FadeOut 3.5s ease-out forwards;
+}
+
+@keyframes photo2Fade0To1 {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-photo2-fade-in-5s {
+  animation: photo2Fade0To1 2s ease-out forwards;
+}
+
+@keyframes fadeOutSmooth {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-fade-out-5s {
+  animation: fadeOutSmooth 1.5s ease-out forwards;
+}
+
+@keyframes videoFadeOut10s {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-video-fade-out-10s {
+  animation: videoFadeOut10s 10s ease-out forwards;
+}
+
+@keyframes fadeOut10s {
+  0% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-fade-out-10s {
+  animation: fadeOut10s 10s ease-out forwards;
+}
+
+/* Custom animations for petals and subtle glow */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+@keyframes fallPetal {
+  0% {
+    transform: translate(0, -10px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(80px, 100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-petal {
+  animation: fallPetal linear infinite;
+}
+
+/* GPU-Accelerated Silky Smooth Entrance Animations (60fps / 120fps locked) */
+@keyframes smoothFadeUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes smoothFadeDown {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -24px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes smoothKenBurns {
+  0% {
+    transform: scale3d(1.08, 1.08, 1);
+  }
+  100% {
+    transform: scale3d(1.0, 1.0, 1);
+  }
+}
+
+.animate-smooth-fade-up {
+  animation: smoothFadeUp 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.animate-smooth-fade-down {
+  animation: smoothFadeDown 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes page2TextFloatUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 32px, 0) scale(0.92);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-page2-text-up {
+  animation: page2TextFloatUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+}
+
+@keyframes page2TextFloatDown {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -32px, 0) scale(0.92);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-page2-text-down {
+  animation: page2TextFloatDown 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+}
+
+.animate-smooth-kenburns {
+  animation: smoothKenBurns 12s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes fadeTransition2s {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.5, 0.5, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.animate-zoom-out-05s {
+  animation: fadeTransition2s 2.0s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes frameZoom2to1 {
+  0% {
+    opacity: 0;
+    transform: scale3d(2, 2, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.animate-frame-zoom-2to1 {
+  animation: frameZoom2to1 2.0s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes ornamentExpand {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.animate-ornament-expand {
+  animation: ornamentExpand 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+@keyframes goldenShimmer {
+  0%, 100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.3));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(255, 229, 143, 0.75));
+  }
+}
+
+.animate-golden-shimmer {
+  animation: goldenShimmer 4.5s ease-in-out infinite;
+}
+
+@keyframes goldenRipple {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(212, 175, 55, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+.animate-golden-ripple {
+  animation: goldenRipple 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+.animate-gentle-bounce {
+  animation: gentleBounce 2.6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Bright Golden Flash Burst & Zoom Out Optical Effects */
+@keyframes divineFlashBurst {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+    filter: brightness(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.6);
+    filter: brightness(3.5);
+  }
+  65% {
+    opacity: 0.95;
+    transform: scale(2.4);
+    filter: brightness(2.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.2);
+    filter: brightness(1.2);
+  }
+}
+
+.animate-divine-flash {
+  animation: divineFlashBurst 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes opticalRayRotate {
+  0% {
+    transform: rotate(0deg) scale(0.6);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+    transform: rotate(40deg) scale(1.8);
+  }
+  100% {
+    transform: rotate(110deg) scale(2.8);
+    opacity: 0;
+  }
+}
+
+.animate-optical-rays {
+  animation: opticalRayRotate 0.85s ease-out forwards;
+}
+
+/* Stagger Animation Delays for Graceful Cinematic Flow */
+.delay-100 { animation-delay: 200ms; }
+.delay-150 { animation-delay: 300ms; }
+.delay-200 { animation-delay: 450ms; }
+.delay-300 { animation-delay: 650ms; }
+.delay-450 { animation-delay: 950ms; }
+.delay-600 { animation-delay: 1300ms; }
+.delay-750 { animation-delay: 1650ms; }
+.delay-900 { animation-delay: 2000ms; }
+.delay-1100 { animation-delay: 2400ms; }
+
+/* Hide scrollbars across the entire application and support no-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Global scrollbar hidden for smooth full-screen digital invitations */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ============================================================
+   Fluid Proportional Container Scaling for Wedding Invitation
+   Scales typography, ornament graphics, banners, and buttons
+   proportionally whenever the 9:16 card expands to fill screen.
+   ============================================================ */
+
+.invitation-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 0px) {
+  /* Micro text: text-[10px], text-[11px] */
+  .invitation-container .text-\[10px\] {
+    font-size: clamp(10px, 2.6cqw, 15px) !important;
+  }
+  .invitation-container .text-\[11px\] {
+    font-size: clamp(11px, 2.9cqw, 17px) !important;
+  }
+
+  /* Extra Small: text-xs (12px) */
+  .invitation-container .text-xs {
+    font-size: clamp(12px, 3.2cqw, 19px) !important;
+  }
+
+  /* Small: text-sm (14px) */
+  .invitation-container .text-sm {
+    font-size: clamp(14px, 3.7cqw, 22px) !important;
+  }
+
+  /* Base: text-base (16px) */
+  .invitation-container .text-base {
+    font-size: clamp(16px, 4.2cqw, 25px) !important;
+  }
+
+  /* Large: text-lg (18px) */
+  .invitation-container .text-lg {
+    font-size: clamp(18px, 4.7cqw, 28px) !important;
+  }
+
+  /* Extra Large: text-xl (20px) */
+  .invitation-container .text-xl {
+    font-size: clamp(20px, 5.2cqw, 32px) !important;
+  }
+
+  /* 2XL: text-2xl (24px) */
+  .invitation-container .text-2xl {
+    font-size: clamp(24px, 6.2cqw, 38px) !important;
+  }
+
+  /* 3XL: text-3xl (30px) & custom 28px */
+  .invitation-container .text-\[28px\],
+  .invitation-container .text-3xl {
+    font-size: clamp(28px, 7.2cqw, 46px) !important;
+  }
+
+  /* Scale title ornament header image (frome3.png) proportionally */
+  .invitation-container img[alt="សិរីមង្គល អាពាហ៍ពិពាហ៍"] {
+    width: clamp(220px, 62cqw, 420px) !important;
+    max-width: 90% !important;
+  }
+
+  /* Scale guest frame divider ornament banner (fram002.png) proportionally */
+  .invitation-container img[alt="Gold Divider Ornament"] {
+    width: clamp(290px, 86cqw, 580px) !important;
+    max-width: 95% !important;
+  }
+
+  /* Scale Guest Name plaque containers */
+  .invitation-container .max-w-\[340px\],
+  .invitation-container .max-w-\[320px\],
+  .invitation-container .max-w-\[300px\] {
+    max-width: clamp(320px, 88cqw, 580px) !important;
+  }
+
+  .invitation-container .max-w-\[380px\],
+  .invitation-container .max-w-\[360px\] {
+    max-width: clamp(360px, 92cqw, 620px) !important;
+  }
+
+  /* Scale Open Invitation buttons */
+  .invitation-container button[id^="open-template"] {
+    padding-left: clamp(1.5rem, 6cqw, 2.75rem) !important;
+    padding-right: clamp(1.5rem, 6cqw, 2.75rem) !important;
+    padding-top: clamp(0.65rem, 2.6cqw, 1.15rem) !important;
+    padding-bottom: clamp(0.65rem, 2.6cqw, 1.15rem) !important;
+    font-size: clamp(0.85rem, 3.4cqw, 1.35rem) !important;
+  }
+
+  /* Scale Detailed Section Containers */
+  .invitation-container .max-w-xl {
+    max-width: 92cqw !important;
+  }
+
+  .invitation-container .max-w-lg {
+    max-width: 88cqw !important;
+  }
+
+  .invitation-container .max-w-md {
+    max-width: 82cqw !important;
+  }
+}
+
+
