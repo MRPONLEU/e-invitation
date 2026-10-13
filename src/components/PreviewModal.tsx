@@ -56,13 +56,8 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
 
       {/* Main Preview Container: Exact 9:16 Aspect Ratio expanding to fill screen height on computers/tablets (100dvh) or width on phones (100vw) */}
       <div 
-        className="invitation-container relative mx-auto bg-[#1A1A1A] rounded-none shadow-[-25px_0_45px_rgba(0,0,0,0.9),25px_0_45px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] overflow-hidden flex flex-col shrink-0 [container-type:inline-size]"
+        className="invitation-container relative mx-auto bg-[#1A1A1A] rounded-none overflow-hidden flex flex-col shrink-0 w-full h-[100dvh] sm:w-[min(100vw,calc(100dvh*9/16))] sm:h-[min(100dvh,calc(100vw*16/9))] sm:max-w-[calc(100dvh*9/16))] sm:max-h-[100dvh] sm:shadow-[-25px_0_45px_rgba(0,0,0,0.9),25px_0_45px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.06)] [container-type:inline-size]"
         style={{
-          aspectRatio: '9 / 16',
-          maxHeight: '100dvh',
-          maxWidth: 'calc(100dvh * 9 / 16)',
-          height: 'min(100dvh, calc(100vw * 16 / 9))',
-          width: 'min(100vw, calc(100dvh * 9 / 16))',
           containerType: 'inline-size'
         }}
       >
