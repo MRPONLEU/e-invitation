@@ -290,6 +290,54 @@ export default function App() {
       return;
     }
 
+    // Helper to parse names from slug
+    const parseSlugToNames = (slugStr: string) => {
+      const clean = slugStr.replace(/[-_]/g, ' ').trim();
+      const words = clean.split(/\s+/).filter(Boolean);
+      const titleWords = words.map(w => w.charAt(0).toUpperCase() + w.slice(1));
+      
+      if (words.length >= 4) {
+        const half = Math.floor(words.length / 2);
+        const groomEn = titleWords.slice(0, half).join(' ');
+        const brideEn = titleWords.slice(half).join(' ');
+        return {
+          groomNameEn: groomEn,
+          groomNameKh: groomEn,
+          brideNameEn: brideEn,
+          brideNameKh: brideEn,
+          groomNickKh: words[half - 1] ? words[half - 1].charAt(0).toUpperCase() + words[half - 1].slice(1) : 'Groom',
+          brideNickKh: words[words.length - 1] ? words[words.length - 1].charAt(0).toUpperCase() + words[words.length - 1].slice(1) : 'Bride'
+        };
+      } else if (words.length === 2) {
+        return {
+          groomNameEn: titleWords[0],
+          groomNameKh: titleWords[0],
+          brideNameEn: titleWords[1],
+          brideNameKh: titleWords[1],
+          groomNickKh: titleWords[0],
+          brideNickKh: titleWords[1]
+        };
+      } else if (words.length === 3) {
+        return {
+          groomNameEn: titleWords[0],
+          groomNameKh: titleWords[0],
+          brideNameEn: titleWords.slice(1).join(' '),
+          brideNameKh: titleWords.slice(1).join(' '),
+          groomNickKh: titleWords[0],
+          brideNickKh: titleWords[2]
+        };
+      } else {
+        return {
+          groomNameEn: titleWords.join(' ') || 'Groom',
+          groomNameKh: titleWords.join(' ') || 'កូនកម្លោះ',
+          brideNameEn: 'Bride',
+          brideNameKh: 'កូនក្រមុំ',
+          groomNickKh: titleWords[0] || 'កម្លោះ',
+          brideNickKh: 'ក្រមុំ'
+        };
+      }
+    };
+
     // 1. Couple Management Route (#manage/slug or #edit/slug or #couple)
     if (cleanHash.startsWith('manage/') || cleanHash.startsWith('edit/') || cleanHash === 'couple') {
       const slug = cleanHash.replace(/^(manage|edit)\//, '');
@@ -297,14 +345,12 @@ export default function App() {
       if (found) {
         setSelectedCoupleId(found.id);
       } else if (slug && slug !== 'couple') {
+        const parsed = parseSlugToNames(slug);
         const newCouple = {
           ...(INITIAL_COUPLES[0] || {}),
           id: `couple_${Date.now()}`,
           slug: slug,
-          groomNameKh: 'ចាន់ សុភ័ក្រ',
-          groomNameEn: 'Chan Sopheak',
-          brideNameKh: 'ស៊ុន ស្រីនីត',
-          brideNameEn: 'Sun Sreynit',
+          ...parsed,
         } as CoupleEvent;
         setCouples(prev => [...prev, newCouple]);
         setSelectedCoupleId(newCouple.id);
@@ -350,14 +396,12 @@ export default function App() {
       }
       // If couple slug is specified but not found, auto-create it so custom slugs work
       if (coupleSlug) {
+        const parsed = parseSlugToNames(coupleSlug);
         const newCouple = {
           ...(INITIAL_COUPLES[0] || {}),
           id: `couple_${Date.now()}`,
           slug: coupleSlug,
-          groomNameKh: 'ចាន់ សុភ័ក្រ',
-          groomNameEn: 'Chan Sopheak',
-          brideNameKh: 'ស៊ុន ស្រីនីត',
-          brideNameEn: 'Sun Sreynit',
+          ...parsed,
         } as CoupleEvent;
         setCouples(prev => [...prev, newCouple]);
         setSelectedCoupleId(newCouple.id);
