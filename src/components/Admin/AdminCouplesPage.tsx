@@ -637,6 +637,7 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
           }}
           onPreviewCouple={onPreviewCouple}
           musicTracks={musicTracks}
+          allCouples={couples}
           lang={lang}
         />
       )}

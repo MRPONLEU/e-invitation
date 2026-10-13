@@ -44,7 +44,8 @@ import {
   BookOpen,
   Globe,
   LayoutDashboard,
-  Settings
+  Settings,
+  KeyRound
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getGuestInvitationUrl, getAppBaseUrl } from '../../utils/urlHelper';
@@ -1188,6 +1189,39 @@ ${inviteLink}`;
               <span>{lang === 'km' ? 'ការកំណត់រចនាបថ & បទភ្លេង' : 'Theme & Music Settings'}</span>
               <span className="w-2.5 h-6 bg-[#D4AF37] rounded-full"></span>
             </h3>
+          </div>
+
+          {/* Slug URL Customization */}
+          <div className="bg-white border border-[#EAE6E1] rounded-3xl p-6 space-y-4 shadow-xs">
+            <h4 className="text-base font-normal text-gray-900 font-khmer-title flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-[#D4AF37]" />
+              <span>{lang === 'km' ? 'តំណភ្ជាប់សំបុត្រអញ្ជើញ (Slug URL)' : 'Invitation Slug URL'}</span>
+            </h4>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-gray-500 font-mono">/?c=</span>
+              <input
+                type="text"
+                value={couple.slug || ''}
+                onChange={(e) => {
+                  const newSlug = e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+                  setCouples(prev => {
+                    const duplicate = prev.find(c => c.slug === newSlug && c.id !== couple.id);
+                    if (duplicate) {
+                      alert(lang === 'km' 
+                        ? `Slug URL "${newSlug}" នេះមានរួចរាល់ហើយក្នុងប្រព័ន្ធ! សូមធ្វើការផ្លាស់ប្ដូរ Slug URL ផ្សេង។` 
+                        : `Slug URL "${newSlug}" already exists! Please choose a different Slug URL.`);
+                      return prev;
+                    }
+                    return prev.map(c => c.id === couple.id ? { ...c, slug: newSlug } : c);
+                  });
+                }}
+                placeholder="pov-pean-dieb-samphous"
+                className="flex-1 px-4 py-2.5 text-xs bg-white border border-gray-300 rounded-xl focus:border-[#D4AF37] outline-hidden font-mono text-gray-900"
+              />
+            </div>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'km' ? 'ឧ. pov-pean-dieb-samphous នឹងបង្កើតលីង ?c=pov-pean-dieb-samphous' : 'E.g. pov-pean-dieb-samphous'}
+            </p>
           </div>
 
           {/* Theme Customization Overrides */}

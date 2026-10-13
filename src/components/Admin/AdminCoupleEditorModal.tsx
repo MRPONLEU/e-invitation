@@ -52,6 +52,7 @@ interface AdminCoupleEditorModalProps {
   onSave: (updated: CoupleEvent) => void;
   onPreviewCouple: (coupleId: string) => void;
   musicTracks?: MusicTrack[];
+  allCouples?: CoupleEvent[];
   lang: Language;
 }
 
@@ -63,11 +64,28 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
   onSave,
   onPreviewCouple,
   musicTracks = INITIAL_MUSIC_TRACKS,
+  allCouples = [],
   lang,
 }) => {
   const [activeTab, setActiveTab] = useState<EditTabType>('account');
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [newGalleryPhotoUrl, setNewGalleryPhotoUrl] = useState('');
+
+  const handleSave = () => {
+    if (!editingCouple.slug || !editingCouple.slug.trim()) {
+      alert(lang === 'km' ? 'សូមបញ្ចូល Slug URL!' : 'Please enter a Slug URL!');
+      return;
+    }
+    const cleanSlug = editingCouple.slug.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+    const duplicate = allCouples.find(c => c.slug === cleanSlug && c.id !== editingCouple.id);
+    if (duplicate) {
+      alert(lang === 'km' 
+        ? `Slug URL "${cleanSlug}" នេះមានរួចរាល់ហើយក្នុងប្រព័ន្ធ! សូមធ្វើការផ្លាស់ប្ដូរ Slug URL ផ្សេងដើម្បីជៀសវាងការជាន់គ្នា។` 
+        : `Slug URL "${cleanSlug}" already exists! Please choose a different Slug URL.`);
+      return;
+    }
+    onSave({ ...editingCouple, slug: cleanSlug });
+  };
   const [galleryLightbox, setGalleryLightbox] = useState<string | null>(null);
   const [playingTrackId, setPlayingTrackId] = useState<string | null>(null);
 
@@ -443,21 +461,24 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                 </div>
               </div>
 
-              {/* Status Box */}
-              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-amber-100 text-[#8C6D1F] flex items-center justify-center font-bold">
-                    🔑
-                  </div>
-                  <div>
-                    <span className="text-xs font-medium text-amber-950 block">
-                      {editingCouple.manageUsername ? (lang === 'km' ? 'គណនីបានរៀបចំរួចរាល់' : 'Account Configured') : (lang === 'km' ? 'មិនទាន់កំណត់គណនី' : 'Account Not Configured')}
-                    </span>
-                    <span className="text-[11px] text-amber-800">
-                      Slug URL: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-amber-200">{editingCouple.slug}</code>
-                    </span>
-                  </div>
+              {/* Slug URL Edit Box */}
+              <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-2">
+                <label className="block text-xs font-medium text-amber-950">
+                  {lang === 'km' ? 'Slug URL (តំណភ្ជាប់កាតអញ្ជើញ)' : 'Slug URL'}
+                </label>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500 font-mono">/?c=</span>
+                  <input
+                    type="text"
+                    value={editingCouple.slug || ''}
+                    onChange={(e) => setEditingCouple(prev => prev ? { ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-') } : null)}
+                    placeholder="pov-pean-dieb-samphous"
+                    className="flex-1 px-3.5 py-2 text-xs bg-white border border-gray-300 rounded-xl focus:border-[#D4AF37] outline-hidden font-mono text-gray-900"
+                  />
                 </div>
+                <p className="text-[11px] text-gray-500">
+                  {lang === 'km' ? 'ឧ. pov-pean-dieb-samphous សម្រាប់លីង ?c=pov-pean-dieb-samphous' : 'E.g. pov-pean-dieb-samphous'}
+                </p>
               </div>
             </div>
           )}
@@ -1809,7 +1830,7 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
 
           <button
             type="button"
-            onClick={() => onSave(editingCouple)}
+            onClick={handleSave}
             className="px-5 py-2 bg-gradient-to-r from-[#D4AF37] to-[#B8962D] text-white text-xs rounded-xl shadow-xs hover:brightness-110 flex items-center gap-1.5 cursor-pointer font-medium"
           >
             <Save className="w-4 h-4" />

@@ -117,41 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* Portal Mode Switcher (Admin vs Couple) - Only visible when logged in as Admin */}
-        {adminUser && (
-          <div className="px-3.5 pt-3 pb-1">
-            <div className="grid grid-cols-2 p-1 bg-[#14203D] rounded-xl border border-[#23335A]">
-              <button
-                id="sidebar-switch-to-admin"
-                onClick={() => {
-                  window.location.hash = '#admin';
-                  handleNavClick('admin', 'overview');
-                }}
-                className={`py-2 px-2.5 rounded-lg text-xs font-normal transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  currentView === 'admin'
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white font-medium shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span>👑 Admin</span>
-              </button>
-              <button
-                id="sidebar-switch-to-couple"
-                onClick={() => {
-                  window.location.hash = '#couple';
-                  handleNavClick('couple', undefined, 'overview');
-                }}
-                className={`py-2 px-2.5 rounded-lg text-xs font-normal transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  currentView === 'couple'
-                    ? 'bg-gradient-to-r from-[#FF1B6B] to-[#FF4585] text-white font-medium shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span>💍 គូស្នេហ៍</span>
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {/* 2. Navigation Content */}
         <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
