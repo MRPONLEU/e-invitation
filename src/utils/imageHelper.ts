@@ -49,7 +49,7 @@ export const formatImageUrl = (url?: string): string | undefined => {
  */
 export const handleImageError = (
   e: React.SyntheticEvent<HTMLImageElement, Event>,
-  fallbackSrc = 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=800&auto=format&fit=crop'
+  fallbackSrc = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop'
 ) => {
   const target = e.target as HTMLImageElement;
   const currentSrc = target.src;

@@ -321,7 +321,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
     if (couple) {
       const title = `សំបុត្រអញ្ជើញអាពាហ៍ពិពាហ៍ - ${couple.groomNameKh} & ${couple.brideNameKh}`;
       const desc = `សូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ចូលរួមពិធីអាពាហ៍ពិពាហ៍ ${couple.groomNameKh} & ${couple.brideNameKh} នៅ ${couple.venueNameKh}។ សូមអរគុណ!`;
-      const img = couple.coverPhoto || 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&h=900&auto=format&fit=crop';
+      const img = couple.coverPhoto || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&h=900&auto=format&fit=crop';
 
       document.title = title;
 
@@ -647,14 +647,14 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           }}
         >
           <img 
-            src={formatImageUrl(couple.coverPhoto) || formatImageUrl(couple.secondaryPhoto) || 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop'}
+            src={formatImageUrl(couple.coverPhoto) || formatImageUrl(couple.secondaryPhoto) || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop'}
             alt="Background Couple (Photo 2)"
             className={`w-full h-full object-cover object-center ${isCustom002Theme ? 'animate-zoom-0-to-100-3s' : 'animate-photo2-fade-in-5s'}`}
             style={{
               opacity: Math.max(0.60, 1 - Math.min(scrollTop / 350, 0.40))
             }}
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&auto=format&fit=crop';
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop';
             }}
           />
           {/* Progressive dimming overlay capped so photo remains 60% visible */}
