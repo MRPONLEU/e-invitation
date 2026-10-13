@@ -2,6 +2,14 @@
 // Prevents Google 403 Forbidden errors when sharing links from development sandbox
 
 const STORAGE_CUSTOM_URL_KEY = 'wedding_custom_public_url_v1';
+if (typeof window !== 'undefined') {
+  try {
+    const stored = localStorage.getItem(STORAGE_CUSTOM_URL_KEY);
+    if (stored && (stored.includes('run.app') || stored.includes('ais-pre-') || stored.includes('ais-dev-'))) {
+      localStorage.removeItem(STORAGE_CUSTOM_URL_KEY);
+    }
+  } catch {}
+}
 export const DEFAULT_SHARED_APP_URL = 'https://ponleu-e-invitation.vercel.app';
 
 /**
@@ -53,19 +61,11 @@ export function saveCustomBaseUrl(url: string): void {
 export function getAppBaseUrl(): string {
   if (typeof window === 'undefined') return 'https://ponleu-e-invitation.vercel.app';
   
-  // 1. If user specified a custom domain
+  // 1. If user specified a custom domain (excluding run.app)
   const custom = getStoredCustomBaseUrl();
-  if (custom) return custom;
+  if (custom && !custom.includes('run.app')) return custom;
 
-  // 2. Always adapt dynamically to the actual visited domain
-  const currentOrigin = window.location.origin;
-  if (currentOrigin) {
-    if (currentOrigin.includes('ais-dev-')) {
-      return currentOrigin.replace('ais-dev-', 'ais-pre-');
-    }
-    return currentOrigin;
-  }
-
+  // 2. Always use the official production domain for guest sharing
   return 'https://ponleu-e-invitation.vercel.app';
 }
 
