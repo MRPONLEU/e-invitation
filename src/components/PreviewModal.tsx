@@ -1,7 +1,7 @@
 import React from 'react';
 import { Template, CoupleEvent, Language } from '../types';
 import { GuestInvitationView } from './Guest/GuestInvitationView';
-import { ExternalLink, X, Sparkles } from 'lucide-react';
+import { ExternalLink, X, Sparkles, ChevronLeft } from 'lucide-react';
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -39,10 +39,10 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
       <div className="absolute top-3 inset-x-3 sm:inset-x-6 flex items-center justify-between z-50 pointer-events-none">
         <button
           onClick={onClose}
-          className="pointer-events-auto px-3.5 py-1.5 rounded-full bg-black/60 hover:bg-black/85 text-xs text-white/90 font-battambang flex items-center gap-1.5 transition-all cursor-pointer backdrop-blur-md border border-white/15 shadow-xl"
+          className="pointer-events-auto px-4 py-2 rounded-full bg-black/80 hover:bg-black text-xs sm:text-sm text-white font-battambang flex items-center gap-1.5 transition-all cursor-pointer backdrop-blur-md border border-[#D4AF37]/60 shadow-2xl"
         >
-          <X className="w-4 h-4 text-amber-300" />
-          <span>បិទ (Close)</span>
+          <ChevronLeft className="w-4 h-4 text-[#F3D372]" />
+          <span>ត្រឡប់ក្រោយ (Back)</span>
         </button>
 
         <button
