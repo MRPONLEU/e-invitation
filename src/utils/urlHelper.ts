@@ -2,7 +2,7 @@
 // Prevents Google 403 Forbidden errors when sharing links from development sandbox
 
 const STORAGE_CUSTOM_URL_KEY = 'wedding_custom_public_url_v1';
-export const DEFAULT_SHARED_APP_URL = 'https://ais-pre-qbu7djrnmp5qb7oskytglr-346599610180.asia-southeast1.run.app';
+export const DEFAULT_SHARED_APP_URL = 'https://ponleu-e-invitation.vercel.app';
 
 /**
  * Check if the current origin or URL is a private developer sandbox that requires Google account authentication
@@ -51,20 +51,17 @@ export function saveCustomBaseUrl(url: string): void {
  * Get the best public-accessible Base URL for guests and couples
  */
 export function getAppBaseUrl(): string {
-  if (typeof window === 'undefined') return '';
+  if (typeof window === 'undefined') return 'https://ponleu-e-invitation.vercel.app';
   
-  // 1. If user specified a custom domain (e.g. deployed domain)
+  // 1. If user specified a custom domain
   const custom = getStoredCustomBaseUrl();
   if (custom) return custom;
 
   const currentOrigin = window.location.origin;
 
-  // 2. If running inside the private developer sandbox (ais-dev-), 
-  // sharing this directly to guests causes Google 403 Forbidden.
-  // We prefer the public Shared App URL if available, or fallback gracefully.
-  if (currentOrigin.includes('ais-dev-')) {
-    // When on ais-dev, the public counterpart is ais-pre
-    return currentOrigin.replace('ais-dev-', 'ais-pre-');
+  // 2. If running in sandbox or run.app, default to user's Vercel production domain
+  if (currentOrigin.includes('ais-dev-') || currentOrigin.includes('ais-pre-') || currentOrigin.includes('run.app')) {
+    return 'https://ponleu-e-invitation.vercel.app';
   }
 
   return currentOrigin;
