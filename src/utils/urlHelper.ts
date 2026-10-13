@@ -2,7 +2,7 @@
 // Prevents Google 403 Forbidden errors when sharing links from development sandbox
 
 const STORAGE_CUSTOM_URL_KEY = 'wedding_custom_public_url_v1';
-export const DEFAULT_SHARED_APP_URL = 'https://ais-pre-255ksygkliubjzkw7nl5hs-346599610180.asia-southeast1.run.app';
+export const DEFAULT_SHARED_APP_URL = 'https://ais-pre-qbu7djrnmp5qb7oskytglr-346599610180.asia-southeast1.run.app';
 
 /**
  * Check if the current origin or URL is a private developer sandbox that requires Google account authentication
