@@ -265,14 +265,17 @@ export default function App() {
       if (pathSlug) coupleSlug = decodeURIComponent(pathSlug);
     }
 
-    // Helper to find couple by slug or ID case-insensitively
+    // Helper to find couple by slug or ID case-insensitively and normalized
     const findCouple = (target: string) => {
       if (!target) return undefined;
       const decoded = decodeURIComponent(target).trim().toLowerCase();
-      return currentCouples.find(c => 
-        (c.slug && c.slug.toLowerCase() === decoded) || 
-        (c.id && c.id.toLowerCase() === decoded)
-      );
+      const cleanTarget = decoded.replace(/[-_\s]/g, '');
+      return currentCouples.find(c => {
+        const cSlug = (c.slug || '').trim().toLowerCase();
+        const cId = (c.id || '').trim().toLowerCase();
+        const cSlugClean = cSlug.replace(/[-_\s]/g, '');
+        return cSlug === decoded || cId === decoded || cSlugClean === cleanTarget;
+      });
     };
 
     // 0. Explicit Admin route (#admin, #admin-templates, #admin-couples, etc.)
@@ -372,7 +375,7 @@ export default function App() {
       return;
     }
 
-    // 2. Guest Invitation link
+    // 2. Guest Invitation link (#slug) - DO NOT auto-create new couples here!
     if (cleanHash && !cleanHash.startsWith('admin') && !cleanHash.startsWith('manage') && cleanHash !== 'couple') {
       if (cleanHash.includes('?')) {
         const parts = cleanHash.split('?');
@@ -394,17 +397,9 @@ export default function App() {
         setCurrentView('guest');
         return;
       }
-      // If couple slug is specified but not found, auto-create it so custom slugs work
-      if (coupleSlug) {
-        const parsed = parseSlugToNames(coupleSlug);
-        const newCouple = {
-          ...(INITIAL_COUPLES[0] || {}),
-          id: `couple_${Date.now()}`,
-          slug: coupleSlug,
-          ...parsed,
-        } as CoupleEvent;
-        setCouples(prev => [...prev, newCouple]);
-        setSelectedCoupleId(newCouple.id);
+      // If couple slug not found for guest view, use default couple instead of auto-creating
+      if (currentCouples.length > 0) {
+        setSelectedCoupleId(currentCouples[0].id);
         setCurrentGuestCode(guestParam || undefined);
         setCurrentView('guest');
         return;
