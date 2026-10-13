@@ -44,6 +44,15 @@ const getDeletedMusicTrackIds = (): string[] => {
   }
 };
 
+// Helper for deleted couple persistence
+const getDeletedCoupleIds = (): string[] => {
+  try {
+    return JSON.parse(localStorage.getItem('deleted_couple_ids') || '[]');
+  } catch {
+    return [];
+  }
+};
+
 export default function App() {
   const [_templates, _setTemplates] = useState<Template[]>(() => {
     const deletedIds = getDeletedTemplateIds();
@@ -53,7 +62,10 @@ export default function App() {
     const deletedIds = getDeletedMusicTrackIds();
     return INITIAL_MUSIC_TRACKS.filter(t => !deletedIds.includes(t.id));
   });
-  const [_couples, _setCouples] = useState<CoupleEvent[]>(() => INITIAL_COUPLES);
+  const [_couples, _setCouples] = useState<CoupleEvent[]>(() => {
+    const deletedIds = getDeletedCoupleIds();
+    return INITIAL_COUPLES.filter(c => !deletedIds.includes(c.id));
+  });
   const [isFirebaseReady, setIsFirebaseReady] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUserState | null>(() => getStoredAdminSession());
 
@@ -129,13 +141,20 @@ export default function App() {
         }
       }));
       unsubs.push(subscribeToCollection<CoupleEvent>('couples', (data) => {
+        const deletedIds = getDeletedCoupleIds();
         if (!data || data.length === 0) {
-          _setCouples(INITIAL_COUPLES);
+          _setCouples(INITIAL_COUPLES.filter(c => !deletedIds.includes(c.id)));
         } else {
           const map = new Map<string, CoupleEvent>();
-          INITIAL_COUPLES.forEach(c => map.set(c.id, c));
-          data.forEach(c => map.set(c.id, { ...map.get(c.id), ...c }));
-          _setCouples(Array.from(map.values()));
+          INITIAL_COUPLES.forEach(c => {
+            if (!deletedIds.includes(c.id)) map.set(c.id, c);
+          });
+          data.forEach(c => {
+            if (!deletedIds.includes(c.id)) {
+              map.set(c.id, { ...map.get(c.id), ...c });
+            }
+          });
+          _setCouples(Array.from(map.values()).filter(c => !deletedIds.includes(c.id)));
         }
       }));
       setIsFirebaseReady(true);
@@ -188,10 +207,13 @@ export default function App() {
 
   const setCouples = React.useCallback((action: React.SetStateAction<CoupleEvent[]>) => {
     _setCouples(prev => {
-      const current = prev.length ? prev : INITIAL_COUPLES;
-      const next = typeof action === 'function' ? (action as any)(current) : action;
+      const deletedIds = getDeletedCoupleIds();
+      const current = prev.length ? prev : INITIAL_COUPLES.filter(c => !deletedIds.includes(c.id));
+      const next = (typeof action === 'function' ? (action as any)(current) : action).filter((c: CoupleEvent) => !deletedIds.includes(c.id));
       const removedIds = current.filter(p => !next.some((n: CoupleEvent) => n.id === p.id)).map(p => p.id);
       if (removedIds.length > 0) {
+        const updatedDeleted = Array.from(new Set([...deletedIds, ...removedIds]));
+        localStorage.setItem('deleted_couple_ids', JSON.stringify(updatedDeleted));
         import('./lib/firebaseSync').then(({ deleteDocumentFromFirestore }) => {
           removedIds.forEach(id => deleteDocumentFromFirestore('couples', id));
         });
