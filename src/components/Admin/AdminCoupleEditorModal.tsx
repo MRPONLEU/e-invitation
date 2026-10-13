@@ -647,6 +647,17 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                 </div>
 
                 <div>
+                  <label className="block text-xs text-gray-700 mb-1">{lang === 'km' ? 'ពេលវេលាទទួលភ្ញៀវ (Wedding Time)' : 'Wedding Time'}</label>
+                  <input
+                    type="text"
+                    placeholder="វេលាម៉ោង ៧:០០ ព្រឹក ដល់ ១០:០០ យប់"
+                    value={editingCouple.weddingTimeKh || ''}
+                    onChange={(e) => setEditingCouple(prev => prev ? { ...prev, weddingTimeKh: e.target.value } : null)}
+                    className="w-full px-3.5 py-2.5 text-xs bg-[#FAF9F6] border border-gray-300 rounded-xl focus:bg-white focus:border-[#D4AF37]"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-xs text-gray-700 mb-1">{lang === 'km' ? 'កាលបរិច្ឆេទចន្ទគតិ (Lunar Date Text)' : 'Lunar Date Text'}</label>
                   <input
                     type="text"

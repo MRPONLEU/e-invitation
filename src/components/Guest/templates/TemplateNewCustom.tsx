@@ -69,7 +69,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
           <img
             src={weddingTitleImage}
             alt="សិរីមង្គល អាពាហ៍ពិពាហ៍"
-            className="w-52 sm:w-60 h-auto object-contain mx-auto animate-golden-shimmer"
+            className="w-56 sm:w-68 h-auto object-contain mx-auto animate-golden-shimmer"
           />
           <div className="flex items-center justify-center gap-1.5 mt-0.5 animate-ornament-expand delay-200">
             <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#F3D372]"></span>

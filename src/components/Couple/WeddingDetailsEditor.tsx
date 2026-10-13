@@ -1356,12 +1356,12 @@ export const WeddingDetailsEditor: React.FC<WeddingDetailsEditorProps> = ({
 
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  {lang === 'km' ? 'ពេលវេលាទទួលភ្ញៀវ' : 'Reception Time'}
+                  {lang === 'km' ? 'ពេលវេលាទទួលភ្ញៀវ (Wedding Time)' : 'Reception Time'}
                 </label>
                 <input
                   type="text"
                   value={couple.weddingTimeKh || ''}
-                  placeholder="វេលាម៉ោង ១១:០០ ថ្ងៃត្រង់"
+                  placeholder="វេលាម៉ោង ៧:០០ ព្រឹក ដល់ ១០:០០ យប់"
                   onChange={e => {
                     updateCouple(prev => ({ ...prev, weddingTimeKh: e.target.value }));
                     showSavedAlert();

@@ -154,7 +154,7 @@ export const TemplateNewCustom003: React.FC<TemplateNewCustom003Props> = ({
 
             {/* Guest Name Plaque */}
             <div className="relative max-w-[340px] sm:max-w-[380px] mx-auto animate-smooth-fade-up delay-450 flex flex-col items-center justify-center pt-1">
-              <h3 className="relative z-10 text-base sm:text-lg md:text-xl font-normal text-[#C59B27] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
+              <h3 className="relative z-10 text-lg sm:text-xl md:text-2xl font-normal text-[#C59B27] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
                 {currentGuest ? `${currentGuest.titleKh} ${currentGuest.fullNameKh}` : 'លោក-អ្នក ភ្ញៀវកិត្តិយស'}
               </h3>
               <img

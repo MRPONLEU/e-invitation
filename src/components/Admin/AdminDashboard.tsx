@@ -691,7 +691,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {/* Promo Text */}
                     {couples[0]?.adminPromo?.enabled && couples[0]?.adminPromo?.textKh && (
-                      <div className="text-[12px] font-battambang text-[#D4AF37]/95 whitespace-pre-line leading-relaxed">
+                      <div className="text-sm font-battambang text-white whitespace-pre-line leading-relaxed">
                         {couples[0].adminPromo.textKh}
                       </div>
                     )}

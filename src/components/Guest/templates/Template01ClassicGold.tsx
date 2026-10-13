@@ -41,7 +41,7 @@ export const Template01ClassicGold: React.FC<Template01ClassicGoldProps> = ({
           <Sparkles className="w-3 h-3 text-[#D4AF37]" />
           <span>សំបុត្រអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល</span>
         </div>
-        <h2 className={`text-2xl sm:text-3xl font-normal ${khmerTitleFont} text-[#8B3A3A] tracking-wide pt-0.5`}>
+        <h2 className={`text-3xl sm:text-4xl font-normal ${khmerTitleFont} text-[#8B3A3A] tracking-wide pt-0.5`}>
           សិរីមង្គល អាពាហ៍ពិពាហ៍
         </h2>
       </div>

@@ -321,7 +321,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
     if (couple) {
       const title = `សំបុត្រអញ្ជើញអាពាហ៍ពិពាហ៍ - ${couple.groomNameKh} & ${couple.brideNameKh}`;
       const desc = `សូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ចូលរួមពិធីអាពាហ៍ពិពាហ៍ ${couple.groomNameKh} & ${couple.brideNameKh} នៅ ${couple.venueNameKh}។ សូមអរគុណ!`;
-      const img = couple.coverPhoto || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&h=900&auto=format&fit=crop';
+      const img = formatImageUrl(couple.coverPhoto) || couple.coverPhoto || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&h=900&auto=format&fit=crop';
 
       document.title = title;
 
@@ -822,7 +822,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             {/* Top Header with Silky Smooth GPU Fade & Slide Animation - Animates after Photo 2 is shown */}
             {showHeroText ? (
               <div className="relative z-10 pt-3 sm:pt-5 space-y-2 flex flex-col items-center animate-smooth-fade-down delay-100">
-                <h1 className={`text-xl sm:text-2xl font-normal ${khmerTitleFont} text-[#FFD700] [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_0_15px_rgba(255,215,0,0.4)] tracking-wide text-center leading-relaxed`}>
+                <h1 className={`text-2xl sm:text-3xl font-normal ${khmerTitleFont} text-[#FFD700] [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_0_15px_rgba(255,215,0,0.4)] tracking-wide text-center leading-relaxed`}>
                   សិរីមង្គល<br />អាពាហ៍ពិពាហ៍
                 </h1>
                 <div className="flex items-center justify-center gap-2 mt-0.5 animate-ornament-expand delay-200">
@@ -1046,7 +1046,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   <div className="space-y-8 text-left max-w-sm mx-auto pt-2">
                     {/* Day 1 */}
                     <div className="space-y-4">
-                      <h4 className="font-muol-light text-[15px] sm:text-base text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
+                      <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
                         {couple.weddingProgramDay1TitleKh || 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤'}
                       </h4>
                       <div className="space-y-5">
@@ -1057,14 +1057,14 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                                 {renderAgendaIcon(item.icon)}
                               </div>
                               <div className="space-y-1 pt-0.5 flex-1">
-                                <p className="text-sm font-normal text-[#D4AF37] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
-                                <h4 className="text-[15px] font-normal text-white/95 font-battambang leading-relaxed">{item.titleKh}</h4>
-                                {item.descKh && <p className="text-xs text-white/70 font-battambang">{item.descKh}</p>}
+                                <p className="text-sm sm:text-base font-semibold text-[#F3D372] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
+                                <h4 className="text-sm sm:text-base font-medium text-white font-battambang leading-relaxed">{item.titleKh}</h4>
+                                {item.descKh && <p className="text-xs sm:text-sm text-white/80 font-battambang">{item.descKh}</p>}
                               </div>
                             </div>
                           ))
                         ) : (
-                          <p className="text-center text-xs text-white/60 font-battambang py-3">មិនទាន់មានកម្មវិធី</p>
+                          <p className="text-center text-sm text-white/60 font-battambang py-3">មិនទាន់មានកម្មវិធី</p>
                         )}
                       </div>
                     </div>
@@ -1072,7 +1072,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                     {/* Day 2 */}
                     {(day2Agendas.length > 0 || couple.weddingProgramDay2TitleKh) && (
                       <div className="space-y-4 pt-4 border-t border-white/10">
-                        <h4 className="font-muol-light text-[15px] sm:text-base text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
+                        <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
                           {couple.weddingProgramDay2TitleKh || 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤'}
                         </h4>
                         <div className="space-y-5">
@@ -1082,9 +1082,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                                 {renderAgendaIcon(item.icon)}
                               </div>
                               <div className="space-y-1 pt-0.5 flex-1">
-                                <p className="text-sm font-normal text-[#D4AF37] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
-                                <h4 className="text-[15px] font-normal text-white/95 font-battambang leading-relaxed">{item.titleKh}</h4>
-                                {item.descKh && <p className="text-xs text-white/70 font-battambang">{item.descKh}</p>}
+                                <p className="text-sm sm:text-base font-semibold text-[#F3D372] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
+                                <h4 className="text-sm sm:text-base font-medium text-white font-battambang leading-relaxed">{item.titleKh}</h4>
+                                {item.descKh && <p className="text-xs sm:text-sm text-white/80 font-battambang">{item.descKh}</p>}
                               </div>
                             </div>
                           ))}
@@ -1297,7 +1297,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
           {/* Footer Branding Removed */}
 
-          {(couple.adminPromo?.enabled || couple.contactFacebook || couple.contactTelegram || couple.contactPhone) && (
+          {(couple.adminPromo?.enabled !== false || couple.contactFacebook || couple.contactTelegram || couple.contactPhone) && (
             <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
               <div className="p-2 sm:p-3 w-full space-y-2.5">
                 {/* Logo Display */}
@@ -1309,11 +1309,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   />
                 </div>
 
-                {couple.adminPromo?.enabled && couple.adminPromo.textKh && (
-                  <div className="text-[13px] font-battambang text-[#D4AF37]/95 whitespace-pre-line leading-relaxed">
-                    {couple.adminPromo.textKh}
-                  </div>
-                )}
+                <div className="text-sm sm:text-base font-battambang text-white/95 whitespace-pre-line leading-relaxed">
+                  {couple.adminPromo?.textKh || 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998'}
+                </div>
 
                 {/* Contact Icons */}
                 {(couple.contactFacebook || couple.contactTelegram || couple.contactPhone) && (
