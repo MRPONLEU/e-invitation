@@ -210,8 +210,8 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
             <tbody className="divide-y divide-gray-100 font-normal">
               {filteredCouples.map((c) => {
                 const assignedTemplate = templates.find(t => t.id === c.templateId) || templates[0];
-                const guestInvitationUrl = getGuestInvitationUrl(c.slug);
-                const couplePortalUrl = getCouplePortalUrl(c.slug);
+                const guestInvitationUrl = getGuestInvitationUrl(c.id);
+                const couplePortalUrl = getCouplePortalUrl(c.id);
 
                 return (
                   <tr key={c.id} className="hover:bg-[#FCFBF8] transition-colors">
@@ -336,8 +336,8 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
         const assignedTemplate = templates.find(t => t.id === c.templateId) || templates[0];
         const guestsCount = c.guests?.length || 0;
         const rsvpCount = c.guests ? c.guests.filter(g => g.rsvpStatus === 'attending').length : 0;
-        const guestInvitationUrl = getGuestInvitationUrl(c.slug);
-        const couplePortalUrl = getCouplePortalUrl(c.slug);
+        const guestInvitationUrl = getGuestInvitationUrl(c.id);
+        const couplePortalUrl = getCouplePortalUrl(c.id);
 
         return (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 animate-in fade-in duration-200 overflow-y-auto">

@@ -72,8 +72,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ? '#admin-footer' 
         : '#admin';
     } else if (view === 'couple') {
-      const slug = selectedCouple?.slug || 'couple';
-      window.location.hash = `#manage/${slug}`;
+      const currentHash = window.location.hash || '';
+      if (!currentHash.startsWith('#manage/') && !currentHash.startsWith('#edit/')) {
+        const identifier = selectedCouple?.id || 'couple';
+        window.location.hash = `#manage/${identifier}`;
+      }
     }
     if (adminSection && setAdminActiveSection) {
       setAdminActiveSection(adminSection);

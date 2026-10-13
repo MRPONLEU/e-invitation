@@ -287,16 +287,35 @@ export default function App() {
       if (pathSlug) coupleSlug = decodeURIComponent(pathSlug);
     }
 
-    // Helper to find couple by slug or ID case-insensitively and normalized
+    // Helper to find couple by ID (primary, 100% unique) or slug/name (fallback)
     const findCouple = (target: string) => {
       if (!target) return undefined;
       const decoded = decodeURIComponent(target).trim().toLowerCase();
       const cleanTarget = decoded.replace(/[-_\s]/g, '');
-      return currentCouples.find(c => {
-        const cSlug = (c.slug || '').trim().toLowerCase();
+
+      // 1. Direct ID match first (100% exact & unique!)
+      const byId = currentCouples.find(c => {
         const cId = (c.id || '').trim().toLowerCase();
+        const cIdClean = cId.replace(/[-_\s]/g, '');
+        return cId === decoded || cIdClean === cleanTarget;
+      });
+      if (byId) return byId;
+
+      // 2. Exact slug match
+      const bySlug = currentCouples.find(c => {
+        const cSlug = (c.slug || '').trim().toLowerCase();
         const cSlugClean = cSlug.replace(/[-_\s]/g, '');
-        return cSlug === decoded || cId === decoded || cSlugClean === cleanTarget;
+        return cSlug === decoded || cSlugClean === cleanTarget;
+      });
+      if (bySlug) return bySlug;
+
+      // 3. Fallback partial slug or name match
+      return currentCouples.find(c => {
+        const cSlugClean = (c.slug || '').trim().toLowerCase().replace(/[-_\s]/g, '');
+        if (cleanTarget.length >= 4 && (cSlugClean.startsWith(cleanTarget) || cleanTarget.startsWith(cSlugClean))) return true;
+        const namesClean = `${c.groomNameEn || ''}${c.brideNameEn || ''}${c.groomNickKh || ''}${c.brideNickKh || ''}${c.groomNameKh || ''}${c.brideNameKh || ''}`.toLowerCase().replace(/[-_\s]/g, '');
+        if (cleanTarget.length >= 4 && namesClean.includes(cleanTarget)) return true;
+        return false;
       });
     };
 
@@ -363,18 +382,22 @@ export default function App() {
       }
     };
 
-    // 1. Couple Management Route (#manage/slug or #edit/slug or #couple)
+    // 1. Couple Management Route (#manage/id or #edit/id or #manage/slug or #couple)
     if (cleanHash.startsWith('manage/') || cleanHash.startsWith('edit/') || cleanHash === 'couple') {
-      const slug = cleanHash === 'couple' ? '' : cleanHash.replace(/^(manage|edit)\//, '');
-      const found = slug ? findCouple(slug) : (currentCouples.length > 0 ? currentCouples[0] : undefined);
+      const identifier = cleanHash === 'couple' ? '' : cleanHash.replace(/^(manage|edit)\//, '');
+      const found = identifier ? findCouple(identifier) : undefined;
       if (found) {
         setSelectedCoupleId(found.id);
         if (cleanHash === 'couple') {
-          window.location.hash = `#manage/${found.slug}`;
+          window.location.hash = `#manage/${found.id}`;
         }
-      } else if (currentCouples.length > 0) {
+      } else if (!identifier && currentCouples.length > 0) {
+        // Only if literally no identifier was provided at all (#couple)
         setSelectedCoupleId(currentCouples[0].id);
-        window.location.hash = `#manage/${currentCouples[0].slug}`;
+        window.location.hash = `#manage/${currentCouples[0].id}`;
+      } else if (currentCouples.length > 0 && !selectedCoupleId) {
+        // If identifier was provided but data is still syncing, don't overwrite window.location.hash
+        setSelectedCoupleId(currentCouples[0].id);
       }
       setActiveCoupleTab('overview');
       setCurrentView('couple');
@@ -447,12 +470,10 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, [parseUrl]);
 
-  // Re-run parseUrl when Firestore completes sync so incoming URLs map to loaded data
+  // Re-run parseUrl when Firestore completes sync or couples load so incoming URLs map to loaded data
   useEffect(() => {
-    if (isFirebaseReady) {
-      parseUrl(false);
-    }
-  }, [isFirebaseReady, parseUrl]);
+    parseUrl(false);
+  }, [isFirebaseReady, couples, parseUrl]);
 
   // Active couple object
   const activeCouple = couples.find(c => c.id === selectedCoupleId) || couples[0] || INITIAL_COUPLES[0];

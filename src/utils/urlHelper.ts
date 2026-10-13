@@ -70,24 +70,24 @@ export function getAppBaseUrl(): string {
 }
 
 /**
- * Generate full guest invitation link
+ * Generate full guest invitation link using unique Couple ID (or slug)
  */
-export function getGuestInvitationUrl(coupleSlug: string, guestCode?: string): string {
+export function getGuestInvitationUrl(coupleIdOrSlug: string, guestCode?: string): string {
   const base = getAppBaseUrl();
-  const cleanSlug = encodeURIComponent(coupleSlug.trim());
+  const cleanId = encodeURIComponent((coupleIdOrSlug || '').trim());
   if (guestCode) {
-    return `${base}/?c=${cleanSlug}&guest=${encodeURIComponent(guestCode.trim())}`;
+    return `${base}/?c=${cleanId}&guest=${encodeURIComponent(guestCode.trim())}`;
   }
-  return `${base}/?c=${cleanSlug}`;
+  return `${base}/?c=${cleanId}`;
 }
 
 /**
- * Generate full couple portal management link
+ * Generate full couple portal management link using unique Couple ID (or slug)
  */
-export function getCouplePortalUrl(coupleSlug: string): string {
+export function getCouplePortalUrl(coupleIdOrSlug: string): string {
   const base = getAppBaseUrl();
-  const cleanSlug = encodeURIComponent(coupleSlug.trim());
-  return `${base}/#manage/${cleanSlug}`;
+  const cleanId = encodeURIComponent((coupleIdOrSlug || '').trim());
+  return `${base}/#manage/${cleanId}`;
 }
 
 /**

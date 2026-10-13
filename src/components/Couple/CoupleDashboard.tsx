@@ -185,7 +185,7 @@ export const CoupleDashboard: React.FC<CoupleDashboardProps> = ({
 
   // Generate Personalized Invitation Link for a guest
   const getGuestInviteLink = (guestCode: string) => {
-    return getGuestInvitationUrl(couple.slug, guestCode);
+    return getGuestInvitationUrl(couple.id, guestCode);
   };
 
   // Generate Telegram / Social polite invite message
@@ -202,7 +202,7 @@ ${inviteLink}`;
   // Generate Direct 1-Click Telegram Share
   const handleDirectTelegramShare = (targetGuest?: Guest | null) => {
     const guestCode = targetGuest?.code || '';
-    const inviteLink = getGuestInvitationUrl(couple.slug, guestCode || undefined);
+    const inviteLink = getGuestInvitationUrl(couple.id, guestCode || undefined);
 
     const recipientName = targetGuest ? formatGuestDisplayName(targetGuest) : 'ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា';
     const programName = `អាពាហ៍ពិពាហ៍ (${couple.groomNameKh} & ${couple.brideNameKh})`;
@@ -449,7 +449,7 @@ ${inviteLink}`;
                 {/* Copy Master Public Link */}
                 <button
                   id="couple-copy-master-link"
-                  onClick={() => handleCopy(getGuestInvitationUrl(couple.slug), 'master_link')}
+                  onClick={() => handleCopy(getGuestInvitationUrl(couple.id), 'master_link')}
                   className="px-4 py-2.5 bg-[#FAF8F3] hover:bg-[#F3ECE0] border border-[#DFBA49]/40 text-[#8C6D1F] rounded-xl text-xs font-normal flex items-center gap-2 transition-all cursor-pointer"
                 >
                   {copiedKey === 'master_link' ? (
@@ -630,10 +630,10 @@ ${inviteLink}`;
 
                 <div className="mt-4 p-3 bg-black/30 rounded-xl border border-white/10 flex items-center justify-between gap-2">
                   <span className="text-xs text-slate-300 truncate font-mono">
-                    {getGuestInvitationUrl(couple.slug)}
+                    {getGuestInvitationUrl(couple.id)}
                   </span>
                   <button
-                    onClick={() => handleCopy(getGuestInvitationUrl(couple.slug), 'public_qr_link')}
+                    onClick={() => handleCopy(getGuestInvitationUrl(couple.id), 'public_qr_link')}
                     className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer shrink-0"
                     title="Copy Link"
                   >
@@ -651,7 +651,7 @@ ${inviteLink}`;
                     <span>{lang === 'km' ? 'ផ្ញើតាម Telegram ភ្លាមៗ' : 'Share to Telegram'}</span>
                   </button>
                   <button
-                    onClick={() => handleCopy(`យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍របស់យើងខ្ញុំ (${couple.groomNameKh} & ${couple.brideNameKh})។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖\n${getGuestInvitationUrl(couple.slug)}`, 'master_msg')}
+                    onClick={() => handleCopy(`យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍របស់យើងខ្ញុំ (${couple.groomNameKh} & ${couple.brideNameKh})។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖\n${getGuestInvitationUrl(couple.id)}`, 'master_msg')}
                     className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     title={lang === 'km' ? 'ចម្លងសារអញ្ជើញទូទៅ' : 'Copy Message'}
                   >
