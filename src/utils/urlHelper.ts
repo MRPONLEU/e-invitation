@@ -57,14 +57,16 @@ export function getAppBaseUrl(): string {
   const custom = getStoredCustomBaseUrl();
   if (custom) return custom;
 
+  // 2. Always adapt dynamically to the actual visited domain
   const currentOrigin = window.location.origin;
-
-  // 2. If running in sandbox or run.app, default to user's Vercel production domain
-  if (currentOrigin.includes('ais-dev-') || currentOrigin.includes('ais-pre-') || currentOrigin.includes('run.app')) {
-    return 'https://ponleu-e-invitation.vercel.app';
+  if (currentOrigin) {
+    if (currentOrigin.includes('ais-dev-')) {
+      return currentOrigin.replace('ais-dev-', 'ais-pre-');
+    }
+    return currentOrigin;
   }
 
-  return currentOrigin;
+  return 'https://ponleu-e-invitation.vercel.app';
 }
 
 /**
