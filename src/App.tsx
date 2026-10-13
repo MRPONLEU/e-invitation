@@ -365,12 +365,16 @@ export default function App() {
 
     // 1. Couple Management Route (#manage/slug or #edit/slug or #couple)
     if (cleanHash.startsWith('manage/') || cleanHash.startsWith('edit/') || cleanHash === 'couple') {
-      const slug = cleanHash.replace(/^(manage|edit)\//, '');
-      const found = slug !== 'couple' ? findCouple(slug) : undefined;
+      const slug = cleanHash === 'couple' ? '' : cleanHash.replace(/^(manage|edit)\//, '');
+      const found = slug ? findCouple(slug) : (currentCouples.length > 0 ? currentCouples[0] : undefined);
       if (found) {
         setSelectedCoupleId(found.id);
+        if (cleanHash === 'couple') {
+          window.location.hash = `#manage/${found.slug}`;
+        }
       } else if (currentCouples.length > 0) {
         setSelectedCoupleId(currentCouples[0].id);
+        window.location.hash = `#manage/${currentCouples[0].slug}`;
       }
       setActiveCoupleTab('overview');
       setCurrentView('couple');
