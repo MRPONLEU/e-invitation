@@ -102,6 +102,8 @@ interface GuestInvitationViewProps {
   setCouples: React.Dispatch<React.SetStateAction<CoupleEvent[]>>;
   lang: Language;
   onBackToAdmin?: () => void;
+  onBack?: () => void;
+  backButtonLabel?: string;
 }
 
 export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
@@ -110,7 +112,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   guestCode,
   setCouples,
   lang,
-  onBackToAdmin
+  onBackToAdmin,
+  onBack,
+  backButtonLabel
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSlideshowOpen, setIsSlideshowOpen] = useState(false);
@@ -541,6 +545,20 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
       } as React.CSSProperties}
     >
       
+      {/* Back to Admin / Couple Dashboard Button when previewing */}
+      {(onBack || onBackToAdmin) && (
+        <div className="absolute top-3 left-3 z-[60] animate-fade-in">
+          <button
+            onClick={onBack || onBackToAdmin}
+            title={backButtonLabel || 'ត្រឡប់ក្រោយ'}
+            className="flex items-center gap-1 bg-black/70 hover:bg-black/90 text-white px-2.5 py-1.5 rounded-full shadow-lg text-xs font-medium border border-[#D4AF37]/50 backdrop-blur-md transition-all transform hover:scale-105 active:scale-95"
+          >
+            <ChevronLeft className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>ថយក្រោយ</span>
+          </button>
+        </div>
+      )}
+
       {/* 2nd Transition after clicking open envelope (Video for Custom003, F0031 for Custom002, or ligt001.webp) */}
       {isLightOpening && (
         <div 
@@ -552,6 +570,18 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         >
           {isCustom003Theme ? (
             <video
+              ref={(el) => {
+                if (el) {
+                  el.muted = false;
+                  el.volume = 1.0;
+                  el.play().catch(() => {
+                    if (el) {
+                      el.muted = true;
+                      el.play().catch(() => {});
+                    }
+                  });
+                }
+              }}
               autoPlay
               playsInline
               src={formatVideoUrl(couple.customTheme?.transitionVideoUrl) || 'https://assets.mixkit.co/videos/preview/mixkit-burst-of-golden-particles-42789-large.mp4'}

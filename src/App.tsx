@@ -217,10 +217,11 @@ export default function App() {
 
   const [currentView, setCurrentView] = useState<'admin' | 'couple' | 'guest'>('admin');
   const [currentGuestCode, setCurrentGuestCode] = useState<string | undefined>(undefined);
-  const [activeCoupleTab, setActiveCoupleTab] = useState<'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes'>('overview');
+  const [activeCoupleTab, setActiveCoupleTab] = useState<'overview' | 'template' | 'settings' | 'guests' | 'wishes'>('overview');
   const [adminActiveSection, setAdminActiveSection] = useState<'overview' | 'templates' | 'couples' | 'footer' | 'music'>('overview');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [previewSource, setPreviewSource] = useState<'admin' | 'couple' | null>(null);
 
   // Keep a ref of couples to avoid triggering URL reset when couples state updates
   const couplesRef = React.useRef(couples);
@@ -385,10 +386,11 @@ export default function App() {
     setCurrentView('couple');
   };
 
-  const handlePreviewCouple = (coupleId: string, guestCode?: string) => {
+  const handlePreviewCouple = (coupleId: string, guestCode?: string, source: 'admin' | 'couple' = 'admin') => {
     requestAppFullscreen();
     setSelectedCoupleId(coupleId);
     setCurrentGuestCode(guestCode);
+    setPreviewSource(source);
     setCurrentView('guest');
   };
 
@@ -397,20 +399,7 @@ export default function App() {
     return (
       <div className="h-[100dvh] w-full overflow-hidden bg-black font-battambang selection:bg-[#D4AF37]/25 selection:text-[#8C6D1F] flex flex-col items-center justify-center p-0 relative">
         
-        {/* Subtle Back Button on Computer/Tablet (outside centered phone invitation) */}
-        <div className="hidden sm:flex absolute top-4 left-4 z-50 items-center gap-2">
-          <button
-            onClick={() => {
-              window.location.hash = '#couple';
-              setCurrentView('couple');
-              setActiveCoupleTab('overview');
-            }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white/80 hover:text-white text-xs font-battambang border border-white/15 transition-all shadow-md cursor-pointer"
-            title="ត្រឡប់ទៅផ្ទាំងគ្រប់គ្រង"
-          >
-            <span>← ត្រឡប់ក្រោយ</span>
-          </button>
-        </div>
+        {/* Guest View: Clean invitation with no back button */}
 
         {/* Responsive Fixed 9:16 Aspect Ratio Container: Dynamically fills screen height on desktops/tablets (100dvh) or width on phones (100vw) while strictly preserving 9:16 proportions */}
         <div 
@@ -430,11 +419,17 @@ export default function App() {
             guestCode={currentGuestCode}
             setCouples={setCouples}
             lang={lang}
-            onBackToAdmin={() => {
-              window.location.hash = '#admin';
-              setCurrentView('admin');
-              setAdminActiveSection('overview');
-            }}
+            onBack={previewSource ? () => {
+              if (previewSource === 'admin') {
+                window.location.hash = '#admin';
+                setCurrentView('admin');
+                setAdminActiveSection('overview');
+              } else {
+                setCurrentView('couple');
+              }
+              setPreviewSource(null);
+            } : undefined}
+            backButtonLabel={previewSource === 'admin' ? 'ត្រឡប់ទៅ Admin' : 'ត្រឡប់ទៅផ្ទាំងគូស្នេហ៍'}
           />
         </div>
       </div>
@@ -504,7 +499,7 @@ export default function App() {
                 musicTracks={musicTracks}
                 setMusicTracks={setMusicTracks}
                 onSelectCouple={handleSelectCoupleFromAdmin}
-                onPreviewCouple={(id) => handlePreviewCouple(id)}
+                onPreviewCouple={(id) => handlePreviewCouple(id, undefined, 'admin')}
                 lang={lang}
                 activeSection={adminActiveSection}
                 setActiveSection={setAdminActiveSection}
@@ -528,10 +523,14 @@ export default function App() {
                 setCouples={setCouples}
                 templates={templates}
                 musicTracks={musicTracks}
-                onPreviewGuest={(guestCode) => handlePreviewCouple(activeCouple.id, guestCode)}
+                onPreviewGuest={(guestCode) => handlePreviewCouple(activeCouple.id, guestCode, 'couple')}
                 lang={lang}
                 activeTab={activeCoupleTab}
                 onTabChange={setActiveCoupleTab}
+                onGoToAdmin={() => {
+                  setCurrentView('admin');
+                  setAdminActiveSection('overview');
+                }}
               />
             </CoupleLoginGate>
           )}

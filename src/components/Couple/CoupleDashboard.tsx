@@ -47,7 +47,6 @@ import {
   Settings
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { WeddingDetailsEditor } from './WeddingDetailsEditor';
 import { getGuestInvitationUrl, getAppBaseUrl } from '../../utils/urlHelper';
 import { ShareGuideModal } from '../ShareGuideModal';
 import { requestAppFullscreen } from '../../utils/fullscreen';
@@ -59,8 +58,8 @@ interface CoupleDashboardProps {
   musicTracks?: MusicTrack[];
   onPreviewGuest: (guestCode?: string) => void;
   lang: Language;
-  activeTab?: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes';
-  onTabChange?: (tab: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes') => void;
+  activeTab?: 'overview' | 'template' | 'settings' | 'guests' | 'wishes';
+  onTabChange?: (tab: 'overview' | 'template' | 'settings' | 'guests' | 'wishes') => void;
   onGoToAdmin?: () => void;
 }
 
@@ -75,9 +74,9 @@ export const CoupleDashboard: React.FC<CoupleDashboardProps> = ({
   onTabChange,
   onGoToAdmin,
 }) => {
-  const [internalTab, setInternalTab] = useState<'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes'>('overview');
+  const [internalTab, setInternalTab] = useState<'overview' | 'template' | 'settings' | 'guests' | 'wishes'>('overview');
   const activeTab = controlledTab ?? internalTab;
-  const setActiveTab = (tab: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes') => {
+  const setActiveTab = (tab: 'overview' | 'template' | 'settings' | 'guests' | 'wishes') => {
     setInternalTab(tab);
     if (onTabChange) {
       onTabChange(tab);
@@ -359,12 +358,13 @@ ${inviteLink}`;
         </div>
       )}
 
+
+
       {/* TOP NAVIGATION TABS ROW */}
       <div className="bg-white border border-[#EAE6E1] rounded-2xl p-2 shadow-2xs overflow-x-auto no-scrollbar font-battambang">
         <div className="flex items-center gap-1.5 min-w-max">
           {[
             { id: 'overview', labelKh: 'គ្រប់គ្រងទូទៅ', labelEn: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
-            { id: 'details', labelKh: 'ព័ត៌មានធៀបការ', labelEn: 'Wedding Details', icon: <BookOpen className="w-4 h-4" /> },
             { id: 'template', labelKh: 'ម៉ូតសំបុត្រ', labelEn: 'Template', icon: <Palette className="w-4 h-4" /> },
             { id: 'settings', labelKh: 'ការកំណត់ & បទភ្លេង', labelEn: 'Settings & Music', icon: <Settings className="w-4 h-4" /> },
             { id: 'guests', labelKh: 'បញ្ជីភ្ញៀវ', labelEn: 'Guest List', icon: <Users className="w-4 h-4" />, badge: totalGuests },
@@ -1175,20 +1175,7 @@ ${inviteLink}`;
         </div>
       )}
 
-      {/* TAB: ព័ត៌មានធៀបការ (WEDDING DETAILS EDITOR) */}
-      {activeTab === 'details' && (
-        <div className="space-y-6">
-          <WeddingDetailsEditor
-            couple={couple}
-            updateCouple={updateCouple}
-            lang={lang}
-            onPreviewGuest={() => {
-              requestAppFullscreen();
-              onPreviewGuest();
-            }}
-          />
-        </div>
-      )}
+
 
       {/* TAB: SETTINGS & MUSIC (ការកំណត់ & បទភ្លេង) */}
       {activeTab === 'settings' && (

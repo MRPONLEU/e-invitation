@@ -46,14 +46,16 @@ function videoProxyPlugin(): Plugin {
         if (proxyRes.statusCode && proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
           const redirectLocation = proxyRes.headers.location;
           https.get(redirectLocation, { headers }, (redirectRes) => {
-            res.writeHead(redirectRes.statusCode || 200, {
+            const status = redirectRes.statusCode || 200;
+            const resHeaders: Record<string, string> = {
               'Content-Type': redirectRes.headers['content-type'] || 'video/mp4',
-              'Content-Length': redirectRes.headers['content-length'] || '',
-              'Content-Range': redirectRes.headers['content-range'] || '',
               'Accept-Ranges': 'bytes',
               'Access-Control-Allow-Origin': '*',
-              'Cache-Control': 'public, max-age=86400',
-            });
+              'Cache-Control': 'public, max-age=31536000, immutable',
+            };
+            if (redirectRes.headers['content-length']) resHeaders['Content-Length'] = redirectRes.headers['content-length'];
+            if (redirectRes.headers['content-range']) resHeaders['Content-Range'] = redirectRes.headers['content-range'];
+            res.writeHead(status, resHeaders);
             redirectRes.pipe(res);
           }).on('error', () => {
             if (!res.headersSent) {
@@ -64,14 +66,16 @@ function videoProxyPlugin(): Plugin {
           return;
         }
 
-        res.writeHead(proxyRes.statusCode || 200, {
+        const status = proxyRes.statusCode || 200;
+        const resHeaders: Record<string, string> = {
           'Content-Type': proxyRes.headers['content-type'] || 'video/mp4',
-          'Content-Length': proxyRes.headers['content-length'] || '',
-          'Content-Range': proxyRes.headers['content-range'] || '',
           'Accept-Ranges': 'bytes',
           'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'public, max-age=86400',
-        });
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        };
+        if (proxyRes.headers['content-length']) resHeaders['Content-Length'] = proxyRes.headers['content-length'];
+        if (proxyRes.headers['content-range']) resHeaders['Content-Range'] = proxyRes.headers['content-range'];
+        res.writeHead(status, resHeaders);
         proxyRes.pipe(res);
       }).on('error', () => {
         if (!res.headersSent) {

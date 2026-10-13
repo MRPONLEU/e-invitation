@@ -36,11 +36,12 @@ export const TemplateNewCustom003: React.FC<TemplateNewCustom003Props> = ({
   // Browsers require initial autoplay to be muted; we unmute as soon as user interacts or toggles
   const [isMuted, setIsMuted] = useState<boolean>(true);
 
-  // Attempt to unmute video audio on user's first touch/click
+  // Attempt to unmute video audio on user's first touch/click/pointerdown
   useEffect(() => {
     const handleFirstInteraction = () => {
       if (videoRef.current) {
         videoRef.current.muted = false;
+        videoRef.current.volume = 1.0;
         videoRef.current.play().then(() => {
           setIsMuted(false);
         }).catch(() => {
@@ -51,27 +52,30 @@ export const TemplateNewCustom003: React.FC<TemplateNewCustom003Props> = ({
       }
     };
 
-    window.addEventListener('click', handleFirstInteraction, { once: true });
-    window.addEventListener('touchstart', handleFirstInteraction, { once: true });
+    window.addEventListener('click', handleFirstInteraction, { capture: true, once: true });
+    window.addEventListener('touchstart', handleFirstInteraction, { capture: true, once: true });
+    window.addEventListener('pointerdown', handleFirstInteraction, { capture: true, once: true });
 
     return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
+      window.removeEventListener('click', handleFirstInteraction, { capture: true });
+      window.removeEventListener('touchstart', handleFirstInteraction, { capture: true });
+      window.removeEventListener('pointerdown', handleFirstInteraction, { capture: true });
     };
   }, []);
 
-  // Pause Video 1 as soon as opening starts or card is opened so Video 1 and Video 2 never play together
+  // Pause Video 1 as soon as opening starts ONLY if a separate transition video (Video 2) exists
   useEffect(() => {
-    if ((isOpening || isOpen) && videoRef.current) {
+    if ((isOpening || isOpen) && videoRef.current && couple.customTheme?.transitionVideoUrl) {
       videoRef.current.pause();
     }
-  }, [isOpening, isOpen]);
+  }, [isOpening, isOpen, couple.customTheme?.transitionVideoUrl]);
 
   const toggleSound = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!videoRef.current) return;
     const nextMuted = !isMuted;
     videoRef.current.muted = nextMuted;
+    videoRef.current.volume = 1.0;
     if (!nextMuted) {
       videoRef.current.play().catch(() => {});
     }
@@ -80,7 +84,14 @@ export const TemplateNewCustom003: React.FC<TemplateNewCustom003Props> = ({
 
   const handleOpenClick = () => {
     if (videoRef.current) {
-      videoRef.current.pause();
+      if (couple.customTheme?.transitionVideoUrl) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.muted = false;
+        videoRef.current.volume = 1.0;
+        videoRef.current.play().catch(() => {});
+        setIsMuted(false);
+      }
     }
     onOpen();
   };

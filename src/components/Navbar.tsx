@@ -23,8 +23,8 @@ interface NavbarProps {
   lang: Language;
   setLang: (lang: Language) => void;
   onToggleMobileSidebar?: () => void;
-  activeCoupleTab?: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes';
-  setActiveCoupleTab?: (tab: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes') => void;
+  activeCoupleTab?: 'overview' | 'template' | 'settings' | 'guests' | 'wishes';
+  setActiveCoupleTab?: (tab: 'overview' | 'template' | 'settings' | 'guests' | 'wishes') => void;
   adminActiveSection?: 'overview' | 'templates' | 'couples' | 'footer' | 'music';
   setAdminActiveSection?: (section: 'overview' | 'templates' | 'couples' | 'footer' | 'music') => void;
   adminUser?: any;

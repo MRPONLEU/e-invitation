@@ -26,8 +26,8 @@ interface SidebarProps {
   couples: CoupleEvent[];
   selectedCoupleId: string;
   setSelectedCoupleId: (id: string) => void;
-  activeCoupleTab?: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes';
-  setActiveCoupleTab?: (tab: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes') => void;
+  activeCoupleTab?: 'overview' | 'template' | 'settings' | 'guests' | 'wishes';
+  setActiveCoupleTab?: (tab: 'overview' | 'template' | 'settings' | 'guests' | 'wishes') => void;
   adminActiveSection?: 'overview' | 'templates' | 'couples' | 'footer' | 'music';
   setAdminActiveSection?: (section: 'overview' | 'templates' | 'couples' | 'footer' | 'music') => void;
   lang: Language;
@@ -58,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const handleNavClick = (
     view: 'admin' | 'couple' | 'guest', 
     adminSection?: 'overview' | 'templates' | 'couples' | 'footer' | 'music', 
-    coupleTab?: 'overview' | 'details' | 'template' | 'settings' | 'guests' | 'wishes'
+    coupleTab?: 'overview' | 'template' | 'settings' | 'guests' | 'wishes'
   ) => {
     setCurrentView(view);
     if (view === 'admin') {
@@ -184,21 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <Sparkles className="w-3 h-3 text-amber-300 opacity-80" />
                 </button>
 
-                {/* 2. ព័ត៌មានធៀបការ (Details Editor) */}
-                <button
-                  id="sidebar-couple-tab-details"
-                  onClick={() => handleNavClick('couple', undefined, 'details')}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all ${
-                    activeCoupleTab === 'details'
-                      ? 'bg-[#FF1B6B] text-white shadow-md shadow-pink-900/30'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <BookOpen className={`w-4 h-4 ${activeCoupleTab === 'details' ? 'text-white' : 'text-[#FF1B6B]'}`} />
-                    <span>{lang === 'km' ? 'ព័ត៌មានធៀបការ' : 'Wedding Details'}</span>
-                  </div>
-                </button>
+
 
                 {/* 3. រចនាប័ទ្ម (Template) */}
                 <button
