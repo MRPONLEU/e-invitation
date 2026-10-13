@@ -296,6 +296,18 @@ export default function App() {
       const found = slug !== 'couple' ? findCouple(slug) : undefined;
       if (found) {
         setSelectedCoupleId(found.id);
+      } else if (slug && slug !== 'couple') {
+        const newCouple = {
+          ...(INITIAL_COUPLES[0] || {}),
+          id: `couple_${Date.now()}`,
+          slug: slug,
+          groomNameKh: 'ចាន់ សុភ័ក្រ',
+          groomNameEn: 'Chan Sopheak',
+          brideNameKh: 'ស៊ុន ស្រីនីត',
+          brideNameEn: 'Sun Sreynit',
+        } as CoupleEvent;
+        setCouples(prev => [...prev, newCouple]);
+        setSelectedCoupleId(newCouple.id);
       } else if (currentCouples.length > 0 && !selectedCoupleId) {
         setSelectedCoupleId(currentCouples[0].id);
       }
@@ -336,9 +348,19 @@ export default function App() {
         setCurrentView('guest');
         return;
       }
-      // Only fallback to first couple in guest view if explicit 'c' query parameter was provided
-      if (searchParams.get('c') && currentCouples.length > 0) {
-        setSelectedCoupleId(currentCouples[0].id);
+      // If couple slug is specified but not found, auto-create it so custom slugs work
+      if (coupleSlug) {
+        const newCouple = {
+          ...(INITIAL_COUPLES[0] || {}),
+          id: `couple_${Date.now()}`,
+          slug: coupleSlug,
+          groomNameKh: 'ចាន់ សុភ័ក្រ',
+          groomNameEn: 'Chan Sopheak',
+          brideNameKh: 'ស៊ុន ស្រីនីត',
+          brideNameEn: 'Sun Sreynit',
+        } as CoupleEvent;
+        setCouples(prev => [...prev, newCouple]);
+        setSelectedCoupleId(newCouple.id);
         setCurrentGuestCode(guestParam || undefined);
         setCurrentView('guest');
         return;
