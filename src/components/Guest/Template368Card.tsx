@@ -63,21 +63,21 @@ export const Template368Card: React.FC<Template368CardProps> = ({
         
         {/* 1. TOP HEADER: Clean Calligraphy Text without Frame Image */}
         <div className="pt-2 sm:pt-3 space-y-1 animate-smooth-fade-down delay-100">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[11px] font-normal bg-white/10 backdrop-blur-xs border-amber-300/30 text-amber-200">
-            <Sparkles className="w-3 h-3 text-[#FFE58F]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full border text-[11px] font-normal bg-white/10 backdrop-blur-xs border-emerald-300/30 text-emerald-200">
+            <Sparkles className="w-3 h-3 text-[#34D399]" />
             <span>សំបុត្រអញ្ជើញអាពាហ៍ពិពាហ៍ឌីជីថល</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-normal font-khmer-title text-[#FFE58F] tracking-wide pt-1">
+          <h2 className="text-2xl sm:text-3xl font-normal font-khmer-title text-[#34D399] tracking-wide pt-1">
             សិរីមង្គល អាពាហ៍ពិពាហ៍
           </h2>
           <div className="flex items-center justify-center gap-1.5 mt-0.5 animate-ornament-expand delay-200">
-            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#F3D372]"></span>
-            <span className="text-[#FFD700] text-[10px]">❖</span>
+            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#34D399]"></span>
+            <span className="text-[#34D399] text-[10px]">❖</span>
             <span className="text-[10px] sm:text-[11px] font-serif-luxury tracking-[0.22em] text-[#FFF8DC] uppercase font-bold">
               WEDDING INVITATION
             </span>
-            <span className="text-[#FFD700] text-[10px]">❖</span>
-            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#F3D372]"></span>
+            <span className="text-[#34D399] text-[10px]">❖</span>
+            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#34D399]"></span>
           </div>
         </div>
 
@@ -94,7 +94,7 @@ export const Template368Card: React.FC<Template368CardProps> = ({
 
             {/* GUEST NAME WITH fram002.png GOLD DIVIDER */}
             <div className="relative max-w-[340px] sm:max-w-[380px] mx-auto animate-smooth-fade-up delay-450 flex flex-col items-center justify-center pt-1">
-              <h3 className="relative z-10 text-base sm:text-lg md:text-xl font-normal text-[#FFE58F] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
+              <h3 className="relative z-10 text-base sm:text-lg md:text-xl font-normal text-[#34D399] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
                 {currentGuest ? `${currentGuest.titleKh} ${currentGuest.fullNameKh}` : 'លោក លៃ ពន្លឺ និងភរិយា'}
               </h3>
               <img
@@ -111,15 +111,15 @@ export const Template368Card: React.FC<Template368CardProps> = ({
               <button
                 id="open-template-368-btn"
                 onClick={onOpen}
-                className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#7E22CE] via-[#9333EA] to-[#6B21A8] text-white shadow-xl hover:shadow-purple-500/50 hover:scale-105 transition-all duration-300 border-2 border-[#D4AF37] ring-4 ring-purple-400/30 animate-golden-ripple"
+                className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#7E22CE] via-[#9333EA] to-[#6B21A8] text-white shadow-xl hover:shadow-purple-500/50 hover:scale-105 transition-all duration-300 border-2 border-[#10B981] ring-4 ring-purple-400/30 animate-golden-ripple"
               >
-                <div className="w-6 h-6 rounded-full bg-amber-300 text-purple-900 flex items-center justify-center shadow-xs">
+                <div className="w-6 h-6 rounded-full bg-emerald-300 text-purple-900 flex items-center justify-center shadow-xs">
                   <Play className="w-3.5 h-3.5 fill-purple-900 ml-0.5" />
                 </div>
-                <span className="text-xs sm:text-sm font-normal font-khmer-title tracking-wide text-amber-100">
+                <span className="text-xs sm:text-sm font-normal font-khmer-title tracking-wide text-emerald-100">
                   បើកសំបុត្រ
                 </span>
-                <Sparkles className="w-4 h-4 text-amber-200 animate-spin-slow" />
+                <Sparkles className="w-4 h-4 text-emerald-200 animate-spin-slow" />
               </button>
             </div>
           )}

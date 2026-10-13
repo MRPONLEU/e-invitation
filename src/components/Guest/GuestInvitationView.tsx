@@ -316,6 +316,36 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
     }
   }, [currentGuest]);
 
+  // Dynamic document title and Open Graph meta tags update based on current couple data
+  useEffect(() => {
+    if (couple) {
+      const title = `សំបុត្រអញ្ជើញអាពាហ៍ពិពាហ៍ - ${couple.groomNameKh} & ${couple.brideNameKh}`;
+      const desc = `សូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ចូលរួមពិធីអាពាហ៍ពិពាហ៍ ${couple.groomNameKh} & ${couple.brideNameKh} នៅ ${couple.venueNameKh}។ សូមអរគុណ!`;
+      const img = couple.coverPhoto || 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200&h=900&auto=format&fit=crop';
+
+      document.title = title;
+
+      const updateMeta = (property: string, content: string, isName = false) => {
+        const attr = isName ? 'name' : 'property';
+        let element = document.querySelector(`meta[${attr}="${property}"]`);
+        if (!element) {
+          element = document.createElement('meta');
+          element.setAttribute(attr, property);
+          document.head.appendChild(element);
+        }
+        element.setAttribute('content', content);
+      };
+
+      updateMeta('og:title', title);
+      updateMeta('og:description', desc);
+      updateMeta('og:image', img);
+      updateMeta('twitter:title', title, true);
+      updateMeta('twitter:description', desc, true);
+      updateMeta('twitter:image', img, true);
+      updateMeta('description', desc, true);
+    }
+  }, [couple]);
+
   // Current template
   const tpl = templates.find(t => t.id === couple.templateId) || templates[0];
   const isPurpleTheme = tpl.id === 'tpl_purple_02' || tpl.id === 'tpl_purple_368' || tpl.code === 'T368' || tpl.code === 'T02';
@@ -779,7 +809,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         <div onScroll={handleScroll} className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar scroll-smooth animate-zoom-out-05s animate-in fade-in duration-[2000ms]">
           
           {/* Section 1: Hero Section (Matching Exact Height of Visible Phone Viewport) */}
-          <div className="relative w-full h-full min-h-full flex flex-col justify-between p-5 sm:p-7 text-center text-white overflow-hidden select-none z-10 shrink-0">
+          <div className="relative w-full h-full min-h-full flex flex-col justify-between p-5 sm:p-7 pt-[16.67%] sm:pt-[18%] pb-[16.67%] sm:pb-[18%] text-center text-white overflow-hidden select-none z-10 shrink-0">
 
             {/* Ambient Floating Gold Dust Sparkles */}
             <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -791,16 +821,14 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
             {/* Top Header with Silky Smooth GPU Fade & Slide Animation - Animates after Photo 2 is shown */}
             {showHeroText ? (
-              <div className="relative z-10 pt-3 sm:pt-5 space-y-1.5 flex flex-col items-center animate-smooth-fade-down delay-100">
-                <img
-                  src={weddingTitleImage}
-                  alt="សិរីមង្គល អាពាហ៍ពិពាហ៍"
-                  className={`w-56 sm:w-68 h-auto object-contain mx-auto drop-shadow-2xl animate-smooth-fade-down delay-100 transform-gpu animate-golden-shimmer ${isPurpleTheme ? 'scale-90' : ''}`}
-                />
+              <div className="relative z-10 pt-3 sm:pt-5 space-y-2 flex flex-col items-center animate-smooth-fade-down delay-100">
+                <h1 className={`text-xl sm:text-2xl font-normal ${khmerTitleFont} text-[#FFD700] [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_0_15px_rgba(255,215,0,0.4)] tracking-wide text-center leading-relaxed`}>
+                  សិរីមង្គល<br />អាពាហ៍ពិពាហ៍
+                </h1>
                 <div className="flex items-center justify-center gap-2 mt-0.5 animate-ornament-expand delay-200">
                   <span className="h-[1px] w-6 sm:w-10 bg-gradient-to-r from-transparent to-[#F3D372]"></span>
                   <span className="text-[#FFD700] text-[10px] sm:text-xs">❖</span>
-                  <span className="text-[11px] sm:text-xs font-serif-luxury tracking-[0.25em] text-[#FFF8DC] uppercase font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.9)]">
+                  <span className="text-[10px] sm:text-xs font-serif-luxury tracking-[0.25em] text-[#FFF8DC] uppercase font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.9)]">
                     WEDDING INVITATION
                   </span>
                   <span className="text-[#FFD700] text-[10px] sm:text-xs">❖</span>
@@ -808,7 +836,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="h-24 sm:h-32" />
+              <div className="h-16 sm:h-24" />
             )}
 
             {/* Bottom Content: Couple Names, Date & Scroll Indicator with Staggered Pure-CSS GPU Smooth Reveal - Animates after Photo 2 is shown */}
@@ -816,16 +844,12 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
               <div className="relative z-10 space-y-4 pb-6 sm:pb-8">
                 {/* Bride & Groom Name Display */}
                 <div className="space-y-1">
-                  <div className={`text-base sm:text-lg md:text-xl font-normal ${khmerTitleFont} text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] leading-snug`}>
-                    <div className="animate-smooth-fade-up delay-200 transform-gpu">{couple.groomNameKh}</div>
-                    <div className="text-[#FFE58F] text-sm sm:text-base font-serif-luxury my-0.5 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] animate-smooth-fade-up delay-300 transform-gpu inline-block">
-                      &
-                    </div>
-                    <div className="animate-smooth-fade-up delay-450 transform-gpu">{couple.brideNameKh}</div>
+                  <div className={`text-xl sm:text-2xl md:text-3xl font-normal ${khmerTitleFont} text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] leading-snug animate-smooth-fade-up delay-200 transform-gpu`}>
+                    {couple.groomNameKh} & {couple.brideNameKh}
                   </div>
 
                   {/* English Names */}
-                  <div className="text-xs sm:text-sm font-normal text-amber-100/95 font-serif-luxury tracking-widest [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] animate-smooth-fade-up delay-600 transform-gpu">
+                  <div className="text-xs sm:text-sm font-normal text-white/95 font-serif-luxury tracking-widest [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] animate-smooth-fade-up delay-400 transform-gpu">
                     {couple.groomNameEn} & {couple.brideNameEn}
                   </div>
                 </div>
@@ -1227,8 +1251,8 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             {/* RSVP Form */}
             <div className="space-y-6 pt-10 text-center border-t border-[#D4AF37]/30 relative" id="rsvp-section">
 
-              <h3 className={`text-2xl font-normal ${khmerTitleFont} text-[#D4AF37]`}>
-                ការឆ្លើយតប និងសៀវភៅជូនពរ
+              <h3 className={`text-xl sm:text-2xl font-normal ${khmerTitleFont} text-[#D4AF37] leading-relaxed drop-shadow-sm`}>
+                ការឆ្លើយតប<br />និងសៀវភៅជូនពរ
               </h3>
               
               {rsvpSubmitted ? (

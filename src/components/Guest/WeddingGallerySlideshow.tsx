@@ -272,71 +272,62 @@ export const WeddingGallerySlideshow: React.FC<WeddingGallerySlideshowProps> = (
         />
       </div>
 
-      {/* ================= DEAD CENTER: F0034 FRAME WITH COUPLE NAMES (SHOWS FOR 10 SECONDS ONCE) ================= */}
+      {/* ================= DEAD CENTER: COUPLE NAMES WITHOUT GOLD FRAME (SHOWS FOR 10 SECONDS ONCE) ================= */}
       <AnimatePresence>
         {showF0034 && (
           <motion.div 
             key="f0034-overlay-10s"
-            initial={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.8, ease: 'easeInOut' }}
-            className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl sm:max-w-5xl md:max-w-6xl px-2 text-center flex flex-col items-center justify-center pointer-events-none"
+            className="absolute z-25 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-4 text-center flex flex-col items-center justify-center pointer-events-none"
           >
-            {/* Frame F0034 Enlarged Extra Big (w-[98%] max-w-[1100px]) */}
-            <div className="relative w-[98%] max-w-[680px] sm:max-w-[850px] md:max-w-[980px] lg:max-w-[1100px] aspect-[16/9] flex items-center justify-center">
-              <img 
-                src={frameF0034} 
-                alt="Gold Name Frame F0034" 
-                className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-[0_10px_32px_rgba(0,0,0,0.98)] z-0" 
-              />
-              {/* Inner Content Box (w-[58%] h-[55%]) with proportional name text inside */}
-              <div className="relative z-10 w-[58%] h-[55%] flex flex-col items-center justify-center text-center px-3 py-1 space-y-0.5 sm:space-y-1 overflow-hidden">
-                {/* Groom Name (Line 1 - Pure Gold Color) */}
-                <h2 className="w-full text-sm sm:text-lg md:text-xl lg:text-2xl font-normal font-khmer-title text-[#FFE58F] drop-shadow-[0_3px_10px_rgba(0,0,0,0.98)] tracking-wide truncate">
-                  {couple.groomNameKh}
-                </h2>
-                
-                {/* Aesthetic Gold Ampersand (&) */}
-                <span className="text-xs sm:text-sm md:text-base font-serif-luxury font-bold text-[#FFD700] drop-shadow-[0_1px_6px_rgba(0,0,0,0.95)] shrink-0 my-0">
-                  &amp;
-                </span>
+            <div className="relative z-10 w-full flex flex-col items-center justify-center text-center space-y-2">
+              {/* Khmer Names on a Single Line in White */}
+              <div className="text-xl sm:text-3xl md:text-4xl font-normal font-khmer-title text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] tracking-wide">
+                {couple.groomNameKh} &amp; {couple.brideNameKh}
+              </div>
 
-                {/* Bride Name (Line 2 - Pure Gold Color) */}
-                <h2 className="w-full text-sm sm:text-lg md:text-xl lg:text-2xl font-normal font-khmer-title text-[#FFE58F] drop-shadow-[0_3px_10px_rgba(0,0,0,0.98)] tracking-wide truncate">
-                  {couple.brideNameKh}
-                </h2>
+              {/* Latin Names Below */}
+              <div className="text-xs sm:text-sm md:text-base font-normal text-white/90 font-serif-luxury tracking-widest [text-shadow:0_1px_4px_rgba(0,0,0,0.7)] uppercase">
+                {couple.groomNameEn} &amp; {couple.brideNameEn}
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Bottom-Right "រំលង ›" (Skip ›) Text Link with Attractive Forward Nudge Motion */}
-      <motion.button
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ 
-          opacity: 1, 
-          x: [0, 6, 0],
-          scale: [1, 1.04, 1]
-        }}
-        transition={{ 
-          opacity: { duration: 0.5 },
-          x: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' },
-          scale: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
-        }}
-        onClick={handleProceedClick}
-        className="absolute z-30 bottom-5 right-5 sm:bottom-6 sm:right-6 pointer-events-auto bg-black/40 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none px-3 py-1.5 sm:p-1 rounded-full text-[#FFE58F] hover:text-white font-khmer-body text-xs sm:text-base font-medium tracking-wide drop-shadow-[0_2px_12px_rgba(255,229,143,0.8)] active:scale-95 transition-all cursor-pointer select-none flex items-center gap-1 border border-white/10 sm:border-none"
-      >
-        <span>{lang === 'km' ? 'រំលង' : 'Skip'}</span>
-        <motion.span
-          animate={{ x: [0, 5, 0] }}
-          transition={{ duration: 1.0, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-amber-300 font-bold text-base sm:text-lg"
-        >
-          ›
-        </motion.span>
-      </motion.button>
+      {/* Bottom-Right "រំលង ›" (Skip ›) Text Link - Appears only when slideshow completes one full cycle */}
+      <AnimatePresence>
+        {hasCompletedCycle && (
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ 
+              opacity: 1, 
+              x: [0, 6, 0],
+              scale: [1, 1.04, 1]
+            }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ 
+              opacity: { duration: 0.5 },
+              x: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' },
+              scale: { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }
+            }}
+            onClick={handleProceedClick}
+            className="absolute z-30 bottom-5 right-5 sm:bottom-6 sm:right-6 pointer-events-auto bg-black/40 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none px-3 py-1.5 sm:p-1 rounded-full text-[#FFE58F] hover:text-white font-khmer-body text-xs sm:text-base font-medium tracking-wide drop-shadow-[0_2px_12px_rgba(255,229,143,0.8)] active:scale-95 transition-all cursor-pointer select-none flex items-center gap-1 border border-white/10 sm:border-none"
+          >
+            <span>{lang === 'km' ? 'រំលង' : 'Skip'}</span>
+            <motion.span
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.0, repeat: Infinity, ease: 'easeInOut' }}
+              className="text-amber-300 font-bold text-base sm:text-lg"
+            >
+              ›
+            </motion.span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -59,7 +59,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
 
       {/* OVERLAY CONTENT - Smooth Opacity transition (1.0 to 0.0 over 5 seconds) */}
       <div 
-        className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-6 z-20 text-center pointer-events-none scale-100 ${
+        className={`absolute inset-0 flex flex-col justify-between p-4 sm:p-6 pt-[16.67%] sm:pt-[18%] pb-[16.67%] sm:pb-[18%] z-20 text-center pointer-events-none scale-100 ${
           isOpening ? 'animate-fade-out-5s' : 'opacity-100'
         }`}
       >
@@ -72,13 +72,13 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
             className="w-52 sm:w-60 h-auto object-contain mx-auto animate-golden-shimmer"
           />
           <div className="flex items-center justify-center gap-1.5 mt-0.5 animate-ornament-expand delay-200">
-            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#F3D372]"></span>
-            <span className="text-[#FFD700] text-[10px]">❖</span>
+            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#34D399]"></span>
+            <span className="text-[#34D399] text-[10px]">❖</span>
             <span className="text-[10px] sm:text-[11px] font-serif-luxury tracking-[0.22em] text-[#FFF8DC] uppercase font-bold">
               WEDDING INVITATION
             </span>
-            <span className="text-[#FFD700] text-[10px]">❖</span>
-            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#F3D372]"></span>
+            <span className="text-[#34D399] text-[10px]">❖</span>
+            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#34D399]"></span>
           </div>
         </div>
 
@@ -93,7 +93,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
 
             {/* Guest Name Plaque */}
             <div className="relative max-w-[340px] sm:max-w-[380px] mx-auto animate-smooth-fade-up delay-450 flex flex-col items-center justify-center pt-1">
-              <h3 className="relative z-10 text-base sm:text-lg md:text-xl font-normal text-[#FFE58F] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
+              <h3 className="relative z-10 text-base sm:text-lg md:text-xl font-normal text-[#34D399] font-khmer-title tracking-wide px-2 leading-none pb-0 truncate max-w-full translate-y-1 sm:translate-y-2">
                 {currentGuest ? `${currentGuest.titleKh} ${currentGuest.fullNameKh}` : 'លោក លៃ ពន្លឺ និងភរិយា'}
               </h3>
               <img
@@ -110,10 +110,10 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
               <button
                 id="open-template-custom-btn"
                 onClick={handleOpenClick}
-                className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#D4AF37] via-[#F3D372] to-[#B8962D] text-gray-900 shadow-xl hover:shadow-amber-500/50 hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-white ring-4 ring-amber-400/30 animate-golden-ripple cursor-pointer font-medium"
+                className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#047857] text-gray-900 shadow-xl hover:shadow-emerald-500/50 hover:scale-105 active:scale-95 transition-all duration-300 border-2 border-white ring-4 ring-emerald-400/30 animate-golden-ripple cursor-pointer font-medium"
               >
-                <div className="w-6 h-6 rounded-full bg-gray-900 text-amber-300 flex items-center justify-center shadow-xs">
-                  <Play className="w-3.5 h-3.5 fill-amber-300 ml-0.5" />
+                <div className="w-6 h-6 rounded-full bg-gray-900 text-emerald-300 flex items-center justify-center shadow-xs">
+                  <Play className="w-3.5 h-3.5 fill-emerald-300 ml-0.5" />
                 </div>
                 <span className={`text-xs sm:text-sm font-normal ${khmerTitleFont} tracking-wide text-gray-900`}>
                   ចូលមើលធៀបអញ្ជើញ
