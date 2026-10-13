@@ -369,17 +369,7 @@ export default function App() {
       const found = slug !== 'couple' ? findCouple(slug) : undefined;
       if (found) {
         setSelectedCoupleId(found.id);
-      } else if (slug && slug !== 'couple') {
-        const parsed = parseSlugToNames(slug);
-        const newCouple = {
-          ...(INITIAL_COUPLES[0] || {}),
-          id: `couple_${Date.now()}`,
-          slug: slug,
-          ...parsed,
-        } as CoupleEvent;
-        setCouples(prev => [...prev, newCouple]);
-        setSelectedCoupleId(newCouple.id);
-      } else if (currentCouples.length > 0 && !selectedCoupleId) {
+      } else if (currentCouples.length > 0) {
         setSelectedCoupleId(currentCouples[0].id);
       }
       setActiveCoupleTab('overview');
