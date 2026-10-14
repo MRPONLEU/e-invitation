@@ -48,7 +48,7 @@ export const Template01ClassicGold: React.FC<Template01ClassicGoldProps> = ({
 
       {/* 2. Monogram Emblem Badge */}
       <div className="flex justify-center my-0.5 animate-smooth-fade-up delay-200">
-        <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-full p-1.5 shadow-md border-2 border-[#D4AF37] flex items-center justify-center relative bg-gradient-to-br from-[#8B2323] via-[#A83232] to-[#681818] animate-golden-ripple">
+        <div style={{ backgroundColor: '#8B2323' }} className="w-16 h-16 sm:w-18 sm:h-18 rounded-full p-1.5 shadow-md border-2 border-[#D4AF37] flex items-center justify-center relative bg-gradient-to-br from-[#8B2323] via-[#A83232] to-[#681818] animate-golden-ripple">
           <div className="w-full h-full rounded-full border border-[#DFBA49]/60 flex flex-col items-center justify-center text-amber-100 font-khmer-title">
             <span className="text-xs sm:text-sm font-bold leading-none">
               {couple.groomNickKh?.substring(0, 1) || 'វ'}
@@ -101,7 +101,7 @@ export const Template01ClassicGold: React.FC<Template01ClassicGoldProps> = ({
             onClick={onOpen}
             className="group relative inline-flex flex-col items-center justify-center gap-1"
           >
-            <div className="w-13 h-13 rounded-full bg-gradient-to-tr from-[#8B2323] via-[#A83232] to-[#8B2323] text-amber-200 border-2 border-[#D4AF37] ring-4 ring-[#D4AF37]/30 shadow-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 animate-golden-ripple">
+            <div style={{ backgroundColor: '#8B2323' }} className="w-13 h-13 rounded-full bg-gradient-to-tr from-[#8B2323] via-[#A83232] to-[#8B2323] text-amber-200 border-2 border-[#D4AF37] ring-4 ring-[#D4AF37]/30 shadow-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 animate-golden-ripple">
               <Play className="w-5 h-5 fill-amber-200 ml-0.5" />
             </div>
             <span className={`text-xs font-normal ${khmerTitleFont} text-[#8B3A3A] group-hover:text-red-700 transition-colors`}>

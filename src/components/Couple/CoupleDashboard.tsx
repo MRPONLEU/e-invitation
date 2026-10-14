@@ -443,63 +443,7 @@ ${inviteLink}`;
                 </div>
               </div>
 
-              {/* Quick Action Bento Buttons */}
-              <div className="flex flex-wrap items-center gap-3">
-                
-                {/* Copy Master Public Link */}
-                <button
-                  id="couple-copy-master-link"
-                  onClick={() => handleCopy(getGuestInvitationUrl(couple.id), 'master_link')}
-                  className="px-4 py-2.5 bg-[#FAF8F3] hover:bg-[#F3ECE0] border border-[#DFBA49]/40 text-[#8C6D1F] rounded-xl text-xs font-normal flex items-center gap-2 transition-all cursor-pointer"
-                >
-                  {copiedKey === 'master_link' ? (
-                    <>
-                      <Check className="w-4 h-4 text-emerald-600" />
-                      <span>{lang === 'km' ? 'បានចម្លង Link រួច!' : 'Copied Link!'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4 text-[#D4AF37]" />
-                      <span>{lang === 'km' ? 'Copy Link មេ' : 'Copy Main Link'}</span>
-                    </>
-                  )}
-                </button>
 
-                {/* Public Link Guide Modal Trigger */}
-                <button
-                  onClick={() => setShowShareGuide(true)}
-                  className="px-3.5 py-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-[#8C6D1F] rounded-xl text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer"
-                  title={lang === 'km' ? 'របៀបបង្កើត Link សាធារណៈ ជៀសវាង Error 403' : 'Public Link Guide'}
-                >
-                  <Globe className="w-4 h-4 text-[#D4AF37]" />
-                  <span>{lang === 'km' ? 'Link សាធារណៈ' : 'Public Link Guide'}</span>
-                </button>
-
-                {/* Go To Admin Portal */}
-                {onGoToAdmin && (
-                  <button
-                    onClick={onGoToAdmin}
-                    className="px-3.5 py-2.5 bg-slate-900 hover:bg-black text-amber-300 border border-amber-400/40 rounded-xl text-xs font-normal flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-                    title={lang === 'km' ? 'ទៅកាន់ផ្ទាំងគ្រប់គ្រង Admin' : 'Admin Portal'}
-                  >
-                    <ShieldCheck className="w-4 h-4 text-amber-400" />
-                    <span>{lang === 'km' ? 'ផ្ទាំង Admin' : 'Admin Portal'}</span>
-                  </button>
-                )}
-
-                {/* Live Preview Button */}
-                <button
-                  id="couple-preview-live-btn"
-                  onClick={() => {
-                    requestAppFullscreen();
-                    onPreviewGuest();
-                  }}
-                  className="px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#B8962D] text-white rounded-xl text-xs font-normal hover:brightness-110 shadow-sm flex items-center gap-2 transition-transform active:scale-95 cursor-pointer"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span>{lang === 'km' ? 'មើលធៀប (Full Screen)' : 'Preview e-Theap'}</span>
-                </button>
-              </div>
 
             </div>
 

@@ -1287,7 +1287,16 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   <div>
                     <textarea rows={3} value={rsvpMessage} onChange={(e) => setRsvpMessage(e.target.value)} placeholder="ពាក្យជូនពរ..." className="w-full px-4 py-3.5 text-sm bg-black/30 border border-[#D4AF37]/40 rounded-xl focus:border-[#D4AF37] focus:outline-none text-white/95 placeholder-gray-600 font-battambang backdrop-blur-sm" />
                   </div>
-                  <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-[#D4AF37] to-[#C59B27] text-white rounded-xl text-sm font-bold shadow-lg hover:brightness-110 flex items-center justify-center gap-2 transition-transform active:scale-95 font-battambang mt-2">
+                  <button
+                    type="submit"
+                    style={{
+                      backgroundColor: '#D4AF37',
+                      backgroundImage: 'linear-gradient(to right, #D4AF37, #C59B27)',
+                      color: '#ffffff',
+                      WebkitAppearance: 'none'
+                    }}
+                    className="w-full py-3.5 bg-[#D4AF37] bg-gradient-to-r from-[#D4AF37] to-[#C59B27] text-white rounded-xl text-sm font-bold shadow-lg hover:brightness-110 flex items-center justify-center gap-2 transition-transform active:scale-95 font-battambang mt-2 cursor-pointer"
+                  >
                     <Send className="w-4 h-4" /> ផ្ញើការឆ្លើយតប
                   </button>
                 </form>

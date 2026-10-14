@@ -57,23 +57,54 @@
   font-family: 'Cinzel', serif;
 }
 
-/* Gold Gradient utilities */
+/* Gold Gradient utilities with guaranteed solid fallback */
 .bg-gold-gradient {
-  background: linear-gradient(135deg, #DFBA49 0%, #C89F2A 50%, #A8811A 100%);
+  background-color: #DFBA49;
+  background-image: linear-gradient(135deg, #DFBA49 0%, #C89F2A 50%, #A8811A 100%);
 }
 
 .bg-gold-subtle {
-  background: linear-gradient(135deg, #FCF8EE 0%, #F8F1DE 100%);
+  background-color: #FCF8EE;
+  background-image: linear-gradient(135deg, #FCF8EE 0%, #F8F1DE 100%);
 }
 
 .text-gold-gradient {
   background: linear-gradient(135deg, #B58A1E 0%, #8A6407 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: #B58A1E;
 }
 
 .border-gold-gradient {
   border-image: linear-gradient(to right, #DFBA49, #F5D77F, #A8811A) 1;
+  border-color: #DFBA49;
+}
+
+/* iOS Safari & WebKit Compatibility Fixes */
+button, input, select, textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure buttons with gradients never render transparent/white on iOS Safari */
+button[class*="from-[#D4AF37]"],
+button[class*="from-amber-"],
+.bg-gradient-to-r[class*="from-[#D4AF37]"],
+.bg-gradient-to-br[class*="from-[#D4AF37]"] {
+  background-color: #D4AF37 !important;
+}
+
+.bg-gradient-to-tr[class*="from-[#8B2323]"],
+.bg-gradient-to-br[class*="from-[#8B2323]"] {
+  background-color: #8B2323 !important;
+}
+
+/* Ensure ornament hairline dividers render solidly on iOS Safari */
+span[class*="h-px"],
+span[class*="h-[1px]"] {
+  background-color: #D4AF37;
 }
 
 @keyframes zoom0To100 {
