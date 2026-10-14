@@ -23,6 +23,10 @@ const STORAGE_TEMPLATES_KEY = 'e_invitation_templates_v4';
 const STORAGE_COUPLES_KEY = 'e_invitation_couples_v4';
 const STORAGE_MUSIC_KEY = 'e_invitation_music_v1';
 const STORAGE_LANG_KEY = 'e_invitation_lang_v1';
+const STORAGE_VIEW_KEY = 'e_invitation_current_view_v2';
+const STORAGE_SELECTED_COUPLE_KEY = 'e_invitation_selected_couple_id_v2';
+const STORAGE_COUPLE_TAB_KEY = 'e_invitation_couple_tab_v2';
+const STORAGE_ADMIN_SECTION_KEY = 'e_invitation_admin_section_v2';
 
 import { requestAppFullscreen } from './utils/fullscreen';
 
@@ -246,13 +250,51 @@ export default function App() {
   const couples = _couples.length ? _couples : INITIAL_COUPLES;
 
   const [selectedCoupleId, setSelectedCoupleId] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_SELECTED_COUPLE_KEY);
+      if (saved) return saved;
+    } catch {}
     return couples[0]?.id || 'couple_368';
   });
 
-  const [currentView, setCurrentView] = useState<'admin' | 'couple' | 'guest'>('admin');
+  const [currentView, setCurrentView] = useState<'admin' | 'couple' | 'guest'>(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('c') || searchParams.get('guest') || window.location.pathname.startsWith('/c/')) {
+      return 'guest';
+    }
+    const hash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+    if (hash.startsWith('manage') || hash.startsWith('edit') || hash.startsWith('couple')) {
+      return 'couple';
+    }
+    if (hash.startsWith('admin')) {
+      return 'admin';
+    }
+    try {
+      const saved = localStorage.getItem(STORAGE_VIEW_KEY);
+      if (saved === 'couple' || saved === 'admin') return saved;
+    } catch {}
+    return 'couple';
+  });
+
   const [currentGuestCode, setCurrentGuestCode] = useState<string | undefined>(undefined);
-  const [activeCoupleTab, setActiveCoupleTab] = useState<'overview' | 'template' | 'settings' | 'guests' | 'wishes'>('overview');
-  const [adminActiveSection, setAdminActiveSection] = useState<'overview' | 'templates' | 'couples' | 'footer' | 'music'>('overview');
+  const [activeCoupleTab, setActiveCoupleTab] = useState<'overview' | 'template' | 'settings' | 'guests' | 'wishes'>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_COUPLE_TAB_KEY);
+      if (saved && ['overview', 'template', 'settings', 'guests', 'wishes'].includes(saved)) {
+        return saved as any;
+      }
+    } catch {}
+    return 'overview';
+  });
+  const [adminActiveSection, setAdminActiveSection] = useState<'overview' | 'templates' | 'couples' | 'footer' | 'music'>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_ADMIN_SECTION_KEY);
+      if (saved && ['overview', 'templates', 'couples', 'footer', 'music'].includes(saved)) {
+        return saved as any;
+      }
+    } catch {}
+    return 'overview';
+  });
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [previewSource, setPreviewSource] = useState<'admin' | 'couple' | null>(null);
@@ -262,6 +304,33 @@ export default function App() {
   useEffect(() => {
     couplesRef.current = couples;
   }, [couples]);
+
+  // Persist navigation states to localStorage so page refresh never loses the active view or couple
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_VIEW_KEY, currentView);
+    } catch {}
+  }, [currentView]);
+
+  useEffect(() => {
+    try {
+      if (selectedCoupleId) {
+        localStorage.setItem(STORAGE_SELECTED_COUPLE_KEY, selectedCoupleId);
+      }
+    } catch {}
+  }, [selectedCoupleId]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_COUPLE_TAB_KEY, activeCoupleTab);
+    } catch {}
+  }, [activeCoupleTab]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_ADMIN_SECTION_KEY, adminActiveSection);
+    } catch {}
+  }, [adminActiveSection]);
 
   const [lang, setLang] = useState<Language>(() => {
     try {
@@ -331,174 +400,128 @@ export default function App() {
       });
     };
 
-    // CRITICAL: On initial app load/open: If NOT an incoming guest invitation link (?c=... or ?guest=...),
-    // ALWAYS open the Admin page directly! Even if there was a stale #manage in the browser URL!
-    if (isInitialMount && !coupleSlug && !guestParam) {
-      if (window.location.hash !== '#admin') {
-        window.location.hash = '#admin';
-      }
-      setCurrentView('admin');
-      setAdminActiveSection('overview');
-      return;
-    }
-
-    // 0. Default when empty OR explicit Admin route (#admin, #admin-templates, #admin-couples, etc.)
-    if (!cleanHash || cleanHash === 'admin' || cleanHash.startsWith('admin-') || cleanHash.startsWith('admin/')) {
-      if (!cleanHash && (coupleSlug || guestParam || viewParam === 'couple')) {
-        // Fall through to couple or guest handling if explicit query params provided
-      } else {
-        setCurrentView('admin');
-        if (cleanHash === 'admin-templates' || cleanHash === 'admin/templates') {
-          setAdminActiveSection('templates');
-        } else if (cleanHash === 'admin-couples' || cleanHash === 'admin/couples') {
-          setAdminActiveSection('couples');
-        } else if (cleanHash === 'admin-music' || cleanHash === 'admin/music') {
-          setAdminActiveSection('music');
-        } else if (cleanHash === 'admin-footer' || cleanHash === 'admin/footer') {
-          setAdminActiveSection('footer');
-        } else {
-          setAdminActiveSection('overview');
+    // 1. GUEST INVITATION LINK (query param ?c=... or ?guest=... or pathname /c/...)
+    if (coupleSlug || guestParam) {
+      if (coupleSlug) {
+        const found = findCouple(coupleSlug);
+        if (found) {
+          setSelectedCoupleId(found.id);
+          setCurrentGuestCode(guestParam || undefined);
+          setCurrentView('guest');
+          return;
         }
-        return;
-      }
-    }
-
-    // Helper to parse names from slug
-    const parseSlugToNames = (slugStr: string) => {
-      const clean = slugStr.replace(/[-_]/g, ' ').trim();
-      const words = clean.split(/\s+/).filter(Boolean);
-      const titleWords = words.map(w => w.charAt(0).toUpperCase() + w.slice(1));
-      
-      if (words.length >= 4) {
-        const half = Math.floor(words.length / 2);
-        const groomEn = titleWords.slice(0, half).join(' ');
-        const brideEn = titleWords.slice(half).join(' ');
-        return {
-          groomNameEn: groomEn,
-          groomNameKh: groomEn,
-          brideNameEn: brideEn,
-          brideNameKh: brideEn,
-          groomNickKh: words[half - 1] ? words[half - 1].charAt(0).toUpperCase() + words[half - 1].slice(1) : 'Groom',
-          brideNickKh: words[words.length - 1] ? words[words.length - 1].charAt(0).toUpperCase() + words[words.length - 1].slice(1) : 'Bride'
-        };
-      } else if (words.length === 2) {
-        return {
-          groomNameEn: titleWords[0],
-          groomNameKh: titleWords[0],
-          brideNameEn: titleWords[1],
-          brideNameKh: titleWords[1],
-          groomNickKh: titleWords[0],
-          brideNickKh: titleWords[1]
-        };
-      } else if (words.length === 3) {
-        return {
-          groomNameEn: titleWords[0],
-          groomNameKh: titleWords[0],
-          brideNameEn: titleWords.slice(1).join(' '),
-          brideNameKh: titleWords.slice(1).join(' '),
-          groomNickKh: titleWords[0],
-          brideNickKh: titleWords[2]
-        };
-      } else {
-        return {
-          groomNameEn: titleWords.join(' ') || 'Groom',
-          groomNameKh: titleWords.join(' ') || 'កូនកម្លោះ',
-          brideNameEn: 'Bride',
-          brideNameKh: 'កូនក្រមុំ',
-          groomNickKh: titleWords[0] || 'កម្លោះ',
-          brideNickKh: 'ក្រមុំ'
-        };
-      }
-    };
-
-    // 1. Couple Management Route (#manage/id or #edit/id or #manage/slug or #couple)
-    if (cleanHash.startsWith('manage/') || cleanHash.startsWith('edit/') || cleanHash === 'couple') {
-      const identifier = cleanHash === 'couple' ? '' : cleanHash.replace(/^(manage|edit)\//, '');
-      const found = identifier ? findCouple(identifier) : undefined;
-      if (found) {
-        setSelectedCoupleId(found.id);
-        if (cleanHash === 'couple') {
-          window.location.hash = `#manage/${found.id}`;
+        if (currentCouples.length > 0) {
+          setSelectedCoupleId(currentCouples[0].id);
+          setCurrentGuestCode(guestParam || undefined);
+          setCurrentView('guest');
+          return;
         }
-      } else if (!identifier && currentCouples.length > 0) {
-        // Only if literally no identifier was provided at all (#couple)
-        setSelectedCoupleId(currentCouples[0].id);
-        window.location.hash = `#manage/${currentCouples[0].id}`;
-      } else if (currentCouples.length > 0 && !selectedCoupleId) {
-        // If identifier was provided but data is still syncing, don't overwrite window.location.hash
-        setSelectedCoupleId(currentCouples[0].id);
-      }
-      setActiveCoupleTab('overview');
-      setCurrentView('couple');
-      return;
-    } else if (editParam) {
-      const found = findCouple(editParam);
-      if (found) {
-        setSelectedCoupleId(found.id);
-      } else if (currentCouples.length > 0 && !selectedCoupleId) {
-        setSelectedCoupleId(currentCouples[0].id);
-      }
-      setActiveCoupleTab('overview');
-      setCurrentView('couple');
-      return;
-    }
-
-    // 2. Guest Invitation link (#slug) - DO NOT auto-create new couples here!
-    if (cleanHash && !cleanHash.startsWith('admin') && !cleanHash.startsWith('manage') && cleanHash !== 'couple') {
-      if (cleanHash.includes('?')) {
-        const parts = cleanHash.split('?');
-        coupleSlug = parts[0];
-        const hashParams = new URLSearchParams(parts[1]);
-        if (!guestParam && hashParams.get('guest')) {
-          guestParam = hashParams.get('guest');
-        }
-      } else {
-        coupleSlug = cleanHash;
-      }
-    }
-
-    if (coupleSlug) {
-      const found = findCouple(coupleSlug);
-      if (found) {
-        setSelectedCoupleId(found.id);
-        setCurrentGuestCode(guestParam || undefined);
+      } else if (guestParam) {
+        setCurrentGuestCode(guestParam);
         setCurrentView('guest');
         return;
       }
-      // If couple slug not found for guest view, use default couple instead of auto-creating
-      if (currentCouples.length > 0) {
-        setSelectedCoupleId(currentCouples[0].id);
-        setCurrentGuestCode(guestParam || undefined);
-        setCurrentView('guest');
-        return;
+    }
+
+    // 2. GUEST ROUTE via hash (#guest?id=...&g=...)
+    if (cleanHash.startsWith('guest')) {
+      const qIndex = cleanHash.indexOf('?');
+      if (qIndex !== -1) {
+        const hashParams = new URLSearchParams(cleanHash.slice(qIndex + 1));
+        const hashC = hashParams.get('id') || hashParams.get('c');
+        const hashG = hashParams.get('g') || hashParams.get('guest');
+        if (hashC) {
+          const found = findCouple(hashC);
+          if (found) setSelectedCoupleId(found.id);
+        }
+        if (hashG) setCurrentGuestCode(hashG);
       }
-    } else if (guestParam) {
-      setCurrentGuestCode(guestParam);
       setCurrentView('guest');
       return;
     }
 
-    if (viewParam === 'couple') {
-      setCurrentView('couple');
-      return;
-    } else if (viewParam === 'admin') {
+    // 3. COUPLE MANAGEMENT ROUTE (#manage/... or #edit/... or #couple or ?edit=... or ?view=couple)
+    if (cleanHash.startsWith('manage') || cleanHash.startsWith('edit') || cleanHash === 'couple' || editParam || viewParam === 'couple') {
+      let identifier = '';
+      let subTab: 'overview' | 'template' | 'settings' | 'guests' | 'wishes' | undefined;
+      
+      if (cleanHash.startsWith('manage/') || cleanHash.startsWith('edit/')) {
+        const parts = cleanHash.replace(/^(manage|edit)\//, '').split('/');
+        identifier = parts[0] || '';
+        if (parts[1] && ['overview', 'template', 'settings', 'guests', 'wishes'].includes(parts[1])) {
+          subTab = parts[1] as any;
+        }
+      } else if (cleanHash === 'couple' || cleanHash === 'manage' || cleanHash === 'edit') {
+        identifier = '';
+      } else if (editParam) {
+        identifier = editParam;
+      }
+
+      const found = identifier ? findCouple(identifier) : undefined;
+      if (found) {
+        setSelectedCoupleId(found.id);
+        if (subTab) setActiveCoupleTab(subTab);
+        setCurrentView('couple');
+        return;
+      } else if (!identifier) {
+        // If no identifier specified in hash, use currently selected couple or saved in storage
+        const savedCoupleId = localStorage.getItem(STORAGE_SELECTED_COUPLE_KEY);
+        const targetId = (savedCoupleId && findCouple(savedCoupleId)?.id) || selectedCoupleId || (currentCouples[0]?.id || 'couple_368');
+        setSelectedCoupleId(targetId);
+        if (subTab) setActiveCoupleTab(subTab);
+        setCurrentView('couple');
+        return;
+      } else if (currentCouples.length > 0) {
+        setSelectedCoupleId(currentCouples[0].id);
+        if (subTab) setActiveCoupleTab(subTab);
+        setCurrentView('couple');
+        return;
+      }
+    }
+
+    // 4. ADMIN ROUTE (#admin, #admin-templates, #admin-couples, etc. or ?view=admin)
+    if (cleanHash.startsWith('admin') || viewParam === 'admin') {
       setCurrentView('admin');
+      if (cleanHash === 'admin-templates' || cleanHash === 'admin/templates') {
+        setAdminActiveSection('templates');
+      } else if (cleanHash === 'admin-couples' || cleanHash === 'admin/couples') {
+        setAdminActiveSection('couples');
+      } else if (cleanHash === 'admin-music' || cleanHash === 'admin/music') {
+        setAdminActiveSection('music');
+      } else if (cleanHash === 'admin-footer' || cleanHash === 'admin/footer') {
+        setAdminActiveSection('footer');
+      } else {
+        setAdminActiveSection('overview');
+      }
       return;
     }
 
-    // 3. Fallback: default to admin view if no couple/guest route is requested
-    if (!cleanHash && !coupleSlug && !guestParam && viewParam !== 'couple') {
-      setCurrentView('admin');
-    } else if (isInitialMount && !coupleSlug && !guestParam && viewParam !== 'couple') {
-      setCurrentView('admin');
+    // 5. NO HASH AND NO SEARCH PARAMETERS (e.g. user refreshed on root URL or loaded app)
+    // Check localStorage to preserve user's last active workspace!
+    try {
+      const savedView = localStorage.getItem(STORAGE_VIEW_KEY);
+      if (savedView === 'couple') {
+        const savedCoupleId = localStorage.getItem(STORAGE_SELECTED_COUPLE_KEY);
+        const matched = savedCoupleId ? findCouple(savedCoupleId) : undefined;
+        const targetCoupleId = matched?.id || selectedCoupleId || (currentCouples[0]?.id || 'couple_368');
+        const savedTab = (localStorage.getItem(STORAGE_COUPLE_TAB_KEY) as any) || 'overview';
+        setSelectedCoupleId(targetCoupleId);
+        setActiveCoupleTab(savedTab);
+        setCurrentView('couple');
+        window.location.hash = `#manage/${targetCoupleId}/${savedTab}`;
+        return;
+      }
+    } catch {}
+
+    // Default fallback if no saved state: open Admin
+    setCurrentView('admin');
+    setAdminActiveSection('overview');
+    if (!window.location.hash) {
+      window.location.hash = '#admin';
     }
   }, [selectedCoupleId]);
 
   useEffect(() => {
-    // When first opened with no hash or query, automatically route to #admin
-    if (!window.location.hash && !window.location.search) {
-      window.location.hash = '#admin';
-    }
     parseUrl(true);
     const onHashChange = () => parseUrl(false);
     window.addEventListener('hashchange', onHashChange);
@@ -518,6 +541,7 @@ export default function App() {
   const handleSelectCoupleFromAdmin = (coupleId: string) => {
     setSelectedCoupleId(coupleId);
     setActiveCoupleTab('overview');
+    window.location.hash = `#manage/${coupleId}/overview`;
     setCurrentView('couple');
   };
 
@@ -583,6 +607,10 @@ export default function App() {
         setCurrentView={(v) => {
           if (v === 'guest') {
             setPreviewSource(currentView === 'admin' ? 'admin' : 'couple');
+          } else if (v === 'admin') {
+            window.location.hash = '#admin';
+          } else if (v === 'couple') {
+            window.location.hash = `#manage/${activeCouple.id}/${activeCoupleTab || 'overview'}`;
           }
           setCurrentView(v);
           if (v !== 'guest') {
@@ -612,6 +640,10 @@ export default function App() {
           setCurrentView={(v) => {
             if (v === 'guest') {
               setPreviewSource(currentView === 'admin' ? 'admin' : 'couple');
+            } else if (v === 'admin') {
+              window.location.hash = '#admin';
+            } else if (v === 'couple') {
+              window.location.hash = `#manage/${activeCouple.id}/${activeCoupleTab || 'overview'}`;
             }
             setCurrentView(v);
             if (v !== 'guest') {
@@ -652,6 +684,7 @@ export default function App() {
               <AdminLoginGate
                 onSuccess={(user) => setAdminUser(user)}
                 onCancel={() => {
+                  window.location.hash = `#manage/${activeCouple.id}/overview`;
                   setCurrentView('couple');
                   setActiveCoupleTab('overview');
                 }}
@@ -670,8 +703,12 @@ export default function App() {
                 onPreviewGuest={(guestCode) => handlePreviewCouple(activeCouple.id, guestCode, 'couple')}
                 lang={lang}
                 activeTab={activeCoupleTab}
-                onTabChange={setActiveCoupleTab}
+                onTabChange={(tab) => {
+                  setActiveCoupleTab(tab);
+                  window.location.hash = `#manage/${activeCouple.id}/${tab}`;
+                }}
                 onGoToAdmin={() => {
+                  window.location.hash = '#admin';
                   setCurrentView('admin');
                   setAdminActiveSection('overview');
                 }}

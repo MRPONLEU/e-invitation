@@ -89,6 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleSelectCouple = (coupleId: string) => {
     setSelectedCoupleId(coupleId);
+    window.location.hash = `#manage/${coupleId}/overview`;
     setCurrentView('couple');
     if (setActiveCoupleTab) setActiveCoupleTab('overview');
     setIsSearchOpen(false);

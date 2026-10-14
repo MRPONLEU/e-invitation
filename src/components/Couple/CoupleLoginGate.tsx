@@ -12,7 +12,7 @@ export function CoupleLoginGate({ children, lang, couple }: CoupleLoginGateProps
   const sessionKey = `couple_auth_${couple.id}`;
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try {
-      return sessionStorage.getItem(sessionKey) === 'true';
+      return sessionStorage.getItem(sessionKey) === 'true' || localStorage.getItem(sessionKey) === 'true';
     } catch {
       return false;
     }
@@ -28,7 +28,7 @@ export function CoupleLoginGate({ children, lang, couple }: CoupleLoginGateProps
   useEffect(() => {
     // Check session for this specific couple
     try {
-      const storedAuth = sessionStorage.getItem(sessionKey) === 'true';
+      const storedAuth = sessionStorage.getItem(sessionKey) === 'true' || localStorage.getItem(sessionKey) === 'true';
       setIsAuthenticated(storedAuth);
     } catch {
       setIsAuthenticated(false);
@@ -56,6 +56,7 @@ export function CoupleLoginGate({ children, lang, couple }: CoupleLoginGateProps
     if (isUsernameMatch && isPasswordMatch) {
       try {
         sessionStorage.setItem(sessionKey, 'true');
+        localStorage.setItem(sessionKey, 'true');
       } catch (err) {
         console.warn('Could not save session', err);
       }
