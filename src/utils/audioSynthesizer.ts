@@ -37,6 +37,8 @@ class AudioSynthesizer {
   private noteIndex: number = 0;
   private audioElement: HTMLAudioElement | null = null;
   private activeUrl: string | null = null;
+  private playlist: string[] = [];
+  private currentTrackIndex: number = 0;
 
   // Romantic Pentatonic/Khmer scale melody notes (frequencies in Hz)
   private melodyNotes = [

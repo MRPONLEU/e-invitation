@@ -101,6 +101,12 @@ button[class*="from-amber-"],
   background-color: #8B2323 !important;
 }
 
+/* Ensure App Logo and pink elements never lose fill on iOS Safari */
+[class*="from-[#FF0055]"],
+[class*="from-[#FF1B6B]"] {
+  background-color: #FF1B6B !important;
+}
+
 /* Ensure ornament hairline dividers render solidly on iOS Safari */
 span[class*="h-px"],
 span[class*="h-[1px]"] {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Template, CoupleEvent, Language, MusicTrack } from './types';
-import { INITIAL_TEMPLATES, INITIAL_COUPLES, INITIAL_MUSIC_TRACKS, isTemplateSupported } from './data/initialData';
+import { INITIAL_TEMPLATES, INITIAL_COUPLES, INITIAL_MUSIC_TRACKS, DEFAULT_WEDDING_AGENDAS, isTemplateSupported } from './data/initialData';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
@@ -151,7 +151,19 @@ export default function App() {
           });
           data.forEach(c => {
             if (!deletedIds.includes(c.id)) {
-              map.set(c.id, { ...map.get(c.id), ...c });
+              const base = map.get(c.id) || c;
+              const merged: CoupleEvent = { ...base, ...c };
+              if (
+                !merged.agendas || 
+                merged.agendas.length < 5 || 
+                !merged.agendas.some(a => a.day === 2) || 
+                (merged.weddingProgramDay1TitleKh && merged.weddingProgramDay1TitleKh.includes('២០២៤'))
+              ) {
+                merged.weddingProgramDay1TitleKh = 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦';
+                merged.weddingProgramDay2TitleKh = 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦';
+                merged.agendas = DEFAULT_WEDDING_AGENDAS;
+              }
+              map.set(c.id, merged);
             }
           });
           _setCouples(Array.from(map.values()).filter(c => !deletedIds.includes(c.id)));
@@ -319,19 +331,36 @@ export default function App() {
       });
     };
 
-    // 0. Explicit Admin route (#admin, #admin-templates, #admin-couples, etc.)
-    if (cleanHash === 'admin' || cleanHash.startsWith('admin-') || cleanHash.startsWith('admin/')) {
-      setCurrentView('admin');
-      if (cleanHash === 'admin-templates' || cleanHash === 'admin/templates') {
-        setAdminActiveSection('templates');
-      } else if (cleanHash === 'admin-couples' || cleanHash === 'admin/couples') {
-        setAdminActiveSection('couples');
-      } else if (cleanHash === 'admin-music' || cleanHash === 'admin/music') {
-        setAdminActiveSection('music');
-      } else if (cleanHash === 'admin-footer' || cleanHash === 'admin/footer') {
-        setAdminActiveSection('footer');
+    // CRITICAL: On initial app load/open: If NOT an incoming guest invitation link (?c=... or ?guest=...),
+    // ALWAYS open the Admin page directly! Even if there was a stale #manage in the browser URL!
+    if (isInitialMount && !coupleSlug && !guestParam) {
+      if (window.location.hash !== '#admin') {
+        window.location.hash = '#admin';
       }
+      setCurrentView('admin');
+      setAdminActiveSection('overview');
       return;
+    }
+
+    // 0. Default when empty OR explicit Admin route (#admin, #admin-templates, #admin-couples, etc.)
+    if (!cleanHash || cleanHash === 'admin' || cleanHash.startsWith('admin-') || cleanHash.startsWith('admin/')) {
+      if (!cleanHash && (coupleSlug || guestParam || viewParam === 'couple')) {
+        // Fall through to couple or guest handling if explicit query params provided
+      } else {
+        setCurrentView('admin');
+        if (cleanHash === 'admin-templates' || cleanHash === 'admin/templates') {
+          setAdminActiveSection('templates');
+        } else if (cleanHash === 'admin-couples' || cleanHash === 'admin/couples') {
+          setAdminActiveSection('couples');
+        } else if (cleanHash === 'admin-music' || cleanHash === 'admin/music') {
+          setAdminActiveSection('music');
+        } else if (cleanHash === 'admin-footer' || cleanHash === 'admin/footer') {
+          setAdminActiveSection('footer');
+        } else {
+          setAdminActiveSection('overview');
+        }
+        return;
+      }
     }
 
     // Helper to parse names from slug
@@ -457,13 +486,19 @@ export default function App() {
       return;
     }
 
-    // 3. Fallback on initial mount: default to admin view
-    if (isInitialMount) {
+    // 3. Fallback: default to admin view if no couple/guest route is requested
+    if (!cleanHash && !coupleSlug && !guestParam && viewParam !== 'couple') {
+      setCurrentView('admin');
+    } else if (isInitialMount && !coupleSlug && !guestParam && viewParam !== 'couple') {
       setCurrentView('admin');
     }
   }, [selectedCoupleId]);
 
   useEffect(() => {
+    // When first opened with no hash or query, automatically route to #admin
+    if (!window.location.hash && !window.location.search) {
+      window.location.hash = '#admin';
+    }
     parseUrl(true);
     const onHashChange = () => parseUrl(false);
     window.addEventListener('hashchange', onHashChange);
@@ -475,6 +510,8 @@ export default function App() {
     parseUrl(false);
   }, [isFirebaseReady, couples, parseUrl]);
 
+  const [previewTemplateOverride, setPreviewTemplateOverride] = useState<string | null>(null);
+
   // Active couple object
   const activeCouple = couples.find(c => c.id === selectedCoupleId) || couples[0] || INITIAL_COUPLES[0];
 
@@ -484,11 +521,17 @@ export default function App() {
     setCurrentView('couple');
   };
 
-  const handlePreviewCouple = (coupleId: string, guestCode?: string, source: 'admin' | 'couple' = 'admin') => {
+  const handlePreviewCouple = (coupleId?: string, guestCode?: string, source: 'admin' | 'couple' = 'admin', templateId?: string) => {
     requestAppFullscreen();
-    setSelectedCoupleId(coupleId);
+    // When Admin clicks to preview invitation, always use the 1st couple (couples[0]) to display
+    const targetCouple = (source === 'admin')
+      ? (couples[0] || INITIAL_COUPLES[0])
+      : (couples.find(c => c.id === coupleId) || couples[0] || INITIAL_COUPLES[0]);
+
+    setSelectedCoupleId(targetCouple.id);
     setCurrentGuestCode(guestCode);
     setPreviewSource(source);
+    setPreviewTemplateOverride(templateId || null);
     setCurrentView('guest');
   };
 
@@ -507,7 +550,7 @@ export default function App() {
           }}
         >
           <GuestInvitationView
-            couple={activeCouple}
+            couple={previewTemplateOverride ? { ...activeCouple, templateId: previewTemplateOverride } : activeCouple}
             templates={templates}
             guestCode={currentGuestCode}
             setCouples={setCouples}
@@ -516,13 +559,15 @@ export default function App() {
               if (previewSource === 'admin') {
                 window.location.hash = '#admin';
                 setCurrentView('admin');
-                setAdminActiveSection('overview');
+                setAdminActiveSection(previewTemplateOverride ? 'templates' : 'overview');
               } else {
+                window.location.hash = `#manage/${activeCouple.id}`;
                 setCurrentView('couple');
               }
               setPreviewSource(null);
+              setPreviewTemplateOverride(null);
             } : undefined}
-            backButtonLabel={previewSource === 'admin' ? 'ត្រឡប់ទៅ Admin' : 'ត្រឡប់ទៅផ្ទាំងគូស្នេហ៍'}
+            backButtonLabel={previewSource === 'admin' ? (lang === 'km' ? 'ត្រឡប់ទៅ Admin' : 'Back to Admin') : (lang === 'km' ? 'ត្រឡប់ទៅផ្ទាំងគូស្នេហ៍' : 'Back to Dashboard')}
           />
         </div>
       </div>
@@ -536,6 +581,9 @@ export default function App() {
       <Sidebar
         currentView={currentView}
         setCurrentView={(v) => {
+          if (v === 'guest') {
+            setPreviewSource(currentView === 'admin' ? 'admin' : 'couple');
+          }
           setCurrentView(v);
           if (v !== 'guest') {
             setCurrentGuestCode(undefined);
@@ -562,6 +610,9 @@ export default function App() {
         <Navbar
           currentView={currentView}
           setCurrentView={(v) => {
+            if (v === 'guest') {
+              setPreviewSource(currentView === 'admin' ? 'admin' : 'couple');
+            }
             setCurrentView(v);
             if (v !== 'guest') {
               setCurrentGuestCode(undefined);
@@ -592,7 +643,7 @@ export default function App() {
                 musicTracks={musicTracks}
                 setMusicTracks={setMusicTracks}
                 onSelectCouple={handleSelectCoupleFromAdmin}
-                onPreviewCouple={(id) => handlePreviewCouple(id, undefined, 'admin')}
+                onPreviewCouple={(id, tplId) => handlePreviewCouple(id, undefined, 'admin', tplId)}
                 lang={lang}
                 activeSection={adminActiveSection}
                 setActiveSection={setAdminActiveSection}

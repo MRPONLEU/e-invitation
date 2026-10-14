@@ -200,8 +200,8 @@ export const WeddingDetailsEditor: React.FC<WeddingDetailsEditorProps> = ({
     if (window.confirm(lang === 'km' ? 'តើអ្នកពិតជាចង់កំណត់កាលវិភាគកម្មវិធីឡើងវិញទៅតាមគំរូប្រពៃណីខ្មែរស្ដង់ដារមែនទេ?' : 'Reset agendas to standard Khmer traditional schedule?')) {
       updateCouple(prev => ({
         ...prev,
-        weddingProgramDay1TitleKh: 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤',
-        weddingProgramDay2TitleKh: 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤',
+        weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+        weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
         agendas: DEFAULT_WEDDING_AGENDAS
       }));
       showSavedAlert();
@@ -445,13 +445,16 @@ export const WeddingDetailsEditor: React.FC<WeddingDetailsEditorProps> = ({
                 <input
                   type="text"
                   value={couple.weddingProgramDay1TitleKh || ''}
-                  placeholder="កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤"
+                  placeholder="កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦"
                   onChange={e => {
                     updateCouple(prev => ({ ...prev, weddingProgramDay1TitleKh: e.target.value }));
                     showSavedAlert();
                   }}
                   className="w-full max-w-lg px-3.5 py-2 text-sm bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-hidden font-muol-light text-amber-900"
                 />
+                <p className="text-[11px] text-gray-500 mt-1 font-battambang">
+                  {lang === 'km' ? '✨ បង្ហាញលើធៀបជា ២ ជួរត្រឹមកណ្ដាល (ជួរទី១៖ កម្មវិធីទី១, ជួរទី២៖ ថ្ងៃសៅរ៍ ទី២៨...)' : '✨ Displays on invitation as 2 centered lines (Line 1: Program #, Line 2: Date)'}
+                </p>
               </div>
 
               <button
@@ -545,13 +548,16 @@ export const WeddingDetailsEditor: React.FC<WeddingDetailsEditorProps> = ({
                 <input
                   type="text"
                   value={couple.weddingProgramDay2TitleKh || ''}
-                  placeholder="កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤"
+                  placeholder="កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦"
                   onChange={e => {
                     updateCouple(prev => ({ ...prev, weddingProgramDay2TitleKh: e.target.value }));
                     showSavedAlert();
                   }}
                   className="w-full max-w-lg px-3.5 py-2 text-sm bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-hidden font-muol-light text-amber-900"
                 />
+                <p className="text-[11px] text-gray-500 mt-1 font-battambang">
+                  {lang === 'km' ? '✨ បង្ហាញលើធៀបជា ២ ជួរត្រឹមកណ្ដាល (ជួរទី១៖ កម្មវិធីទី២, ជួរទី២៖ ថ្ងៃអាទិត្យ ទី២៩...)' : '✨ Displays on invitation as 2 centered lines (Line 1: Program #, Line 2: Date)'}
+                </p>
               </div>
 
               <button

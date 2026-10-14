@@ -15,7 +15,8 @@ import {
   Music,
   BookOpen,
   LogOut,
-  Settings
+  Settings,
+  ChevronRight
 } from 'lucide-react';
 import { AdminUserState, AUTHORIZED_ADMIN_EMAIL } from '../lib/adminAuth';
 import { requestAppFullscreen } from '../utils/fullscreen';
@@ -71,12 +72,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
         : adminSection === 'footer' 
         ? '#admin-footer' 
         : '#admin';
-    } else if (view === 'couple') {
-      const currentHash = window.location.hash || '';
-      if (!currentHash.startsWith('#manage/') && !currentHash.startsWith('#edit/')) {
-        const identifier = selectedCouple?.id || 'couple';
-        window.location.hash = `#manage/${identifier}`;
-      }
     }
     if (adminSection && setAdminActiveSection) {
       setAdminActiveSection(adminSection);
@@ -104,10 +99,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ${isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         
-        {/* 1. Header / Brand Logo */}
-        <div className="p-5 flex items-center gap-3.5 border-b border-[#1A2644]">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#FF0055] via-[#FF1B6B] to-[#FF4585] flex items-center justify-center text-white shadow-lg shadow-pink-900/40 shrink-0">
-            <span className="font-serif-luxury font-normal text-xl italic tracking-tighter">eI</span>
+        {/* 1. Header / Brand Logo - Click to go to Admin */}
+        <div 
+          onClick={() => {
+            window.location.hash = '#admin';
+            setCurrentView('admin');
+            if (setAdminActiveSection) setAdminActiveSection('overview');
+          }}
+          className="p-5 flex items-center gap-3.5 border-b border-[#1A2644] cursor-pointer hover:bg-white/5 transition-colors group"
+          title="ចុចដើម្បីទៅកាន់ផ្ទាំង Admin"
+        >
+          <div 
+            style={{
+              backgroundColor: '#FF1B6B',
+              backgroundImage: 'linear-gradient(135deg, #FF0055 0%, #FF1B6B 50%, #FF4585 100%)',
+              color: '#ffffff'
+            }}
+            className="w-11 h-11 rounded-2xl bg-[#FF1B6B] bg-gradient-to-tr from-[#FF0055] via-[#FF1B6B] to-[#FF4585] flex items-center justify-center text-white shadow-lg shadow-pink-900/40 shrink-0"
+          >
+            <span className="font-serif-luxury font-normal text-xl italic tracking-tighter text-white" style={{ color: '#ffffff' }}>eI</span>
           </div>
           <div className="overflow-hidden flex-1">
             <div className="flex items-center gap-1.5">
@@ -258,13 +268,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 id="sidebar-nav-dashboard"
                 onClick={() => handleNavClick('admin', 'overview')}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all cursor-pointer ${
                   currentView === 'admin' && adminActiveSection === 'overview'
-                    ? 'bg-white/10 text-white shadow-xs'
+                    ? 'bg-[#FF1B6B] text-white shadow-md shadow-pink-900/30'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <LayoutDashboard className={`w-4 h-4 ${currentView === 'admin' && adminActiveSection === 'overview' ? 'text-[#FF1B6B]' : 'text-slate-400'}`} />
+                <LayoutDashboard className={`w-4 h-4 ${currentView === 'admin' && adminActiveSection === 'overview' ? 'text-white' : 'text-slate-400'}`} />
                 <span>{lang === 'km' ? 'ផ្ទាំងគ្រប់គ្រង' : 'Dashboard'}</span>
               </button>
 
@@ -272,7 +282,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 id="sidebar-nav-templates"
                 onClick={() => handleNavClick('admin', 'templates')}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all cursor-pointer ${
                   currentView === 'admin' && adminActiveSection === 'templates'
                     ? 'bg-[#FF1B6B] text-white shadow-md shadow-pink-900/30'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
@@ -286,13 +296,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 id="sidebar-nav-couples"
                 onClick={() => handleNavClick('admin', 'couples')}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all ${
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-normal transition-all cursor-pointer ${
                   currentView === 'admin' && adminActiveSection === 'couples'
-                    ? 'bg-white/10 text-white shadow-xs'
+                    ? 'bg-[#FF1B6B] text-white shadow-md shadow-pink-900/30'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Users className={`w-4 h-4 ${currentView === 'admin' && adminActiveSection === 'couples' ? 'text-[#FF1B6B]' : 'text-slate-400'}`} />
+                <Users className={`w-4 h-4 ${currentView === 'admin' && adminActiveSection === 'couples' ? 'text-white' : 'text-slate-400'}`} />
                 <span>{lang === 'km' ? 'បញ្ជីកូនកម្លោះក្រមុំ' : 'Couples List'}</span>
               </button>
 

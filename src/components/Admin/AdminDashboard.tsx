@@ -7,6 +7,7 @@ import { AdminCouplesPage } from './AdminCouplesPage';
 import { audioSynthesizer } from '../../utils/audioSynthesizer';
 import { formatImageUrl, compressImageFile } from '../../utils/imageHelper';
 import { AUTHORIZED_ADMIN_EMAIL } from '../../lib/adminAuth';
+import { TelegramIcon } from '../icons/TelegramIcon';
 import { 
   Sparkles, 
   Upload, 
@@ -42,7 +43,7 @@ interface AdminDashboardProps {
   musicTracks?: MusicTrack[];
   setMusicTracks?: React.Dispatch<React.SetStateAction<MusicTrack[]>>;
   onSelectCouple: (coupleId: string) => void;
-  onPreviewCouple: (coupleId: string) => void;
+  onPreviewCouple: (coupleId: string, templateId?: string) => void;
   lang: Language;
   activeSection?: 'overview' | 'templates' | 'couples' | 'footer' | 'music';
   setActiveSection?: (section: 'overview' | 'templates' | 'couples' | 'footer' | 'music') => void;
@@ -268,8 +269,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=800&auto=format&fit=crop'
       ],
       loveStoryKh: '«ក្ដីស្រលាញ់ដែលចាប់ផ្ដើមពីការយល់ចិត្ត និងការផ្ដល់តម្លៃឱ្យគ្នាទៅវិញទៅមក»',
-      weddingProgramDay1TitleKh: 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤',
-      weddingProgramDay2TitleKh: 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤',
+      weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+      weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
       agendas: DEFAULT_WEDDING_AGENDAS,
       bankAccounts: [
         {
@@ -598,7 +599,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <div>
                     <label className="flex items-center gap-1.5 text-xs font-normal text-gray-700 mb-1">
-                      <MessageCircle className="w-4 h-4 text-sky-500" />
+                      <TelegramIcon className="w-4 h-4 text-sky-500" />
                       <span>Telegram URL / Username</span>
                     </label>
                     <div className="relative">
@@ -612,7 +613,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className="w-full pl-9 pr-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
                         placeholder="https://t.me/..."
                       />
-                      <MessageCircle className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                      <TelegramIcon className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
                     </div>
                   </div>
 
@@ -633,6 +634,79 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         placeholder="097 370 7998"
                       />
                       <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                    </div>
+                  </div>
+
+                  {/* Store Location 1 */}
+                  <div>
+                    <label className="flex items-center justify-between text-xs font-normal text-gray-700 mb-1">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-4 h-4 text-rose-500" />
+                        <span>{lang === 'km' ? 'Location ហាង ទី១ (Google Maps)' : 'Store Location 1 (Google Maps)'}</span>
+                      </span>
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        value={couples[0]?.contactLocationName || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCouples(prev => prev.map(c => ({ ...c, contactLocationName: val })));
+                        }}
+                        className="px-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                        placeholder={lang === 'km' ? 'ឈ្មោះសាខា ឧ. សាខាទី១' : 'Branch label (e.g. Branch 1)'}
+                      />
+                      <div className="sm:col-span-2 relative">
+                        <input
+                          type="url"
+                          value={couples[0]?.contactLocation || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setCouples(prev => prev.map(c => ({ ...c, contactLocation: val })));
+                          }}
+                          className="w-full pl-9 pr-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                          placeholder="https://maps.google.com/?q=..."
+                        />
+                        <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Store Location 2 (បន្ថែម Location ហាងមួយទៀត) */}
+                  <div className="p-3 bg-amber-50/50 border border-amber-200/80 rounded-2xl space-y-1.5">
+                    <label className="flex items-center justify-between text-xs font-normal text-amber-950">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-4 h-4 text-amber-600" />
+                        <span>{lang === 'km' ? 'Location ហាង ទី២ (បន្ថែម Location ហាងមួយទៀត)' : 'Store Location 2 (Additional Branch)'}</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium">
+                        {lang === 'km' ? 'សាខាបន្ថែម' : 'Branch 2'}
+                      </span>
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        value={couples[0]?.contactLocationName2 || ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCouples(prev => prev.map(c => ({ ...c, contactLocationName2: val })));
+                        }}
+                        className="px-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-white"
+                        placeholder={lang === 'km' ? 'ឈ្មោះសាខា ឧ. សាខាទី២' : 'Branch label (e.g. Branch 2)'}
+                      />
+                      <div className="sm:col-span-2 relative">
+                        <input
+                          type="url"
+                          value={couples[0]?.contactLocation2 || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setCouples(prev => prev.map(c => ({ ...c, contactLocation2: val })));
+                          }}
+                          className="w-full pl-9 pr-3 py-2 text-xs border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] bg-white"
+                          placeholder="https://maps.google.com/?q=..."
+                        />
+                        <MapPin className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+                      </div>
                     </div>
                   </div>
 
@@ -697,8 +771,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     )}
 
                     {/* Contact Icons */}
-                    {(couples[0]?.contactFacebook || couples[0]?.contactTelegram || couples[0]?.contactPhone) && (
-                      <div className="flex items-center justify-center gap-2.5 pt-1">
+                    {(couples[0]?.contactFacebook || couples[0]?.contactTelegram || couples[0]?.contactPhone || couples[0]?.contactLocation || couples[0]?.contactLocation2) && (
+                      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
                         {couples[0]?.contactPhone && (
                           <div title={`Phone: ${couples[0].contactPhone}`} className="w-8 h-8 rounded-full border border-[#D4AF37]/50 bg-black/40 text-[#D4AF37] flex items-center justify-center">
                             <Phone className="w-4 h-4 text-emerald-400" />
@@ -706,7 +780,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         )}
                         {couples[0]?.contactTelegram && (
                           <div title="Telegram" className="w-8 h-8 rounded-full border border-[#D4AF37]/50 bg-black/40 text-[#D4AF37] flex items-center justify-center">
-                            <MessageCircle className="w-4 h-4 text-sky-400" />
+                            <TelegramIcon className="w-4 h-4 text-sky-400" />
                           </div>
                         )}
                         {couples[0]?.contactFacebook && (
@@ -714,10 +788,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <Facebook className="w-4 h-4 text-blue-400" />
                           </div>
                         )}
+                        {couples[0]?.contactLocation && (
+                          <div title={couples[0].contactLocationName || 'Location ហាង ទី១'} className="h-8 px-2.5 rounded-full border border-[#D4AF37]/50 bg-black/40 text-[#D4AF37] flex items-center gap-1.5 text-[11px]">
+                            <MapPin className="w-3.5 h-3.5 text-rose-400" />
+                            <span>{couples[0].contactLocationName || 'ទីតាំងហាងទី១'}</span>
+                          </div>
+                        )}
+                        {couples[0]?.contactLocation2 && (
+                          <div title={couples[0].contactLocationName2 || 'Location ហាង ទី២'} className="h-8 px-2.5 rounded-full border border-[#D4AF37]/50 bg-black/40 text-[#D4AF37] flex items-center gap-1.5 text-[11px]">
+                            <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                            <span>{couples[0].contactLocationName2 || 'ទីតាំងហាងទី២'}</span>
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    {(!couples[0]?.adminPromo?.enabled && !couples[0]?.contactFacebook && !couples[0]?.contactTelegram && !couples[0]?.contactPhone) && (
+                    {(!couples[0]?.adminPromo?.enabled && !couples[0]?.contactFacebook && !couples[0]?.contactTelegram && !couples[0]?.contactPhone && !couples[0]?.contactLocation && !couples[0]?.contactLocation2) && (
                       <div className="text-xs text-gray-500 italic py-4">
                         (គ្មានព័ត៌មាន Footer ឬទំនាក់ទំនង)
                       </div>

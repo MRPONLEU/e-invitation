@@ -13,7 +13,7 @@ interface AdminTemplatesPageProps {
   lang: Language;
   onOpenNewTemplate: () => void;
   onEditTemplate: (tpl: Template) => void;
-  onPreviewCouple: (coupleId: string) => void;
+  onPreviewCouple: (coupleId: string, templateId?: string) => void;
   onDeleteTemplate?: (tpl: Template) => void;
 }
 
@@ -120,8 +120,7 @@ export const AdminTemplatesPage: React.FC<AdminTemplatesPageProps> = ({
               onClick={() => {
                 if (couples.length > 0) {
                   requestAppFullscreen();
-                  setCouples(prev => prev.map(c => ({ ...c, templateId: tpl.id })));
-                  onPreviewCouple(couples[0].id);
+                  onPreviewCouple(couples[0].id, tpl.id);
                 }
               }}
               title={lang === 'km' ? 'ចុចលើរូបដើម្បីមើលគំរូពេញអេក្រង់ (Click to Preview)' : 'Click to preview fullscreen'}
@@ -157,8 +156,7 @@ export const AdminTemplatesPage: React.FC<AdminTemplatesPageProps> = ({
                 onClick={() => {
                   if (couples.length > 0) {
                     requestAppFullscreen();
-                    setCouples(prev => prev.map(c => ({ ...c, templateId: tpl.id })));
-                    onPreviewCouple(couples[0].id);
+                    onPreviewCouple(couples[0].id, tpl.id);
                   }
                 }}
               >

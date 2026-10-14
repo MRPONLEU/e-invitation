@@ -189,6 +189,10 @@ export interface CoupleEvent {
   contactFacebook?: string;
   contactTelegram?: string;
   contactPhone?: string;
+  contactLocation?: string;
+  contactLocationName?: string;
+  contactLocation2?: string;
+  contactLocationName2?: string;
 }
 
 export interface UserAccount {

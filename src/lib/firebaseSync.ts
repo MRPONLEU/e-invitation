@@ -110,6 +110,12 @@ export function syncCollectionToFirestore<T extends { id: string }>(
   // Find removed items
   for (const prevItem of prev) {
     if (!next.find(n => n.id === prevItem.id)) {
+      const docPath = `${collectionName}/${prevItem.id}`;
+      if (writeTimeouts.has(docPath)) {
+        clearTimeout(writeTimeouts.get(docPath)!);
+        writeTimeouts.delete(docPath);
+      }
+
       if (checkQuotaStatus()) return;
 
       deleteDoc(doc(db, collectionName, prevItem.id)).catch(err => {
@@ -131,21 +137,49 @@ export function syncCollectionToFirestore<T extends { id: string }>(
  * Direct document deletion from Firestore with error handling
  */
 export async function deleteDocumentFromFirestore(collectionName: string, id: string): Promise<void> {
-  try {
-    // Also remove from local cache immediately
-    try {
-      const cached = localStorage.getItem(`e_invitation_${collectionName}_cache`);
-      if (cached) {
-        const list = JSON.parse(cached);
-        if (Array.isArray(list)) {
-          const updated = list.filter((item: any) => item.id !== id);
-          localStorage.setItem(`e_invitation_${collectionName}_cache`, JSON.stringify(updated));
-        }
-      }
-    } catch {}
+  const docPath = `${collectionName}/${id}`;
+  if (writeTimeouts.has(docPath)) {
+    clearTimeout(writeTimeouts.get(docPath)!);
+    writeTimeouts.delete(docPath);
+  }
 
-    if (checkQuotaStatus()) return;
-    await deleteDoc(doc(db, collectionName, id));
+  // Record in deleted tracking in localStorage
+  try {
+    if (collectionName === 'couples') {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('deleted_couple_ids') || '[]');
+      if (!deletedIds.includes(id)) {
+        localStorage.setItem('deleted_couple_ids', JSON.stringify([...deletedIds, id]));
+      }
+    } else if (collectionName === 'templates') {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('deleted_template_ids') || '[]');
+      if (!deletedIds.includes(id)) {
+        localStorage.setItem('deleted_template_ids', JSON.stringify([...deletedIds, id]));
+      }
+    } else if (collectionName === 'musicTracks') {
+      const deletedIds: string[] = JSON.parse(localStorage.getItem('deleted_music_track_ids') || '[]');
+      if (!deletedIds.includes(id)) {
+        localStorage.setItem('deleted_music_track_ids', JSON.stringify([...deletedIds, id]));
+      }
+    }
+  } catch {}
+
+  // Remove from local cache immediately
+  try {
+    const cached = localStorage.getItem(`e_invitation_${collectionName}_cache`);
+    if (cached) {
+      const list = JSON.parse(cached);
+      if (Array.isArray(list)) {
+        const updated = list.filter((item: any) => item.id !== id);
+        localStorage.setItem(`e_invitation_${collectionName}_cache`, JSON.stringify(updated));
+      }
+    }
+  } catch {}
+
+  // Delete from Firestore
+  try {
+    if (!checkQuotaStatus()) {
+      await deleteDoc(doc(db, collectionName, id));
+    }
   } catch (err) {
     console.warn(`Firestore direct delete failed for ${collectionName}/${id}:`, err);
   }
@@ -161,7 +195,20 @@ export function subscribeToCollection<T extends { id: string }>(
     if (cached) {
       const parsed = JSON.parse(cached);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        onData(parsed);
+        let deletedIds: string[] = [];
+        try {
+          if (collectionName === 'couples') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_couple_ids') || '[]');
+          } else if (collectionName === 'templates') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_template_ids') || '[]');
+          } else if (collectionName === 'musicTracks') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_music_track_ids') || '[]');
+          }
+        } catch {}
+        const filtered = parsed.filter(item => !deletedIds.includes(item.id));
+        if (filtered.length > 0) {
+          onData(filtered);
+        }
       }
     }
   } catch {
@@ -182,27 +229,38 @@ export function subscribeToCollection<T extends { id: string }>(
           items.push({ id: doc.id, ...doc.data() } as T);
         });
 
-        // Merge with local cache so recent local edits are preserved if write is pending or failed
-        let finalData = items;
+        // Filter out any explicitly deleted IDs
+        let deletedIds: string[] = [];
+        try {
+          if (collectionName === 'couples') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_couple_ids') || '[]');
+          } else if (collectionName === 'templates') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_template_ids') || '[]');
+          } else if (collectionName === 'musicTracks') {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_music_track_ids') || '[]');
+          }
+        } catch {}
+
+        let finalData = items.filter(item => !deletedIds.includes(item.id));
+
+        // Merge large media fields for items that ACTUALLY exist in Firestore
+        // (CRITICAL: Do NOT resurrect deleted items that are absent in Firestore!)
         try {
           const cached = localStorage.getItem(`e_invitation_${collectionName}_cache`);
           if (cached) {
             const cachedItems: T[] = JSON.parse(cached);
             if (Array.isArray(cachedItems) && cachedItems.length > 0) {
               const map = new Map<string, T>();
-              // Put remote items first
-              items.forEach(i => map.set(i.id, i));
-              // Merge local cached items if they have pending local edits
+              finalData.forEach(i => map.set(i.id, i));
               cachedItems.forEach(c => {
                 const remote = map.get(c.id);
-                if (!remote) {
-                  map.set(c.id, c);
-                } else if (JSON.stringify(c).length > JSON.stringify(remote).length) {
-                  // Prefer cached version if it holds updated fields (e.g., base64 images/GIFs)
-                  map.set(c.id, { ...remote, ...c });
+                if (remote && !deletedIds.includes(c.id)) {
+                  if (JSON.stringify(c).length > JSON.stringify(remote).length) {
+                    map.set(c.id, { ...remote, ...c });
+                  }
                 }
               });
-              finalData = Array.from(map.values());
+              finalData = Array.from(map.values()).filter(i => !deletedIds.includes(i.id));
             }
           }
         } catch {

@@ -10,6 +10,7 @@ import gifF0032 from '../../assets/images/T003/F0032_opt.webp';
 import { formatImageUrl, compressImageFile, handleImageError } from '../../utils/imageHelper';
 import { storeMedia } from '../../utils/mediaStorage';
 import { requestAppFullscreen } from '../../utils/fullscreen';
+import { deleteDocumentFromFirestore } from '../../lib/firebaseSync';
 import { 
   Users, 
   Plus, 
@@ -84,17 +85,26 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
   const [saveToastMsg, setSaveToastMsg] = useState<string | null>(null);
   const [coupleToDelete, setCoupleToDelete] = useState<CoupleEvent | null>(null);
 
-  const confirmDeleteCouple = (c: CoupleEvent) => {
+  const confirmDeleteCouple = async (c: CoupleEvent) => {
     if (couples.length <= 1) {
       alert(lang === 'km' 
         ? 'មិនអាចលុបបានទេ! ប្រព័ន្ធត្រូវរក្សាទុកយ៉ាងហោចណាស់គូស្នេហ៍ចំនួន ១។' 
         : 'Cannot delete! At least one couple must remain in the system.');
       return;
     }
+    // Delete immediately from Firestore database & local storage cache
+    try {
+      await deleteDocumentFromFirestore('couples', c.id);
+    } catch (e) {
+      console.error('Failed to delete couple from Firestore:', e);
+    }
     setCouples(prev => prev.filter(item => item.id !== c.id));
+    if (selectedDetailCouple?.id === c.id) {
+      setSelectedDetailCouple(null);
+    }
     setCoupleToDelete(null);
     setSaveToastMsg(lang === 'km' 
-      ? `បានលុបគូស្នេហ៍ «${c.groomNameKh} & ${c.brideNameKh}» ដោយជោគជ័យ!` 
+      ? `បានលុបគូស្នេហ៍ «${c.groomNameKh} & ${c.brideNameKh}» ចេញពីប្រព័ន្ធដោយជោគជ័យ!` 
       : `Couple "${c.groomNameKh} & ${c.brideNameKh}" deleted successfully!`);
     setTimeout(() => setSaveToastMsg(null), 3500);
   };
@@ -183,13 +193,22 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={() => setSelectedDetailCouple(c)}
-                className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-[#8C6D1F] border border-amber-200/80 rounded-xl text-xs font-normal flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors shadow-2xs"
-              >
-                <Eye className="w-4 h-4 text-[#8C6D1F]" />
-                <span>{lang === 'km' ? 'មើល' : 'View'}</span>
-              </button>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={() => setSelectedDetailCouple(c)}
+                  className="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-[#8C6D1F] border border-amber-200/80 rounded-xl text-xs font-normal flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+                >
+                  <Eye className="w-3.5 h-3.5 text-[#8C6D1F]" />
+                  <span>{lang === 'km' ? 'មើល' : 'View'}</span>
+                </button>
+                <button
+                  onClick={() => setCoupleToDelete(c)}
+                  className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 cursor-pointer transition-colors"
+                  title={lang === 'km' ? 'លុបគូស្នេហ៍នេះ' : 'Delete Couple'}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           );
         })}
@@ -610,6 +629,20 @@ export const AdminCouplesPage: React.FC<AdminCouplesPageProps> = ({
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>{lang === 'km' ? 'មើលធៀប' : 'Preview Live'}</span>
+                    </button>
+                  </div>
+
+                  {/* Delete Couple from Modal */}
+                  <div className="pt-2 border-t border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCoupleToDelete(c);
+                      }}
+                      className="w-full py-2.5 px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200/80 rounded-xl flex items-center justify-center gap-2 font-medium transition-colors cursor-pointer text-xs"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>{lang === 'km' ? 'លុបគូស្នេហ៍នេះចេញពីប្រព័ន្ធ' : 'Delete Couple from Database'}</span>
                     </button>
                   </div>
                 </div>

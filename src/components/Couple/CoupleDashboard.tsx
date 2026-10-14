@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Template, CoupleEvent, Guest, AgendaItem, BankAccount, Language, MusicTrack } from '../../types';
 import { audioSynthesizer } from '../../utils/audioSynthesizer';
 import { formatImageUrl, handleImageError } from '../../utils/imageHelper';
+import { TelegramIcon } from '../icons/TelegramIcon';
 import { 
   Heart, 
   Palette, 
@@ -188,15 +189,24 @@ export const CoupleDashboard: React.FC<CoupleDashboardProps> = ({
     return getGuestInvitationUrl(couple.id, guestCode);
   };
 
+  // Build polite invitation message according to requested format (no image)
+  const formatInvitationShareMessage = (recipientName: string, inviteLink: string) => {
+    const groom = couple.groomNameKh || '';
+    const bride = couple.brideNameKh || '';
+    const weddingDateText = couple.weddingDateKh || couple.weddingDate || 'ថ្ងៃទី xx ខែxx ឆ្នាំ២០xx';
+    const venueText = couple.venueNameKh || 'គេហដ្ឋានខាងស្រី';
+
+    return `យើងខ្ញុំ កូនប្រុស ${groom} & កូនស្រី ${bride} មានកិត្តិយសសូមគោរពអញ្ជើញ ${recipientName} ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំនៅ${weddingDateText} ស្ថិតនៅ${venueText}។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!
+
+👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖
+${inviteLink}`;
+  };
+
   // Generate Telegram / Social polite invite message
   const getSocialMessage = (guest: Guest) => {
     const inviteLink = getGuestInviteLink(guest.code);
     const guestTitleName = formatGuestDisplayName(guest);
-    const programName = `អាពាហ៍ពិពាហ៍ (${couple.groomNameKh} & ${couple.brideNameKh})`;
-    return `យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ${guestTitleName} ដើម្បីចូលរួមកម្មវិធី${programName}របស់យើងខ្ញុំ។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!
-
-👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖
-${inviteLink}`;
+    return formatInvitationShareMessage(guestTitleName, inviteLink);
   };
 
   // Generate Direct 1-Click Telegram Share
@@ -205,17 +215,18 @@ ${inviteLink}`;
     const inviteLink = getGuestInvitationUrl(couple.id, guestCode || undefined);
 
     const recipientName = targetGuest ? formatGuestDisplayName(targetGuest) : 'ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា';
-    const programName = `អាពាហ៍ពិពាហ៍ (${couple.groomNameKh} & ${couple.brideNameKh})`;
-    
-    const captionText = `យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ${recipientName} ដើម្បីចូលរួមកម្មវិធី${programName}របស់យើងខ្ញុំ។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!
+    const groom = couple.groomNameKh || '';
+    const bride = couple.brideNameKh || '';
+    const weddingDateText = couple.weddingDateKh || couple.weddingDate || 'ថ្ងៃទី xx ខែxx ឆ្នាំ២០xx';
+    const venueText = couple.venueNameKh || 'គេហដ្ឋានខាងស្រី';
 
-👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖
-${inviteLink}`;
+    const fullMessage = formatInvitationShareMessage(recipientName, inviteLink);
+    const telegramIntroText = `យើងខ្ញុំ កូនប្រុស ${groom} & កូនស្រី ${bride} មានកិត្តិយសសូមគោរពអញ្ជើញ ${recipientName} ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំនៅ${weddingDateText} ស្ថិតនៅ${venueText}។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖`;
 
-    const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(`យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ${recipientName} ដើម្បីចូលរួមកម្មវិធី${programName}របស់យើងខ្ញុំ។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖`)}`;
+    const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(telegramIntroText)}`;
 
     try {
-      navigator.clipboard.writeText(captionText);
+      navigator.clipboard.writeText(fullMessage);
       setCopiedKey(targetGuest ? `tg_${targetGuest.id}` : 'master_tg');
       setCopyToastMessage(`បានចម្លងសារ និងបើក Telegram ជូន «${recipientName}» រួចរាល់!`);
       setTimeout(() => {
@@ -233,8 +244,12 @@ ${inviteLink}`;
   const getTelegramShareUrl = (guest: Guest) => {
     const inviteLink = getGuestInviteLink(guest.code);
     const guestTitleName = formatGuestDisplayName(guest);
-    const programName = `អាពាហ៍ពិពាហ៍ (${couple.groomNameKh} & ${couple.brideNameKh})`;
-    const text = `យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ${guestTitleName} ដើម្បីចូលរួមកម្មវិធី${programName}របស់យើងខ្ញុំ។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖`;
+    const groom = couple.groomNameKh || '';
+    const bride = couple.brideNameKh || '';
+    const weddingDateText = couple.weddingDateKh || couple.weddingDate || 'ថ្ងៃទី xx ខែxx ឆ្នាំ២០xx';
+    const venueText = couple.venueNameKh || 'គេហដ្ឋានខាងស្រី';
+
+    const text = `យើងខ្ញុំ កូនប្រុស ${groom} & កូនស្រី ${bride} មានកិត្តិយសសូមគោរពអញ្ជើញ ${guestTitleName} ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំនៅ${weddingDateText} ស្ថិតនៅ${venueText}។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖`;
     return `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent(text)}`;
   };
 
@@ -591,11 +606,11 @@ ${inviteLink}`;
                     onClick={() => handleDirectTelegramShare(null)}
                     className="flex-1 py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                   >
-                    <Send className="w-3.5 h-3.5" />
+                    <TelegramIcon className="w-3.5 h-3.5" />
                     <span>{lang === 'km' ? 'ផ្ញើតាម Telegram ភ្លាមៗ' : 'Share to Telegram'}</span>
                   </button>
                   <button
-                    onClick={() => handleCopy(`យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា ដើម្បីចូលរួមកម្មវិធីអាពាហ៍ពិពាហ៍របស់យើងខ្ញុំ (${couple.groomNameKh} & ${couple.brideNameKh})។ យើងខ្ញុំសង្ឃឹមថាលោកអ្នកនឹងអញ្ជើញចូលរួម សូមអរគុណ!\n\n👉 សូមចុចតំណភ្ជាប់ខាងក្រោមដើម្បីបើកមើលសំបុត្រអញ្ជើញឌីជីថល៖\n${getGuestInvitationUrl(couple.id)}`, 'master_msg')}
+                    onClick={() => handleCopy(formatInvitationShareMessage('ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា', getGuestInvitationUrl(couple.id)), 'master_msg')}
                     className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     title={lang === 'km' ? 'ចម្លងសារអញ្ជើញទូទៅ' : 'Copy Message'}
                   >

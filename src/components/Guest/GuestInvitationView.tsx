@@ -43,6 +43,7 @@ import { WeddingGallerySlideshow } from './WeddingGallerySlideshow';
 import weddingTitleImage from '../../assets/images/frome3.png';
 import loveOrnament from '../../assets/images/love.png';
 import ponleuLogo from '../../assets/images/ponleu_logo.svg';
+import { TelegramIcon } from '../icons/TelegramIcon';
 import frameOverlay from '../../assets/images/T003/F0030.png';
 import guestFrameBanner from '../../assets/images/fram002.png';
 import lightEffectGif from '../../assets/images/ligt001.webp';
@@ -338,11 +339,15 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
       updateMeta('og:title', title);
       updateMeta('og:description', desc);
-      updateMeta('og:image', img);
       updateMeta('twitter:title', title, true);
       updateMeta('twitter:description', desc, true);
-      updateMeta('twitter:image', img, true);
       updateMeta('description', desc, true);
+
+      // Remove any image tags so messengers do not display image preview cards
+      const existingOgImage = document.querySelector('meta[property="og:image"]');
+      if (existingOgImage) existingOgImage.remove();
+      const existingTwImage = document.querySelector('meta[name="twitter:image"]');
+      if (existingTwImage) existingTwImage.remove();
     }
   }, [couple]);
 
@@ -577,14 +582,21 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
       
       {/* Back to Admin / Couple Dashboard Button when previewing */}
       {(onBack || onBackToAdmin) && (
-        <div className="absolute top-3 left-3 z-[60] animate-fade-in">
+        <div className="fixed top-3 left-3 sm:top-4 sm:left-4 z-[9999] animate-fade-in pointer-events-auto">
           <button
             onClick={onBack || onBackToAdmin}
             title={backButtonLabel || 'ត្រឡប់ក្រោយ'}
-            className="flex items-center gap-1 bg-black/70 hover:bg-black/90 text-white px-2.5 py-1.5 rounded-full shadow-lg text-xs font-medium border border-[#D4AF37]/50 backdrop-blur-md transition-all transform hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.85)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.6), 0 0 10px rgba(212,175,55,0.4)',
+              WebkitAppearance: 'none'
+            }}
+            className="flex items-center gap-1.5 bg-black/85 hover:bg-black text-white px-3.5 py-2 rounded-full shadow-2xl text-xs font-normal border border-[#D4AF37] backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer select-none"
           >
-            <ChevronLeft className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>ថយក្រោយ</span>
+            <ChevronLeft className="w-4 h-4 text-[#D4AF37]" />
+            <span className="font-medium text-amber-200">
+              {backButtonLabel || 'ថយក្រោយ'}
+            </span>
           </button>
         </div>
       )}
@@ -1042,13 +1054,52 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   }
                 };
 
+                const renderProgramDayHeader = (rawTitle?: string, fallback = '') => {
+                  const fullText = (rawTitle || fallback).trim();
+                  if (!fullText) return null;
+
+                  let line1 = '';
+                  let line2 = '';
+
+                  if (fullText.includes('\n')) {
+                    const parts = fullText.split('\n').map(s => s.trim()).filter(Boolean);
+                    line1 = parts[0] || '';
+                    line2 = parts.slice(1).join(' ') || '';
+                  } else {
+                    const match = fullText.match(/^(កម្មវិធី(?:ទី[០-៩\d]+|ថ្ងៃទី[០-៩\d]+|[០-៩\d]+)?)\s+(.+)$/);
+                    if (match) {
+                      line1 = match[1];
+                      line2 = match[2];
+                    } else {
+                      line1 = fullText;
+                    }
+                  }
+
+                  if (line2) {
+                    return (
+                      <div className="text-center pb-2.5 space-y-1">
+                        <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide drop-shadow-sm">
+                          {line1}
+                        </h4>
+                        <p className="font-muol-light text-sm sm:text-base text-[#F3D372] leading-relaxed tracking-wide drop-shadow-sm">
+                          {line2}
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2 drop-shadow-sm">
+                      {line1}
+                    </h4>
+                  );
+                };
+
                 return (
                   <div className="space-y-8 text-left max-w-sm mx-auto pt-2">
                     {/* Day 1 */}
                     <div className="space-y-4">
-                      <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
-                        {couple.weddingProgramDay1TitleKh || 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤'}
-                      </h4>
+                      {renderProgramDayHeader(couple.weddingProgramDay1TitleKh, 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦')}
                       <div className="space-y-5">
                         {day1Agendas.length > 0 ? (
                           day1Agendas.map(item => (
@@ -1072,9 +1123,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                     {/* Day 2 */}
                     {(day2Agendas.length > 0 || couple.weddingProgramDay2TitleKh) && (
                       <div className="space-y-4 pt-4 border-t border-white/10">
-                        <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2">
-                          {couple.weddingProgramDay2TitleKh || 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤'}
-                        </h4>
+                        {renderProgramDayHeader(couple.weddingProgramDay2TitleKh, 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦')}
                         <div className="space-y-5">
                           {day2Agendas.map(item => (
                             <div key={item.id} className="flex items-start gap-4 group">
@@ -1306,7 +1355,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
           {/* Footer Branding Removed */}
 
-          {(couple.adminPromo?.enabled !== false || couple.contactFacebook || couple.contactTelegram || couple.contactPhone) && (
+          {(couple.adminPromo?.enabled !== false || couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
             <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
               <div className="p-2 sm:p-3 w-full space-y-2.5">
                 {/* Logo Display */}
@@ -1323,12 +1372,13 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 </div>
 
                 {/* Contact Icons */}
-                {(couple.contactFacebook || couple.contactTelegram || couple.contactPhone) && (
-                  <div className="flex items-center justify-center gap-2.5 pt-1">
+                {(couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
+                  <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
                     {couple.contactPhone && (
                       <a 
                         href={`tel:${couple.contactPhone.replace(/\s+/g, '')}`} 
                         className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                        title={couple.contactPhone}
                       >
                         <Phone className="w-4 h-4 text-emerald-400" />
                       </a>
@@ -1339,8 +1389,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         target="_blank" 
                         rel="noreferrer" 
                         className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                        title="Telegram"
                       >
-                        <MessageCircle className="w-4 h-4 text-sky-400" />
+                        <TelegramIcon className="w-4 h-4 text-sky-400" />
                       </a>
                     )}
                     {couple.contactFacebook && (
@@ -1349,8 +1400,33 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         target="_blank" 
                         rel="noreferrer" 
                         className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                        title="Facebook"
                       >
                         <Facebook className="w-4 h-4 text-blue-400" />
+                      </a>
+                    )}
+                    {couple.contactLocation && (
+                      <a 
+                        href={couple.contactLocation} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
+                        title={couple.contactLocationName || 'Location ហាង ទី១'}
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                        <span>{couple.contactLocationName || 'ទីតាំងហាងទី១'}</span>
+                      </a>
+                    )}
+                    {couple.contactLocation2 && (
+                      <a 
+                        href={couple.contactLocation2} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
+                        title={couple.contactLocationName2 || 'Location ហាង ទី២'}
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>{couple.contactLocationName2 || 'ទីតាំងហាងទី២'}</span>
                       </a>
                     )}
                   </div>

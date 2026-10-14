@@ -178,10 +178,11 @@ export const INITIAL_TEMPLATES: Template[] = [
 ];
 
 export const DEFAULT_WEDDING_AGENDAS: AgendaItem[] = [
+  // កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦
   {
     id: 'ag_d1_1',
     day: 1,
-    time: '០២:០០ រសៀល',
+    time: 'ម៉ោង ០២:០០ រសៀល',
     titleKh: 'ពិធីសែនក្រុងពាលី',
     titleEn: 'Krong Pali Blessing Ceremony',
     icon: 'clock'
@@ -189,72 +190,82 @@ export const DEFAULT_WEDDING_AGENDAS: AgendaItem[] = [
   {
     id: 'ag_d1_2',
     day: 1,
-    time: '០៣:០០ រសៀល',
-    titleKh: 'ពិធីសូត្រមន្តចំរើនព្រះបរិត្ត',
-    titleEn: 'Buddhist Monks Chanting',
-    icon: 'clock'
+    time: 'ម៉ោង ០៣:០០ រសៀល',
+    titleKh: 'ពិធីកាត់សក់បង្កក់សិរី កូនប្រុស-កូនស្រី',
+    titleEn: 'Hair Cutting & Cleansing Ceremony',
+    icon: 'scissors'
   },
   {
     id: 'ag_d1_3',
     day: 1,
-    time: '០៤:០០ រសៀល',
-    titleKh: 'ពិធីពាក់ខាន់ស្លា',
-    titleEn: 'Betel Nut Offering Ceremony',
-    icon: 'scissors'
+    time: 'ម៉ោង ០៥:០០ រសៀល',
+    titleKh: 'ពិធីសូត្រមន្តចម្រើនព្រះបរិត្ត',
+    titleEn: 'Buddhist Monks Chanting Ceremony',
+    icon: 'heart'
   },
   {
     id: 'ag_d1_4',
     day: 1,
-    time: '០៥:០០ ល្ងាច',
-    titleKh: 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ',
-    titleEn: 'Evening Welcome Dinner',
+    time: 'ម៉ោង ០៦:០០ ល្ងាច',
+    titleKh: 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារពេលល្ងាច',
+    titleEn: 'Evening Welcome Dinner for Guests',
     icon: 'utensils'
   },
+
+  // កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦
   {
     id: 'ag_d2_1',
     day: 2,
-    time: '០៦:៣០ ព្រឹក',
-    titleKh: 'ជួបជុំភ្ញៀវកិត្តិយស ដើម្បីរៀបចំហែជំនូន',
+    time: 'ម៉ោង ០៦:៣០ ព្រឹក',
+    titleKh: 'ជួបជុំភ្ញៀវកិត្តិយសរៀបចំពិធីហែជំនូន',
     titleEn: 'Morning Gathering for Procession',
     icon: 'sun'
   },
   {
     id: 'ag_d2_2',
     day: 2,
-    time: '០៧:០០ ព្រឹក',
-    titleKh: 'ពិធីហែជំនូន (កំណត់)',
-    titleEn: 'Traditional Gift Procession',
+    time: 'ម៉ោង ០៧:០០ ព្រឹក',
+    titleKh: 'ពិធីហែជំនូន (កំណត់) ជូនផ្កាស្លា',
+    titleEn: 'Traditional Gift Procession & Areca Offering',
     icon: 'heart'
   },
   {
     id: 'ag_d2_3',
     day: 2,
-    time: '០៨:៣០ ព្រឹក',
+    time: 'ម៉ោង ០៧:៣០ ព្រឹក',
+    titleKh: 'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារពេលព្រឹក',
+    titleEn: 'Breakfast Feast for Honorable Guests',
+    icon: 'utensils'
+  },
+  {
+    id: 'ag_d2_4',
+    day: 2,
+    time: 'ម៉ោង ០៨:០០ ព្រឹក',
+    titleKh: 'ពិធីពិសាស្លាកំណត់',
+    titleEn: 'Pisa Sla Kamnot Ceremony',
+    icon: 'heart'
+  },
+  {
+    id: 'ag_d2_5',
+    day: 2,
+    time: 'ម៉ោង ០៨:៣០ ព្រឹក',
     titleKh: 'ពិធីបំពាក់ចិញ្ចៀន',
     titleEn: 'Ring Exchange Ceremony',
     icon: 'heart'
   },
   {
-    id: 'ag_d2_4',
+    id: 'ag_d2_6',
     day: 2,
-    time: '០៩:១៥ ព្រឹក',
-    titleKh: 'ពិធីកាត់សក់បង្កក់សិរី',
-    titleEn: 'Hair Cutting & Cleansing Ceremony',
-    icon: 'scissors'
-  },
-  {
-    id: 'ag_d2_5',
-    day: 2,
-    time: '១១:០០ ថ្ងៃត្រង់',
-    titleKh: 'ពិធីបង្វិលពពិល សំពះផ្ទឹម សែនចងដៃ',
-    titleEn: 'Popil Rotating & Knot Tying Ceremony',
+    time: 'ម៉ោង ១០:០០ ព្រឹក',
+    titleKh: 'ពិធីសែនផ្ទឹម ពិធីចងដៃ បង្វិលពពិល',
+    titleEn: 'Popil Rotating, Knot Tying & Blessing Ceremony',
     icon: 'heart'
   },
   {
-    id: 'ag_d2_6',
+    id: 'ag_d2_7',
     day: 2,
-    time: '១២:០០ ថ្ងៃត្រង់',
-    titleKh: 'អញ្ជើញភ្ញៀវពិសាអាហារ',
+    time: 'ម៉ោង ១១:០០ ថ្ងៃត្រង់',
+    titleKh: 'ទទួលភ្ញៀវកិត្តិយសពិសាអាហារ',
     titleEn: 'Wedding Reception Feast',
     icon: 'utensils'
   }
@@ -279,8 +290,8 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     brideFatherEn: 'Mr. Ouk Saroeun',
     brideMotherEn: 'Mrs. Khin Chantha',
 
-    weddingDate: 'ថ្ងៃអាទិត្យ ទី២៩ ខែមករា ឆ្នាំ២០២៦',
-    weddingDateKh: 'ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+    weddingDate: 'ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+    weddingDateKh: 'ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
     weddingTimeKh: 'វេលាម៉ោង ១១:០០ ថ្ងៃត្រង់',
     weddingTimeEn: 'From 11:00 AM onwards',
     auspiciousTextKh: 'ត្រូវនឹងថ្ងៃ ៤រោច ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០',
@@ -318,8 +329,8 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     loveStoryEn: '"Two souls with but a single thought, two hearts that beat as one."',
     weddingQuoteKh: 'វត្តមានដ៏ខ្ពង់ខ្ពស់របស់ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា គឺជាកិត្តិយសដ៏ធំធេង និងជាសិរីមង្គលដ៏ឧត្តុង្គឧត្តមសម្រាប់គ្រួសារយើងខ្ញុំទាំងពីរ។',
 
-    weddingProgramDay1TitleKh: 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤',
-    weddingProgramDay2TitleKh: 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤',
+    weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+    weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
     agendas: DEFAULT_WEDDING_AGENDAS,
 
     bankAccounts: [
@@ -390,7 +401,11 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     },
     contactFacebook: 'https://facebook.com/',
     contactTelegram: 'https://t.me/username',
-    contactPhone: '012345678'
+    contactPhone: '097 370 7998',
+    contactLocation: 'https://maps.google.com/?q=Siem+Reap+Cambodia',
+    contactLocationName: 'ទីតាំងហាងទី១',
+    contactLocation2: '',
+    contactLocationName2: 'ទីតាំងហាងទី២'
   },
   {
     id: 'couple_01',
@@ -450,44 +465,9 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     loveStoryEn: '"Two souls with but a single thought, two hearts that beat as one."',
     weddingQuoteKh: 'វត្តមានដ៏ខ្ពង់ខ្ពស់របស់ ឯកឧត្តម លោកជំទាវ លោក លោកស្រី អ្នកនាងកញ្ញា គឺជាកិត្តិយសដ៏ធំធេង និងជាសិរីមង្គលដ៏ឧត្តុង្គឧត្តមសម្រាប់គ្រួសារយើងខ្ញុំទាំងពីរ។',
 
-    agendas: [
-      {
-        id: 'ag_1',
-        time: '០៧:០០ ព្រឹក',
-        titleKh: 'ពិធីហែជំនូន និងរៀបចំជំនូន',
-        titleEn: 'Fruit Parade & Gift Offering Ceremony',
-        descKh: 'ជួបជុំបងប្អូនញាតិមិត្តជិតឆ្ងាយដើម្បីហែជំនូនចូលគេហដ្ឋានកូនក្រមុំ',
-        descEn: 'Gathering of families and friends for traditional offerings procession',
-        icon: 'sun'
-      },
-      {
-        id: 'ag_2',
-        time: '០៨:៣០ ព្រឹក',
-        titleKh: 'ពិធីកាត់សក់បង្កក់សិរី',
-        titleEn: 'Hair Cutting & Cleansing Ceremony',
-        descKh: 'ពិធីកាត់សក់កាត់កោរជម្រះនូវឧបទ្រពចង្រៃ និងប្រសិទ្ធិពរជ័យសិរីសួស្តី',
-        descEn: 'Traditional symbolic cleansing ritual and blessings by elders',
-        icon: 'scissors'
-      },
-      {
-        id: 'ag_3',
-        time: '០៩:៣០ ព្រឹក',
-        titleKh: 'ពិធីផ្ទឹមសំពះពិសារស្លា និងបង្វិលពពិល',
-        titleEn: 'Knot-Tying Ceremony & Sacred Candle Passing',
-        descKh: 'ពិធីចងដៃសែនព្រេន និងបង្វិលពពិលប្រសិទ្ធពរជ័យដល់គូស្វាមីភរិយាថ្មី',
-        descEn: 'Sacred red string knot tying and candle passing for eternal harmony',
-        icon: 'ring'
-      },
-      {
-        id: 'ag_4',
-        time: '០៥:០០ ល្ងាច',
-        titleKh: 'ពិធីទទួលបដិសណ្ឋារកិច្ច និងពិសាភោជនាហារ',
-        titleEn: 'Grand Wedding Reception & Dinner Banquet',
-        descKh: 'សូមគោរពអញ្ជើញភ្ញៀវកិត្តិយសចូលរួមពិសារអាហារពេលល្ងាច និងរាំកម្សាន្ត',
-        descEn: 'Join us for fine dining banquet, live music celebration and toast',
-        icon: 'utensils'
-      }
-    ],
+    weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+    weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+    agendas: DEFAULT_WEDDING_AGENDAS,
 
     bankAccounts: [
       {

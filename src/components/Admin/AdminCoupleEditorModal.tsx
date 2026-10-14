@@ -224,8 +224,8 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
       if (!prev) return null;
       return {
         ...prev,
-        weddingProgramDay1TitleKh: 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤',
-        weddingProgramDay2TitleKh: 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤',
+        weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
+        weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
         agendas: DEFAULT_WEDDING_AGENDAS
       };
     });
@@ -841,10 +841,13 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                     <label className="block text-[11px] text-gray-500 mb-1">{lang === 'km' ? 'ចំណងជើងកម្មវិធី ថ្ងៃទី១ ៖' : 'Day 1 Title:'}</label>
                     <input
                       type="text"
-                      value={editingCouple.weddingProgramDay1TitleKh || 'កម្មវិធីថ្ងៃទី១ ថ្ងៃសៅរ៍ ទី០៦ ខែមករា ឆ្នាំ២០២៤'}
+                      value={editingCouple.weddingProgramDay1TitleKh || 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦'}
                       onChange={(e) => setEditingCouple(prev => prev ? { ...prev, weddingProgramDay1TitleKh: e.target.value } : null)}
                       className="w-full px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-xl font-medium text-gray-900"
                     />
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                      {lang === 'km' ? '✨ បង្ហាញលើធៀបជា ២ ជួរត្រឹមកណ្ដាល (កម្មវិធីទី១ / ថ្ងៃសៅរ៍...)' : '✨ Displays on card as 2 centered lines'}
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -904,10 +907,13 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                     <label className="block text-[11px] text-gray-500 mb-1">{lang === 'km' ? 'ចំណងជើងកម្មវិធី ថ្ងៃទី២ ៖' : 'Day 2 Title:'}</label>
                     <input
                       type="text"
-                      value={editingCouple.weddingProgramDay2TitleKh || 'កម្មវិធីថ្ងៃទី២ ថ្ងៃអាទិត្យ ទី០៧ ខែមករា ឆ្នាំ២០២៤'}
+                      value={editingCouple.weddingProgramDay2TitleKh || 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦'}
                       onChange={(e) => setEditingCouple(prev => prev ? { ...prev, weddingProgramDay2TitleKh: e.target.value } : null)}
                       className="w-full px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-xl font-medium text-gray-900"
                     />
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                      {lang === 'km' ? '✨ បង្ហាញលើធៀបជា ២ ជួរត្រឹមកណ្ដាល (កម្មវិធីទី២ / ថ្ងៃអាទិត្យ...)' : '✨ Displays on card as 2 centered lines'}
+                    </p>
                   </div>
                   <button
                     type="button"

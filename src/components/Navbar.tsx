@@ -129,8 +129,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
             className="flex items-center gap-2.5 select-none cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FF0055] via-[#FF1B6B] to-[#FF4585] flex items-center justify-center text-white shadow-sm shadow-pink-500/20 shrink-0 group-hover:scale-105 transition-transform">
-              <span className="font-serif-luxury font-normal text-base italic tracking-tighter">eI</span>
+            <div 
+              style={{
+                backgroundColor: '#FF1B6B',
+                backgroundImage: 'linear-gradient(135deg, #FF0055 0%, #FF1B6B 50%, #FF4585 100%)',
+                color: '#ffffff'
+              }}
+              className="w-9 h-9 rounded-xl bg-[#FF1B6B] bg-gradient-to-tr from-[#FF0055] via-[#FF1B6B] to-[#FF4585] flex items-center justify-center text-white shadow-sm shadow-pink-500/20 shrink-0 group-hover:scale-105 transition-transform"
+            >
+              <span className="font-serif-luxury font-normal text-base italic tracking-tighter text-white" style={{ color: '#ffffff' }}>eI</span>
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5 leading-none">
