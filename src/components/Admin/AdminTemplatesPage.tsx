@@ -160,7 +160,7 @@ export const AdminTemplatesPage: React.FC<AdminTemplatesPageProps> = ({
                   }
                 }}
               >
-                <h4 className="font-normal text-xs text-gray-900 truncate font-khmer-title hover:text-[#D4AF37] transition-colors" title={tpl.nameKh}>
+                <h4 className="font-medium text-xs text-gray-900 truncate font-battambang hover:text-[#D4AF37] transition-colors" title={tpl.nameKh}>
                   {tpl.nameKh}
                 </h4>
                 <span className="text-[10px] text-gray-400 font-battambang block mt-0.5">
@@ -241,7 +241,7 @@ export const AdminTemplatesPage: React.FC<AdminTemplatesPageProps> = ({
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-normal text-xs text-gray-900 truncate font-khmer-title">
+                <div className="font-medium text-xs text-gray-900 truncate font-battambang">
                   {templateToDelete.nameKh}
                 </div>
                 <div className="text-[11px] text-gray-500 mt-0.5">

@@ -43,6 +43,7 @@ import { WeddingGallerySlideshow } from './WeddingGallerySlideshow';
 import weddingTitleImage from '../../assets/images/frome3.png';
 import loveOrnament from '../../assets/images/love.png';
 import ponleuLogo from '../../assets/images/ponleu_logo.svg';
+import { DEFAULT_ADMIN_PROMO_FOOTER } from '../../data/initialData';
 import { TelegramIcon } from '../icons/TelegramIcon';
 import frameOverlay from '../../assets/images/T003/F0030.png';
 import guestFrameBanner from '../../assets/images/fram002.png';
@@ -1353,87 +1354,99 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             </div>
 
 
-          {/* Footer Branding Removed */}
+          {/* Uniform Global Branding / Promo Footer */}
+          {couple.adminPromo?.enabled !== false && (() => {
+            const footerPhone = couple.contactPhone || DEFAULT_ADMIN_PROMO_FOOTER.contactPhone;
+            const footerTelegram = couple.contactTelegram || DEFAULT_ADMIN_PROMO_FOOTER.contactTelegram;
+            const footerFacebook = couple.contactFacebook || DEFAULT_ADMIN_PROMO_FOOTER.contactFacebook;
+            const footerLocation = couple.contactLocation || DEFAULT_ADMIN_PROMO_FOOTER.contactLocation;
+            const footerLocationName = couple.contactLocationName || DEFAULT_ADMIN_PROMO_FOOTER.contactLocationName;
+            const footerLocation2 = couple.contactLocation2 || DEFAULT_ADMIN_PROMO_FOOTER.contactLocation2;
+            const footerLocationName2 = couple.contactLocationName2 || DEFAULT_ADMIN_PROMO_FOOTER.contactLocationName2;
+            const footerLogo = couple.adminPromo?.imageUrl || ponleuLogo;
+            const footerText = couple.adminPromo?.textKh || DEFAULT_ADMIN_PROMO_FOOTER.adminPromo.textKh;
+            const hasContacts = Boolean(footerPhone || footerTelegram || footerFacebook || footerLocation || footerLocation2);
 
-          {(couple.adminPromo?.enabled !== false || couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
-            <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
-              <div className="p-2 sm:p-3 w-full space-y-2.5">
-                {/* Logo Display */}
-                <div className="flex items-center justify-center pt-1 pb-1">
-                  <img 
-                    src={couple.adminPromo?.imageUrl || ponleuLogo} 
-                    alt="Ponleu Printing Logo" 
-                    className="h-12 max-w-[280px] object-contain filter drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]" 
-                  />
-                </div>
-
-                <div className="text-sm sm:text-base font-battambang text-white/95 whitespace-pre-line leading-relaxed">
-                  {couple.adminPromo?.textKh || 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998'}
-                </div>
-
-                {/* Contact Icons */}
-                {(couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
-                  <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-                    {couple.contactPhone && (
-                      <a 
-                        href={`tel:${couple.contactPhone.replace(/\s+/g, '')}`} 
-                        className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                        title={couple.contactPhone}
-                      >
-                        <Phone className="w-4 h-4 text-emerald-400" />
-                      </a>
-                    )}
-                    {couple.contactTelegram && (
-                      <a 
-                        href={couple.contactTelegram.startsWith('http') ? couple.contactTelegram : `https://t.me/${couple.contactTelegram.replace('@', '')}`} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                        title="Telegram"
-                      >
-                        <TelegramIcon className="w-4 h-4 text-sky-400" />
-                      </a>
-                    )}
-                    {couple.contactFacebook && (
-                      <a 
-                        href={couple.contactFacebook.startsWith('http') ? couple.contactFacebook : `https://facebook.com/${couple.contactFacebook}`} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                        title="Facebook"
-                      >
-                        <Facebook className="w-4 h-4 text-blue-400" />
-                      </a>
-                    )}
-                    {couple.contactLocation && (
-                      <a 
-                        href={couple.contactLocation} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
-                        title={couple.contactLocationName || 'Location ហាង ទី១'}
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                        <span>{couple.contactLocationName || 'ទីតាំងហាងទី១'}</span>
-                      </a>
-                    )}
-                    {couple.contactLocation2 && (
-                      <a 
-                        href={couple.contactLocation2} 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
-                        title={couple.contactLocationName2 || 'Location ហាង ទី២'}
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                        <span>{couple.contactLocationName2 || 'ទីតាំងហាងទី២'}</span>
-                      </a>
-                    )}
+            return (
+              <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
+                <div className="p-2 sm:p-3 w-full space-y-2.5">
+                  {/* Logo Display */}
+                  <div className="flex items-center justify-center pt-1 pb-1">
+                    <img 
+                      src={footerLogo} 
+                      alt="Ponleu Printing Logo" 
+                      className="h-12 max-w-[280px] object-contain filter drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]" 
+                    />
                   </div>
-                )}
+
+                  <div className="text-sm sm:text-base font-battambang text-white/95 whitespace-pre-line leading-relaxed">
+                    {footerText}
+                  </div>
+
+                  {/* Contact Icons */}
+                  {hasContacts && (
+                    <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+                      {footerPhone && (
+                        <a 
+                          href={`tel:${footerPhone.replace(/\s+/g, '')}`} 
+                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                          title={footerPhone}
+                        >
+                          <Phone className="w-4 h-4 text-emerald-400" />
+                        </a>
+                      )}
+                      {footerTelegram && (
+                        <a 
+                          href={footerTelegram.startsWith('http') ? footerTelegram : `https://t.me/${footerTelegram.replace('@', '')}`} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                          title="Telegram"
+                        >
+                          <TelegramIcon className="w-4 h-4 text-sky-400" />
+                        </a>
+                      )}
+                      {footerFacebook && (
+                        <a 
+                          href={footerFacebook.startsWith('http') ? footerFacebook : `https://facebook.com/${footerFacebook}`} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
+                          title="Facebook"
+                        >
+                          <Facebook className="w-4 h-4 text-blue-400" />
+                        </a>
+                      )}
+                      {footerLocation && (
+                        <a 
+                          href={footerLocation} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
+                          title={footerLocationName || 'Location ហាង ទី១'}
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                          <span>{footerLocationName || 'ទីតាំងហាងទី១'}</span>
+                        </a>
+                      )}
+                      {footerLocation2 && (
+                        <a 
+                          href={footerLocation2} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
+                          title={footerLocationName2 || 'Location ហាង ទី២'}
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span>{footerLocationName2 || 'ទីតាំងហាងទី២'}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
       {/* Lightbox Modal for Photo Gallery & Map with Prev/Next Navigation rendered via Portal to break free from any scroll/transform parent */}

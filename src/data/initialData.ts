@@ -270,6 +270,22 @@ export const DEFAULT_WEDDING_AGENDAS: AgendaItem[] = [
     icon: 'utensils'
   }
 ];
+
+export const DEFAULT_ADMIN_PROMO_FOOTER = {
+  adminPromo: {
+    enabled: true,
+    textKh: 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998',
+    imageUrl: ponleuLogo
+  },
+  contactFacebook: 'https://facebook.com/',
+  contactTelegram: 'https://t.me/username',
+  contactPhone: '097 370 7998',
+  contactLocation: 'https://maps.google.com/?q=Siem+Reap+Cambodia',
+  contactLocationName: 'ទីតាំងហាងទី១',
+  contactLocation2: '',
+  contactLocationName2: 'ទីតាំងហាងទី២'
+};
+
 export const INITIAL_COUPLES: CoupleEvent[] = [
   {
     id: 'couple_368',
@@ -394,18 +410,7 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     createdDate: '2026-08-15',
     status: 'active',
     packageType: 'VIP Gold',
-    adminPromo: {
-      enabled: true,
-      textKh: 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998',
-      imageUrl: ponleuLogo
-    },
-    contactFacebook: 'https://facebook.com/',
-    contactTelegram: 'https://t.me/username',
-    contactPhone: '097 370 7998',
-    contactLocation: 'https://maps.google.com/?q=Siem+Reap+Cambodia',
-    contactLocationName: 'ទីតាំងហាងទី១',
-    contactLocation2: '',
-    contactLocationName2: 'ទីតាំងហាងទី២'
+    ...DEFAULT_ADMIN_PROMO_FOOTER
   },
   {
     id: 'couple_01',
@@ -606,7 +611,8 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     createdDate: '2026-08-01',
     status: 'active',
     packageType: 'VIP Gold',
-    adminNotes: 'កញ្ចប់សេវា VIP Gold រួមបញ្ចូល QR Code ចងដៃ និងបទភ្លេងកែសម្រួលតាមចិត្ត'
+    adminNotes: 'កញ្ចប់សេវា VIP Gold រួមបញ្ចូល QR Code ចងដៃ និងបទភ្លេងកែសម្រួលតាមចិត្ត',
+    ...DEFAULT_ADMIN_PROMO_FOOTER
   }
 ];
 

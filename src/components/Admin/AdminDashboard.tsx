@@ -229,6 +229,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const groomPart = (newCoupleForm.groomNameEn || 'groom').toLowerCase().replace(/\s+/g, '-');
     const bridePart = (newCoupleForm.brideNameEn || 'bride').toLowerCase().replace(/\s+/g, '-');
     const slug = `${groomPart}-${bridePart}`;
+
+    // Inherit the global Admin Footer Settings from active couples[0]
+    const baseCouple = couples[0];
+    const defaultPromo = baseCouple?.adminPromo || {
+      enabled: true,
+      imageUrl: '',
+      textKh: 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998'
+    };
+
     const newCouple: CoupleEvent = {
       id: `couple_${Date.now()}`,
       slug: slug || `couple-${Date.now()}`,
@@ -272,6 +281,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       weddingProgramDay1TitleKh: 'កម្មវិធីទី១ ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
       weddingProgramDay2TitleKh: 'កម្មវិធីទី២ ថ្ងៃអាទិត្យ ទី២៩ ខែវិច្ឆិកា ឆ្នាំ២០២៦',
       agendas: DEFAULT_WEDDING_AGENDAS,
+      adminPromo: defaultPromo,
+      contactFacebook: baseCouple?.contactFacebook || '',
+      contactTelegram: baseCouple?.contactTelegram || '',
+      contactPhone: baseCouple?.contactPhone || '097 370 7998',
+      contactLocationName: baseCouple?.contactLocationName || '',
+      contactLocation: baseCouple?.contactLocation || '',
+      contactLocationName2: baseCouple?.contactLocationName2 || '',
+      contactLocation2: baseCouple?.contactLocation2 || '',
       bankAccounts: [
         {
           id: 'ba_def',
@@ -998,13 +1015,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-[#FAF8F5] border-b border-[#EAE6E1] text-[11px] font-semibold text-gray-500 uppercase tracking-wider font-battambang">
-                          <th className="py-3.5 px-4 text-center w-12">#</th>
-                          <th className="py-3.5 px-4 text-center w-16">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
-                          <th className="py-3.5 px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Song Title'}</th>
-                          <th className="py-3.5 px-4">{lang === 'km' ? 'ប្រភេទបទភ្លេង' : 'Category'}</th>
-                          <th className="py-3.5 px-4 text-center">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
-                          <th className="py-3.5 px-4 text-center">{lang === 'km' ? 'ប្រជាប្រិយភាព' : 'Popularity'}</th>
-                          <th className="py-3.5 px-4 text-right pr-6">{lang === 'km' ? 'សកម្មភាព' : 'Actions'}</th>
+                          <th className="py-3.5 px-4 text-center w-12 hidden sm:table-cell">#</th>
+                          <th className="py-3.5 px-2 sm:px-4 text-center w-12 sm:w-16">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
+                          <th className="py-3.5 px-2 sm:px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Song Title'}</th>
+                          <th className="py-3.5 px-4 hidden sm:table-cell">{lang === 'km' ? 'ប្រភេទបទភ្លេង' : 'Category'}</th>
+                          <th className="py-3.5 px-4 text-center hidden sm:table-cell">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
+                          <th className="py-3.5 px-4 text-center hidden sm:table-cell">{lang === 'km' ? 'ប្រជាប្រិយភាព' : 'Popularity'}</th>
+                          <th className="py-3.5 px-2 sm:px-4 text-right pr-3 sm:pr-6">{lang === 'km' ? 'សកម្មភាព' : 'Actions'}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[#F0EDE8] text-xs font-battambang">
@@ -1017,17 +1034,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 isPlaying ? 'bg-amber-50/80 ring-1 ring-[#D4AF37]/30' : idx % 2 === 0 ? 'bg-white' : 'bg-[#FCFBF9]'
                               }`}
                             >
-                              {/* Index */}
-                              <td className="py-3.5 px-4 text-center text-gray-400 font-mono text-[11px]">
+                              {/* Index (Hidden on mobile) */}
+                              <td className="py-3.5 px-4 text-center text-gray-400 font-mono text-[11px] hidden sm:table-cell">
                                 {idx + 1}
                               </td>
 
                               {/* Play / Pause Toggle Button */}
-                              <td className="py-3.5 px-4 text-center">
+                              <td className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center">
                                 <button
                                   type="button"
                                   onClick={() => handleTogglePlayMusicTrack(track.id)}
-                                  className={`w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all cursor-pointer shadow-xs ${
+                                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl inline-flex items-center justify-center transition-all cursor-pointer shadow-xs ${
                                     isPlaying 
                                       ? 'bg-[#D4AF37] text-white ring-4 ring-[#D4AF37]/20 scale-105 animate-pulse' 
                                       : 'bg-amber-50 text-[#8C6D1F] hover:bg-amber-100 border border-amber-200/80 hover:scale-105'
@@ -1035,46 +1052,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                   title={isPlaying ? 'Pause Preview' : 'Play Preview'}
                                 >
                                   {isPlaying ? (
-                                    <Pause className="w-4 h-4 fill-current" />
+                                    <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
                                   ) : (
-                                    <Play className="w-4 h-4 fill-current ml-0.5" />
+                                    <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current ml-0.5" />
                                   )}
                                 </button>
                               </td>
 
-                              {/* Song Title Only (Font Battambang) */}
-                              <td className="py-3.5 px-4">
-                                <div className="flex items-center gap-2 min-w-0">
-                                  <span className="font-battambang text-xs sm:text-sm font-medium text-gray-900 group-hover:text-[#8C6D1F] transition-colors">
+                              {/* Song Title (Single-line truncated with ... on mobile) */}
+                              <td className="py-2.5 px-2 sm:py-3.5 sm:px-4 min-w-0 max-w-[130px] xs:max-w-[180px] sm:max-w-none">
+                                <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+                                  <span className="font-battambang text-xs sm:text-sm font-medium text-gray-900 group-hover:text-[#8C6D1F] transition-colors truncate block">
                                     {track.titleKh}
                                   </span>
                                   {isPlaying && (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-amber-500 text-white shrink-0">
-                                      <Volume2 className="w-3 h-3 animate-bounce" />
-                                      <span>កំពុងចាក់...</span>
+                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-amber-500 text-white shrink-0">
+                                      <Volume2 className="w-2.5 h-2.5 animate-bounce" />
+                                      <span className="hidden sm:inline">កំពុងចាក់...</span>
                                     </span>
                                   )}
                                 </div>
                               </td>
 
-                              {/* Category */}
-                              <td className="py-3.5 px-4 whitespace-nowrap">
+                              {/* Category (Hidden on mobile) */}
+                              <td className="py-3.5 px-4 whitespace-nowrap hidden sm:table-cell">
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-amber-50/80 text-[#8C6D1F] border border-amber-200/60 font-battambang">
                                   <Tag className="w-3 h-3 text-[#D4AF37]" />
                                   <span>{track.category}</span>
                                 </span>
                               </td>
 
-                              {/* Duration */}
-                              <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                              {/* Duration (Hidden on mobile) */}
+                              <td className="py-3.5 px-4 text-center whitespace-nowrap hidden sm:table-cell">
                                 <span className="inline-flex items-center gap-1 text-[11px] text-gray-600 font-mono bg-gray-100/80 px-2.5 py-1 rounded-md border border-gray-200/60">
                                   <Clock className="w-3 h-3 text-gray-400" />
                                   <span>{track.duration || '3:30'}</span>
                                 </span>
                               </td>
 
-                              {/* Popularity */}
-                              <td className="py-3.5 px-4 text-center whitespace-nowrap font-battambang">
+                              {/* Popularity (Hidden on mobile) */}
+                              <td className="py-3.5 px-4 text-center whitespace-nowrap font-battambang hidden sm:table-cell">
                                 {track.isPopular ? (
                                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium bg-amber-100/80 text-amber-800 border border-amber-300/60">
                                     <Star className="w-3 h-3 text-amber-600 fill-amber-500" />

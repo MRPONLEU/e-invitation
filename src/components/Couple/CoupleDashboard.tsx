@@ -1115,7 +1115,7 @@ ${inviteLink}`;
 
                     <div className="p-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs font-normal text-gray-900 truncate block font-khmer-title" title={tpl.nameKh}>
+                        <span className="text-xs font-medium text-gray-900 truncate block font-battambang" title={tpl.nameKh}>
                           {tpl.nameKh}
                         </span>
                         <span className="text-[10px] text-gray-400 font-medium">
@@ -1150,38 +1150,7 @@ ${inviteLink}`;
             </h3>
           </div>
 
-          {/* Slug URL Customization */}
-          <div className="bg-white border border-[#EAE6E1] rounded-3xl p-6 space-y-4 shadow-xs">
-            <h4 className="text-base font-normal text-gray-900 font-khmer-title flex items-center gap-2">
-              <KeyRound className="w-4 h-4 text-[#D4AF37]" />
-              <span>{lang === 'km' ? 'តំណភ្ជាប់សំបុត្រអញ្ជើញ (Slug URL)' : 'Invitation Slug URL'}</span>
-            </h4>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 font-mono">/?c=</span>
-              <input
-                type="text"
-                value={couple.slug || ''}
-                onChange={(e) => {
-                  const newSlug = e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-');
-                  setCouples(prev => {
-                    const duplicate = prev.find(c => c.slug === newSlug && c.id !== couple.id);
-                    if (duplicate) {
-                      alert(lang === 'km' 
-                        ? `Slug URL "${newSlug}" នេះមានរួចរាល់ហើយក្នុងប្រព័ន្ធ! សូមធ្វើការផ្លាស់ប្ដូរ Slug URL ផ្សេង។` 
-                        : `Slug URL "${newSlug}" already exists! Please choose a different Slug URL.`);
-                      return prev;
-                    }
-                    return prev.map(c => c.id === couple.id ? { ...c, slug: newSlug } : c);
-                  });
-                }}
-                placeholder="pov-pean-dieb-samphous"
-                className="flex-1 px-4 py-2.5 text-xs bg-white border border-gray-300 rounded-xl focus:border-[#D4AF37] outline-hidden font-mono text-gray-900"
-              />
-            </div>
-            <p className="text-[11px] text-gray-500">
-              {lang === 'km' ? 'ឧ. pov-pean-dieb-samphous នឹងបង្កើតលីង ?c=pov-pean-dieb-samphous' : 'E.g. pov-pean-dieb-samphous'}
-            </p>
-          </div>
+
 
           {/* Theme Customization Overrides */}
           <div className="bg-white border border-[#EAE6E1] rounded-3xl p-6 space-y-6 shadow-xs">
@@ -1193,65 +1162,74 @@ ${inviteLink}`;
               
               {/* Petal animation toggle */}
               <div className="p-4 rounded-2xl border border-gray-200 bg-[#FAF9F6] flex items-center justify-between">
-                <div>
-                  <div className="font-normal text-xs text-gray-900">
+                <div className="min-w-0 flex-1 pr-2">
+                  <div className="font-medium text-xs text-gray-900 font-battambang">
                     {lang === 'km' ? 'ធ្លាក់ផ្កាកុលាប & ពន្លឺចែងចាំង' : 'Falling Petals / Sparkles'}
                   </div>
-                  <div className="text-[11px] text-gray-500">
+                  <div className="text-[11px] text-gray-500 font-battambang mt-0.5">
                     {lang === 'km' ? 'បែបផែនរ៉ូមែនទិកលើអេក្រង់' : 'Floating animated particles'}
                   </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={couple.customTheme.enablePetals}
-                  onChange={(e) => updateCouple(prev => ({
-                    ...prev,
-                    customTheme: { ...prev.customTheme, enablePetals: e.target.checked }
-                  }))}
-                  className="w-5 h-5 accent-[#D4AF37] cursor-pointer"
-                />
+                <label className="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
+                  <input
+                    type="checkbox"
+                    checked={couple.customTheme.enablePetals}
+                    onChange={(e) => updateCouple(prev => ({
+                      ...prev,
+                      customTheme: { ...prev.customTheme, enablePetals: e.target.checked }
+                    }))}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                </label>
               </div>
 
               {/* Frame Overlay toggle */}
               <div className="p-4 rounded-2xl border border-gray-200 bg-[#FAF9F6] flex items-center justify-between">
-                <div>
-                  <div className="font-normal text-xs text-gray-900">
+                <div className="min-w-0 flex-1 pr-2">
+                  <div className="font-medium text-xs text-gray-900 font-battambang">
                     {lang === 'km' ? 'បង្ហាញស៊ុមមង្គលការ (Wedding Frame Overlay)' : 'Wedding Frame Overlay'}
                   </div>
-                  <div className="text-[11px] text-gray-500">
+                  <div className="text-[11px] text-gray-500 font-battambang mt-0.5">
                     {lang === 'km' ? 'បង្ហាញស៊ុមតុបតែងលើធៀប' : 'Display decorative frame on invitation'}
                   </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={couple.customTheme.showFrameOverlay !== false}
-                  onChange={(e) => updateCouple(prev => ({
-                    ...prev,
-                    customTheme: { ...prev.customTheme, showFrameOverlay: e.target.checked }
-                  }))}
-                  className="w-5 h-5 accent-[#D4AF37] cursor-pointer"
-                />
+                <label className="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
+                  <input
+                    type="checkbox"
+                    checked={couple.customTheme.showFrameOverlay !== false}
+                    onChange={(e) => updateCouple(prev => ({
+                      ...prev,
+                      customTheme: { ...prev.customTheme, showFrameOverlay: e.target.checked }
+                    }))}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                </label>
               </div>
 
               {/* Music auto play toggle */}
               <div className="p-4 rounded-2xl border border-gray-200 bg-[#FAF9F6] flex items-center justify-between">
-                <div>
-                  <div className="font-normal text-xs text-gray-900">
+                <div className="min-w-0 flex-1 pr-2">
+                  <div className="font-medium text-xs text-gray-900 font-battambang">
                     {lang === 'km' ? 'ចាក់ភ្លេងការស្វ័យប្រវត្តិ' : 'Background Music Player'}
                   </div>
-                  <div className="text-[11px] text-gray-500">
+                  <div className="text-[11px] text-gray-500 font-battambang mt-0.5">
                     {lang === 'km' ? 'ពេលភ្ញៀវបើកសំបុត្រអញ្ជើញ' : 'Play melody on open'}
                   </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={couple.customTheme.enableMusic}
-                  onChange={(e) => updateCouple(prev => ({
-                    ...prev,
-                    customTheme: { ...prev.customTheme, enableMusic: e.target.checked }
-                  }))}
-                  className="w-5 h-5 accent-[#D4AF37] cursor-pointer"
-                />
+                <label className="relative inline-flex items-center cursor-pointer shrink-0 ml-2">
+                  <input
+                    type="checkbox"
+                    checked={couple.customTheme.enableMusic}
+                    onChange={(e) => updateCouple(prev => ({
+                      ...prev,
+                      customTheme: { ...prev.customTheme, enableMusic: e.target.checked }
+                    }))}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                </label>
               </div>
 
               {/* Envelope wax seal style */}
@@ -1402,13 +1380,13 @@ ${inviteLink}`;
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-[#FAF8F5] border-b border-[#EAE6E1] text-[11px] font-semibold text-gray-500 uppercase tracking-wider font-battambang">
-                      <th className="py-3 px-4 text-center w-12">#</th>
-                      <th className="py-3 px-4 text-center w-16">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
-                      <th className="py-3 px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Song Title'}</th>
-                      <th className="py-3 px-4">{lang === 'km' ? 'ប្រភេទបទភ្លេង' : 'Category'}</th>
-                      <th className="py-3 px-4 text-center">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
-                      <th className="py-3 px-4 text-center">{lang === 'km' ? 'ប្រជាប្រិយភាព' : 'Popularity'}</th>
-                      <th className="py-3 px-4 text-right pr-6">{lang === 'km' ? 'ជ្រើសរើស' : 'Action'}</th>
+                      <th className="py-3 px-4 text-center w-12 hidden sm:table-cell">#</th>
+                      <th className="py-3 px-2 sm:px-4 text-center w-12 sm:w-16">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
+                      <th className="py-3 px-2 sm:px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Song Title'}</th>
+                      <th className="py-3 px-4 hidden sm:table-cell">{lang === 'km' ? 'ប្រភេទបទភ្លេង' : 'Category'}</th>
+                      <th className="py-3 px-4 text-center hidden sm:table-cell">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
+                      <th className="py-3 px-4 text-center hidden sm:table-cell">{lang === 'km' ? 'ប្រជាប្រិយភាព' : 'Popularity'}</th>
+                      <th className="py-3 px-2 sm:px-4 text-right pr-3 sm:pr-6">{lang === 'km' ? 'ជ្រើសរើស' : 'Action'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F0EDE8] text-xs font-battambang">
@@ -1427,19 +1405,29 @@ ${inviteLink}`;
                         return (
                           <tr
                             key={track.id}
-                            className={`group hover:bg-amber-50/40 transition-colors ${
+                            onClick={() => {
+                              updateCouple(prev => ({
+                                ...prev,
+                                customTheme: {
+                                  ...prev.customTheme,
+                                  musicTrack: track.titleKh,
+                                  musicUrl: track.audioUrl
+                                }
+                              }));
+                            }}
+                            className={`group hover:bg-amber-50/70 transition-colors cursor-pointer ${
                               isSelected
-                                ? 'bg-amber-50/70 ring-1 ring-[#D4AF37]/30'
+                                ? 'bg-amber-50/90 ring-1 ring-[#D4AF37]/40'
                                 : idx % 2 === 0 ? 'bg-white' : 'bg-[#FCFBF9]'
                             }`}
                           >
-                            {/* Index */}
-                            <td className="py-3 px-4 text-center text-gray-400 font-mono text-[11px]">
+                            {/* Index (Hidden on mobile) */}
+                            <td className="py-3 px-4 text-center text-gray-400 font-mono text-[11px] hidden sm:table-cell">
                               {idx + 1}
                             </td>
 
                             {/* Play / Pause Preview Button */}
-                            <td className="py-3 px-4 text-center">
+                            <td className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-center">
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -1461,50 +1449,50 @@ ${inviteLink}`;
                               </button>
                             </td>
 
-                            {/* Song Title */}
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="font-battambang text-xs sm:text-sm font-medium text-gray-900 group-hover:text-[#8C6D1F] transition-colors">
+                            {/* Song Title (Single-line truncated with ... on mobile) */}
+                            <td className="py-2.5 px-2 sm:py-3.5 sm:px-4 min-w-0 max-w-[130px] xs:max-w-[180px] sm:max-w-none">
+                              <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+                                <span className="font-battambang text-xs sm:text-sm font-medium text-gray-900 group-hover:text-[#8C6D1F] transition-colors truncate block">
                                   {track.titleKh}
                                 </span>
                                 {isSelected && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
-                                    <Check className="w-3 h-3 text-emerald-600" />
-                                    <span>{lang === 'km' ? 'បានជ្រើសរើស' : 'Selected'}</span>
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
+                                    <Check className="w-2.5 h-2.5 text-emerald-600" />
+                                    <span className="hidden sm:inline">{lang === 'km' ? 'បានជ្រើសរើស' : 'Selected'}</span>
                                   </span>
                                 )}
                                 {isPlaying && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-medium bg-amber-500 text-white shrink-0">
-                                    <Volume2 className="w-3 h-3 animate-bounce" />
-                                    <span>កំពុងចាក់...</span>
+                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-amber-500 text-white shrink-0">
+                                    <Volume2 className="w-2.5 h-2.5 animate-bounce" />
+                                    <span className="hidden sm:inline">កំពុងចាក់...</span>
                                   </span>
                                 )}
                               </div>
                               {track.titleEn && (
-                                <p className="text-[11px] text-gray-400 mt-0.5">
+                                <p className="text-[11px] text-gray-400 mt-0.5 truncate hidden sm:block">
                                   {track.titleEn}
                                 </p>
                               )}
                             </td>
 
-                            {/* Category */}
-                            <td className="py-3 px-4 whitespace-nowrap">
+                            {/* Category (Hidden on mobile) */}
+                            <td className="py-3 px-4 whitespace-nowrap hidden sm:table-cell">
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-amber-50/80 text-[#8C6D1F] border border-amber-200/60 font-battambang">
                                 <Tag className="w-3 h-3 text-[#D4AF37]" />
                                 <span>{track.category}</span>
                               </span>
                             </td>
 
-                            {/* Duration */}
-                            <td className="py-3 px-4 text-center whitespace-nowrap">
+                            {/* Duration (Hidden on mobile) */}
+                            <td className="py-3 px-4 text-center whitespace-nowrap hidden sm:table-cell">
                               <span className="inline-flex items-center gap-1 text-[11px] text-gray-600 font-mono bg-gray-100/80 px-2 py-0.5 rounded-md border border-gray-200/60">
                                 <Clock className="w-3 h-3 text-gray-400" />
                                 <span>{track.duration || '3:30'}</span>
                               </span>
                             </td>
 
-                            {/* Popularity */}
-                            <td className="py-3 px-4 text-center whitespace-nowrap font-battambang">
+                            {/* Popularity (Hidden on mobile) */}
+                            <td className="py-3 px-4 text-center whitespace-nowrap font-battambang hidden sm:table-cell">
                               {track.isPopular ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-100/80 text-amber-800 border border-amber-300/60">
                                   <Star className="w-3 h-3 text-amber-600 fill-amber-500" />
@@ -1516,7 +1504,7 @@ ${inviteLink}`;
                             </td>
 
                             {/* Select / Remove Button */}
-                            <td className="py-3 px-4 text-right pr-6 whitespace-nowrap">
+                            <td className="py-2.5 px-2 sm:py-3.5 sm:px-4 text-right pr-3 sm:pr-6 whitespace-nowrap">
                               {isSelected ? (
                                 <button
                                   type="button"
@@ -1533,11 +1521,11 @@ ${inviteLink}`;
                                       }
                                     }));
                                   }}
-                                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                                  className="px-2.5 py-1.5 sm:px-3 sm:py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-medium inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                                   title={lang === 'km' ? 'ដកបទចម្រៀងចេញ' : 'Remove Track'}
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
-                                  <span>{lang === 'km' ? 'ដកចេញ' : 'Remove'}</span>
+                                  <span className="hidden sm:inline">{lang === 'km' ? 'ដកចេញ' : 'Remove'}</span>
                                 </button>
                               ) : (
                                 <button

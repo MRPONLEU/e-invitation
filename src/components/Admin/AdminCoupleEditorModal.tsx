@@ -8,7 +8,7 @@ import sparklingGifEffect from '../../assets/images/ligt001.webp';
 import gifF0031 from '../../assets/images/T003/F0031.webp';
 import gifF0032 from '../../assets/images/T003/F0032_opt.webp';
 import { formatImageUrl, compressImageFile, handleImageError } from '../../utils/imageHelper';
-import { formatVideoUrl } from '../../utils/urlHelper';
+import { formatVideoUrl, getCouplePortalUrl, getGuestInvitationUrl } from '../../utils/urlHelper';
 import { requestAppFullscreen } from '../../utils/fullscreen';
 import { 
   Users, 
@@ -17,6 +17,8 @@ import {
   Check, 
   Eye, 
   X, 
+  Copy,
+  Share2, 
   MapPin, 
   Trash2, 
   Clock, 
@@ -70,6 +72,13 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
   const [activeTab, setActiveTab] = useState<EditTabType>('account');
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [newGalleryPhotoUrl, setNewGalleryPhotoUrl] = useState('');
+  const [copiedLinkKey, setCopiedLinkKey] = useState<string | null>(null);
+
+  const handleCopyLink = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedLinkKey(key);
+    setTimeout(() => setCopiedLinkKey(null), 2500);
+  };
 
   const handleSave = () => {
     if (!editingCouple.slug || !editingCouple.slug.trim()) {
@@ -479,6 +488,78 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                 <p className="text-[11px] text-gray-500">
                   {lang === 'km' ? 'ឧ. pov-pean-dieb-samphous សម្រាប់លីង ?c=pov-pean-dieb-samphous' : 'E.g. pov-pean-dieb-samphous'}
                 </p>
+              </div>
+
+              {/* Couple Portal Link & Guest Invitation Link */}
+              <div className="pt-2 border-t border-gray-100 space-y-3">
+                <h5 className="text-xs font-semibold text-gray-900 flex items-center gap-1.5">
+                  <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>{lang === 'km' ? 'តំណភ្ជាប់ប្រព័ន្ធ (System Links)' : 'System Links'}</span>
+                </h5>
+
+                {/* 1. Couple Portal Management Link (Admin -> Couple) */}
+                <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/90 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-amber-950 flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>{lang === 'km' ? 'តំណភ្ជាប់សម្រាប់កូនកម្លោះ-ក្រមុំ (Couple Portal Link)' : 'Couple Management Link'}</span>
+                    </span>
+                    <span className="text-[10px] text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded-full font-medium">
+                      {lang === 'km' ? 'ផ្ញើឱ្យកូនកម្លោះ-ក្រមុំ' : 'Send to Couple'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={getCouplePortalUrl(editingCouple.id)}
+                      className="flex-1 px-3 py-1.5 text-xs bg-white border border-amber-300/80 rounded-xl font-mono text-gray-800 select-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopyLink(getCouplePortalUrl(editingCouple.id), 'couple_portal')}
+                      className="px-3 py-1.5 bg-[#8C6D1F] hover:bg-[#735919] text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-2xs"
+                    >
+                      {copiedLinkKey === 'couple_portal' ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedLinkKey === 'couple_portal' ? (lang === 'km' ? 'បានចម្លង!' : 'Copied!') : (lang === 'km' ? 'ចម្លង Link' : 'Copy')}</span>
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-amber-900/80">
+                    {lang === 'km' ? '📌 Admin បង្កើតគូស្នេហ៍រួច ចម្លងតំណភ្ជាប់នេះផ្ញើឱ្យកូនកម្លោះក្រមុំ ដើម្បីឱ្យពួកគាត់ចូលរៀបចំកាត និងបង្កើតភ្ញៀវ' : 'Admin generates this link and sends it to the couple to manage their invitations.'}
+                  </p>
+                </div>
+
+                {/* 2. Guest Invitation Link */}
+                <div className="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-gray-900 flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5 text-gray-600" />
+                      <span>{lang === 'km' ? 'តំណភ្ជាប់សំបុត្រអញ្ជើញភ្ញៀវ (Guest Invitation Link)' : 'Guest Invitation Link'}</span>
+                    </span>
+                    <span className="text-[10px] text-gray-600 bg-gray-200/70 px-2 py-0.5 rounded-full font-medium">
+                      {lang === 'km' ? 'សំបុត្រការឌីជីថល' : 'e-Invitation'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={getGuestInvitationUrl(editingCouple.slug || editingCouple.id)}
+                      className="flex-1 px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-xl font-mono text-gray-800 select-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopyLink(getGuestInvitationUrl(editingCouple.slug || editingCouple.id), 'guest_invite')}
+                      className="px-3 py-1.5 bg-gray-800 hover:bg-black text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-2xs"
+                    >
+                      {copiedLinkKey === 'guest_invite' ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedLinkKey === 'guest_invite' ? (lang === 'km' ? 'បានចម្លង!' : 'Copied!') : (lang === 'km' ? 'ចម្លង Link' : 'Copy')}</span>
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-gray-500">
+                    {lang === 'km' ? '📌 តំណភ្ជាប់មេសម្រាប់ភ្ញៀវទូទៅ (កូនកម្លោះ-ក្រមុំក៏អាចបង្កើត Link ផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវម្នាក់ៗបានផងដែរ)' : 'Main link for guests (the couple can also create personalized links for each guest in their portal).'}
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -1535,7 +1616,7 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                 </div>
 
                 {/* Auto Play Switch */}
-                <label className="inline-flex items-center gap-2 px-3.5 py-2 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-100/80 transition-colors self-start sm:self-auto shrink-0">
+                <label className="relative inline-flex items-center gap-2.5 px-3.5 py-2 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-100/80 transition-colors self-start sm:self-auto shrink-0">
                   <input
                     type="checkbox"
                     checked={editingCouple.customTheme?.enableMusic !== false}
@@ -1555,9 +1636,10 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                         }
                       } : null);
                     }}
-                    className="w-4 h-4 accent-[#D4AF37] cursor-pointer"
+                    className="sr-only peer"
                   />
-                  <span className="text-xs font-medium text-amber-950">
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                  <span className="text-xs font-medium text-amber-950 font-battambang">
                     {lang === 'km' ? 'ចាក់ភ្លេងស្វ័យប្រវត្តិ (Auto-play)' : 'Auto-play Music'}
                   </span>
                 </label>
@@ -1568,12 +1650,12 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="bg-[#FAF8F5] border-b border-[#EAE6E1] text-[11px] font-semibold text-gray-500 uppercase">
-                      <th className="py-3 px-4 text-center w-12">#</th>
-                      <th className="py-3 px-4 text-center w-14">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
-                      <th className="py-3 px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Title'}</th>
-                      <th className="py-3 px-4">{lang === 'km' ? 'ប្រភេទ' : 'Category'}</th>
-                      <th className="py-3 px-4 text-center">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
-                      <th className="py-3 px-4 text-right pr-6">{lang === 'km' ? 'ជ្រើសរើស' : 'Action'}</th>
+                      <th className="py-3 px-4 text-center w-12 hidden sm:table-cell">#</th>
+                      <th className="py-3 px-2 sm:px-4 text-center w-12 sm:w-14">{lang === 'km' ? 'ស្ដាប់' : 'Play'}</th>
+                      <th className="py-3 px-2 sm:px-4">{lang === 'km' ? 'ចំណងជើងបទចម្រៀង' : 'Title'}</th>
+                      <th className="py-3 px-4 hidden sm:table-cell">{lang === 'km' ? 'ប្រភេទ' : 'Category'}</th>
+                      <th className="py-3 px-4 text-center hidden sm:table-cell">{lang === 'km' ? 'រយៈពេល' : 'Duration'}</th>
+                      <th className="py-3 px-2 sm:px-4 text-right pr-3 sm:pr-6">{lang === 'km' ? 'ជ្រើសរើស' : 'Action'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#F0EDE8]">
@@ -1582,12 +1664,28 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                       const isPlaying = playingTrackId === track.id;
 
                       return (
-                        <tr key={track.id} className={`hover:bg-amber-50/40 transition-colors ${isSelected ? 'bg-amber-50/70 font-medium' : ''}`}>
-                          <td className="py-3 px-4 text-center text-gray-400 font-mono text-[11px]">{idx + 1}</td>
-                          <td className="py-3 px-4 text-center">
+                        <tr
+                          key={track.id}
+                          onClick={() => {
+                            setEditingCouple(prev => prev ? {
+                              ...prev,
+                              customTheme: {
+                                ...prev.customTheme,
+                                musicTrack: track.titleKh,
+                                musicUrl: track.audioUrl
+                              }
+                            } : null);
+                          }}
+                          className={`hover:bg-amber-50/70 cursor-pointer transition-colors ${isSelected ? 'bg-amber-50/90 font-medium ring-1 ring-[#D4AF37]/30' : ''}`}
+                        >
+                          <td className="py-3 px-4 text-center text-gray-400 font-mono text-[11px] hidden sm:table-cell">{idx + 1}</td>
+                          <td className="py-2.5 px-2 sm:py-3 sm:px-4 text-center">
                             <button
                               type="button"
-                              onClick={() => handleTogglePlayMusic(track.id, track.audioUrl)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTogglePlayMusic(track.id, track.audioUrl);
+                              }}
                               className={`w-7 h-7 rounded-lg inline-flex items-center justify-center transition-all cursor-pointer ${
                                 isPlaying ? 'bg-[#D4AF37] text-white animate-pulse' : 'bg-amber-50 text-[#8C6D1F] hover:bg-amber-100'
                               }`}
@@ -1595,30 +1693,31 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                               {isPlaying ? <Pause className="w-3 h-3 fill-current" /> : <Play className="w-3 h-3 fill-current ml-0.5" />}
                             </button>
                           </td>
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-900">{track.titleKh}</span>
+                          <td className="py-2.5 px-2 sm:py-3 sm:px-4 min-w-0 max-w-[130px] xs:max-w-[180px] sm:max-w-none">
+                            <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+                              <span className="text-gray-900 truncate block font-battambang">{track.titleKh}</span>
                               {isSelected && (
-                                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full">
-                                  ✓ បានរើស
+                                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full shrink-0 font-battambang">
+                                  ✓ <span className="hidden sm:inline">បានរើស</span>
                                 </span>
                               )}
                             </div>
-                            {track.titleEn && <p className="text-[11px] text-gray-400">{track.titleEn}</p>}
+                            {track.titleEn && <p className="text-[11px] text-gray-400 truncate hidden sm:block font-battambang">{track.titleEn}</p>}
                           </td>
-                          <td className="py-3 px-4">
-                            <span className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md">
+                          <td className="py-3 px-4 hidden sm:table-cell">
+                            <span className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-battambang">
                               {track.category}
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-center text-gray-500 font-mono text-[11px]">
+                          <td className="py-3 px-4 text-center text-gray-500 font-mono text-[11px] hidden sm:table-cell">
                             {track.duration || '3:30'}
                           </td>
-                          <td className="py-3 px-4 text-right pr-6">
+                          <td className="py-2.5 px-2 sm:py-3 sm:px-4 text-right pr-3 sm:pr-6 whitespace-nowrap">
                             {isSelected ? (
                               <button
                                 type="button"
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   audioSynthesizer.stop();
                                   setPlayingTrackId(null);
                                   setEditingCouple(prev => prev ? {

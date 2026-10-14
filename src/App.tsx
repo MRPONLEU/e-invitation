@@ -153,10 +153,39 @@ export default function App() {
           INITIAL_COUPLES.forEach(c => {
             if (!deletedIds.includes(c.id)) map.set(c.id, c);
           });
+          const mainPromo = data.find(x => x.adminPromo?.textKh || x.adminPromo?.imageUrl)?.adminPromo || INITIAL_COUPLES[0]?.adminPromo;
+          const mainPhone = data.find(x => x.contactPhone)?.contactPhone || INITIAL_COUPLES[0]?.contactPhone;
+          const mainFacebook = data.find(x => x.contactFacebook)?.contactFacebook || INITIAL_COUPLES[0]?.contactFacebook;
+          const mainTelegram = data.find(x => x.contactTelegram)?.contactTelegram || INITIAL_COUPLES[0]?.contactTelegram;
+          const mainLocName1 = data.find(x => x.contactLocationName)?.contactLocationName || INITIAL_COUPLES[0]?.contactLocationName;
+          const mainLoc1 = data.find(x => x.contactLocation)?.contactLocation || INITIAL_COUPLES[0]?.contactLocation;
+          const mainLocName2 = data.find(x => x.contactLocationName2)?.contactLocationName2 || INITIAL_COUPLES[0]?.contactLocationName2;
+          const mainLoc2 = data.find(x => x.contactLocation2)?.contactLocation2 || INITIAL_COUPLES[0]?.contactLocation2;
+
           data.forEach(c => {
             if (!deletedIds.includes(c.id)) {
               const base = map.get(c.id) || c;
               const merged: CoupleEvent = { ...base, ...c };
+              if (!merged.adminPromo && mainPromo) {
+                merged.adminPromo = mainPromo;
+              }
+              if (!merged.contactPhone && mainPhone) {
+                merged.contactPhone = mainPhone;
+              }
+              if (!merged.contactFacebook && mainFacebook) {
+                merged.contactFacebook = mainFacebook;
+              }
+              if (!merged.contactTelegram && mainTelegram) {
+                merged.contactTelegram = mainTelegram;
+              }
+              if (!merged.contactLocation && mainLoc1) {
+                merged.contactLocationName = mainLocName1;
+                merged.contactLocation = mainLoc1;
+              }
+              if (!merged.contactLocation2 && mainLoc2) {
+                merged.contactLocationName2 = mainLocName2;
+                merged.contactLocation2 = mainLoc2;
+              }
               if (
                 !merged.agendas || 
                 merged.agendas.length < 5 || 
@@ -266,14 +295,8 @@ export default function App() {
     if (hash.startsWith('manage') || hash.startsWith('edit') || hash.startsWith('couple')) {
       return 'couple';
     }
-    if (hash.startsWith('admin')) {
-      return 'admin';
-    }
-    try {
-      const saved = localStorage.getItem(STORAGE_VIEW_KEY);
-      if (saved === 'couple' || saved === 'admin') return saved;
-    } catch {}
-    return 'couple';
+    // Link ដើម (original root link without specific route) always defaults to admin!
+    return 'admin';
   });
 
   const [currentGuestCode, setCurrentGuestCode] = useState<string | undefined>(undefined);
@@ -496,27 +519,12 @@ export default function App() {
       return;
     }
 
-    // 5. NO HASH AND NO SEARCH PARAMETERS (e.g. user refreshed on root URL or loaded app)
-    // Check localStorage to preserve user's last active workspace!
-    try {
-      const savedView = localStorage.getItem(STORAGE_VIEW_KEY);
-      if (savedView === 'couple') {
-        const savedCoupleId = localStorage.getItem(STORAGE_SELECTED_COUPLE_KEY);
-        const matched = savedCoupleId ? findCouple(savedCoupleId) : undefined;
-        const targetCoupleId = matched?.id || selectedCoupleId || (currentCouples[0]?.id || 'couple_368');
-        const savedTab = (localStorage.getItem(STORAGE_COUPLE_TAB_KEY) as any) || 'overview';
-        setSelectedCoupleId(targetCoupleId);
-        setActiveCoupleTab(savedTab);
-        setCurrentView('couple');
-        window.location.hash = `#manage/${targetCoupleId}/${savedTab}`;
-        return;
-      }
-    } catch {}
-
-    // Default fallback if no saved state: open Admin
+    // 5. ORIGINAL / ROOT LINK (Link ដើម)
+    // When visiting the root URL with no specific couple (#manage) or guest (?c=) parameters:
+    // ALWAYS OPEN ADMIN DASHBOARD!
     setCurrentView('admin');
     setAdminActiveSection('overview');
-    if (!window.location.hash) {
+    if (window.location.hash !== '#admin') {
       window.location.hash = '#admin';
     }
   }, [selectedCoupleId]);
