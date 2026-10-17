@@ -485,36 +485,9 @@ ${inviteLink}`;
           </div>
 
           {/* Quick Jump Navigation Modules Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4">
 
-            {/* 1. Module: រចនាប័ទ្ម (Template) */}
-            <div className="bg-white border border-[#EAE6E1] rounded-3xl p-5 shadow-xs flex flex-col justify-between hover:border-[#FF1B6B]/40 transition-all">
-              <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-2xl bg-pink-50 text-[#FF1B6B] flex items-center justify-center">
-                    <Palette className="w-5 h-5" />
-                  </div>
-                  <span className="text-[10px] font-normal text-gray-400 uppercase tracking-wider">
-                    {activeTemplate?.nameKh || 'Classic Gold'}
-                  </span>
-                </div>
-                <h3 className="text-sm font-normal text-gray-900 mt-3">
-                  {lang === 'km' ? 'រចនាប័ទ្ម & ម៉ូតសំបុត្រ' : 'Template & Design'}
-                </h3>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                  {lang === 'km' ? 'ជ្រើសរើស និងតុបតែងម៉ូតសំបុត្រ ប្តូរពណ៌ Palette និងបទភ្លេងការ' : 'Choose template design, customize color palette and music'}
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveTab('template')}
-                className="mt-4 w-full py-2 px-3 rounded-xl bg-pink-50 hover:bg-pink-100 text-[#FF1B6B] text-xs font-normal flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <span>{lang === 'km' ? 'ចូលរៀបចំម៉ូត' : 'Customize Template'}</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* 2. Module: បញ្ជីភ្ញៀវ (Guest List) */}
+            {/* Module: បញ្ជីភ្ញៀវ (Guest List) */}
             <div className="bg-white border border-[#EAE6E1] rounded-3xl p-5 shadow-xs flex flex-col justify-between hover:border-[#D4AF37]/50 transition-all">
               <div>
                 <div className="flex items-center justify-between">
@@ -528,42 +501,12 @@ ${inviteLink}`;
                 <h3 className="text-sm font-normal text-gray-900 mt-3">
                   {lang === 'km' ? 'បញ្ជីភ្ញៀវ' : 'Guest List'}
                 </h3>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                  {lang === 'km' ? 'គ្រប់គ្រងបញ្ជីភ្ញៀវ ចម្លង Link ផ្ទាល់ខ្លួន និងផ្ញើសារតាម Telegram' : 'Manage guests, copy personalized invite links and Telegram messages'}
-                </p>
               </div>
               <button
                 onClick={() => setActiveTab('guests')}
                 className="mt-4 w-full py-2 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-[#8C6D1F] text-xs font-normal flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <span>{lang === 'km' ? 'ចូលបញ្ជីភ្ញៀវ' : 'Manage Guests'}</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* 3. Module: សារជូនពរ & RSVP (Wishes & RSVPs) */}
-            <div className="bg-white border border-[#EAE6E1] rounded-3xl p-5 shadow-xs flex flex-col justify-between hover:border-purple-300 transition-all">
-              <div>
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                    <MessageSquareHeart className="w-5 h-5" />
-                  </div>
-                  <span className="text-[10px] font-normal bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
-                    {(couple.wishes || []).length} {lang === 'km' ? 'សារ' : 'wishes'}
-                  </span>
-                </div>
-                <h3 className="text-sm font-normal text-gray-900 mt-3">
-                  {lang === 'km' ? 'ការឆ្លើយតប & សារជូនពរ' : 'RSVPs & Guestbook'}
-                </h3>
-                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                  {lang === 'km' ? 'ពិនិត្យមើលសារជូនពរឌីជីថលពីភ្ញៀវ និងចំនួនអ្នកចូលរួមពិតប្រាកដ' : 'View digital wishes from loved ones and RSVP attendance confirmations'}
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveTab('wishes')}
-                className="mt-4 w-full py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-normal flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-              >
-                <span>{lang === 'km' ? 'ពិនិត្យមើលសារ' : 'View Wishes'}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -1555,70 +1498,6 @@ ${inviteLink}`;
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            {/* Custom Audio URL Input (Dropbox, Google Drive, MP3 Link) */}
-            <div className="pt-4 border-t border-gray-100 bg-amber-50/40 rounded-2xl p-4 space-y-2">
-              <label className="block text-xs font-normal text-gray-900 font-khmer-title flex items-center gap-2">
-                <Music className="w-4 h-4 text-[#D4AF37]" />
-                {lang === 'km' ? 'ឬ បញ្ចូល Link បទចម្រៀងផ្ទាល់ខ្លួន (Dropbox, Google Drive, MP3 Link)' : 'Or Insert Your Custom Audio Link (Dropbox, Google Drive, MP3 Link)'}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="url"
-                  value={couple.customTheme.musicUrl || ''}
-                  onChange={(e) => {
-                    const url = e.target.value;
-                    updateCouple(prev => ({
-                      ...prev,
-                      customTheme: {
-                        ...prev.customTheme,
-                        musicUrl: url,
-                        musicTrack: url ? 'បទចម្រៀងផ្ទាល់ខ្លួន (Custom Audio Link)' : prev.customTheme.musicTrack
-                      }
-                    }));
-                  }}
-                  placeholder="https://www.dropbox.com/scl/fi/.../song.mp3?dl=0"
-                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-gray-300 rounded-xl focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
-                />
-                {couple.customTheme.musicUrl && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      audioSynthesizer.stop();
-                      setPlayingMusicTrackId(null);
-                      updateCouple(prev => ({
-                        ...prev,
-                        customTheme: {
-                          ...prev.customTheme,
-                          musicUrl: '',
-                          musicTrack: prev.customTheme.musicTrack === 'បទចម្រៀងផ្ទាល់ខ្លួន (Custom Audio Link)' ? '' : prev.customTheme.musicTrack
-                        }
-                      }));
-                    }}
-                    className="px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-medium rounded-xl flex items-center gap-1 shrink-0 transition-colors"
-                    title={lang === 'km' ? 'លុប Link ចម្រៀងផ្ទាល់ខ្លួន' : 'Clear Link'}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>{lang === 'km' ? 'លុប Link' : 'Clear Link'}</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (couple.customTheme.musicUrl) {
-                      handleTogglePlayMusicTrack('custom_url_track', couple.customTheme.musicUrl);
-                    }
-                  }}
-                  className="px-3.5 py-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-medium rounded-xl flex items-center gap-1.5 shrink-0 transition-colors"
-                >
-                  <Play className="w-3.5 h-3.5 fill-current text-[#D4AF37]" />
-                  <span>{lang === 'km' ? 'ស្ដាប់សាកល្បង' : 'Preview Link'}</span>
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-500">
-                💡 {lang === 'km' ? 'លោកអ្នកអាចចម្លង (Copy) Link ពី Dropbox (ដូចជា dl=0) មកបិទភ្ជាប់ (Paste) នៅទីនេះបានភ្លាមៗ! ប្រព័ន្ធនឹងបំប្លែងទៅជា Stream Audio ដោយស្វ័យប្រវត្តិ។' : 'Paste your Dropbox share link (e.g. dl=0) here directly. System converts it automatically!'}
-              </p>
             </div>
           </div>
 

@@ -57,20 +57,18 @@ export const INITIAL_MUSIC_TRACKS: MusicTrack[] = [
 // Whitelist of template codes and IDs supported by components in src/components/Guest/templates/
 export const SUPPORTED_TEMPLATE_IDS = [
   'tpl_gold_01',
-  'tpl_purple_02',
+  'tpl_02',
   'tpl_new_custom',
-  'tpl_new_custom002',
-  'tpl_new_custom003',
 ] as const;
 
 export const isTemplateSupported = (t?: { id?: string; code?: string } | null): boolean => {
   if (!t) return false;
+  const id = t.id || '';
+  const code = t.code || '';
   return (
-    t.id === 'tpl_gold_01' || t.code === 'T01' ||
-    t.id === 'tpl_purple_02' || t.code === 'T02' ||
-    t.id === 'tpl_new_custom' || t.code === 'T_CUSTOM' ||
-    t.id === 'tpl_new_custom002' || t.code === 'T_CUSTOM002' ||
-    t.id === 'tpl_new_custom003' || t.code === 'T_CUSTOM003'
+    id === 'tpl_gold_01' || code === 'T01' || code === 'T001' ||
+    id === 'tpl_02' || code === 'T02' ||
+    id === 'tpl_new_custom' || code === 'T_CUSTOM'
   );
 };
 
@@ -78,7 +76,7 @@ export const INITIAL_TEMPLATES: Template[] = [
   {
     id: 'tpl_gold_01',
     code: 'T01',
-    nameKh: 'រំដួល ០០១',
+    nameKh: 'រំដួល ០០១ (Classic Gold)',
     nameEn: 'T01_Classic Khmer Royal Gold',
     style: 'traditional-gold',
     badge: 'ពេញនិយមបំផុត',
@@ -90,90 +88,47 @@ export const INITIAL_TEMPLATES: Template[] = [
     fontFamily: 'Moul',
     descriptionKh: 'រចនាប័ទ្មបែបប្រពៃណីខ្មែរ រំលេចដោយក្បូរក្បាច់មាសលឿងទុំ និងស៊ុមរាជវាំងដ៏ឧត្តុង្គឧត្តម។',
     descriptionEn: 'Timeless traditional Cambodian royal theme with regal golden flourishes and intricate borders.',
-    musicTrackTitle: 'ភ្លេងការខ្មែរ - បង្កក់សិរី (Khmer Classical Chimes)',
+    musicTrackTitle: 'ភ្លេងការខ្មែរ - បង្កក់សិរី',
     usageCount: 148,
     tags: ['ប្រពៃណីខ្មែរ', 'ក្បូរក្បាច់មាស', 'ពេញនិយម'],
     isPopular: true,
   },
   {
-    id: 'tpl_purple_02',
+    id: 'tpl_02',
     code: 'T02',
-    nameKh: 'រំដួល ០០២',
-    nameEn: 'T02_Royal Violet & Golden Lotus',
-    style: 'royal-violet',
-    badge: 'រាជវាំង',
-    coverImage: weddingArtwork368,
-    previewImage: weddingArtwork368,
-    primaryColor: '#7E22CE',
-    accentColor: '#D4AF37',
-    bgGradient: 'from-[#F3E8FF] via-[#FAF5FF] to-[#EDE9FE]',
+    nameKh: 'រំដួល ០០២ (Classic Gold V2)',
+    nameEn: 'T02_Classic Khmer Royal Gold V2',
+    style: 'traditional-gold',
+    badge: 'ថ្មី',
+    coverImage: weddingArtworkClassic,
+    previewImage: weddingArtworkClassic,
+    primaryColor: '#D4AF37',
+    accentColor: '#8C6D1F',
+    bgGradient: 'from-[#FCF8EE] via-[#FDFCFB] to-[#F5EBD0]',
     fontFamily: 'Moul',
-    descriptionKh: 'រចនាប័ទ្មពណ៌ស្វាយរាជវាំង រំលេចក្បូរក្បាច់មាស និងផ្កាឈូកមាសបុរាណខ្មែរដ៏ឧត្តុង្គឧត្តម។',
-    descriptionEn: 'Regal violet and golden lotus Khmer royal wedding design.',
-    musicTrackTitle: 'ភ្លេងការខ្មែរ - របាំបក់ផ្សែង (Royal Lavender Chimes)',
-    usageCount: 215,
-    tags: ['ស្វាយរាជវាំង', 'ផ្កាឈូកមាស', 'ប្រពៃណីខ្មែរ'],
-    isPopular: true,
+    descriptionKh: 'រចនាប័ទ្មបែបប្រពៃណីខ្មែរ ជំនាន់ទី២ ដែលមានការរចនាឈ្មោះភ្ញៀវកាន់តែស្រស់ស្អាត។',
+    descriptionEn: 'Traditional Cambodian theme version 2 with enhanced guest name display.',
+    musicTrackTitle: 'ភ្លេងការខ្មែរ - បង្កក់សិរី',
+    usageCount: 0,
+    tags: ['ប្រពៃណីខ្មែរ', 'ក្បូរក្បាច់មាស', 'ជំនាន់ថ្មី'],
   },
   {
     id: 'tpl_new_custom',
     code: 'T_CUSTOM',
-    nameKh: 'គំរូថ្មី (រចនាប័ទ្មថ្មីសម្រាប់កែសម្រួល)',
-    nameEn: 'T_CUSTOM_New Custom Style',
-    style: 'traditional-gold',
-    badge: 'ម៉ូតថ្មី',
-    coverImage: weddingArtwork368,
-    previewImage: weddingArtwork368,
-    primaryColor: '#D4AF37',
-    accentColor: '#F3D372',
-    bgGradient: 'from-[#0F0F17] via-[#1A1A24] to-[#0A0A0F]',
-    fontFamily: 'Moul',
-    descriptionKh: 'គំរូរចនាប័ទ្មថ្មីដាច់ដោយឡែក សម្រាប់កែសម្រួល Style ថ្មីដោយមិនប៉ះពាល់ដល់ម៉ូតចាស់។',
-    descriptionEn: 'Dedicated custom template for creating and editing new styles without affecting existing templates.',
-    musicTrackTitle: 'ភ្លេងការខ្មែរ - របាំបក់ផ្សែង (Royal Lavender Chimes)',
-    usageCount: 1,
-    tags: ['ម៉ូតថ្មី', 'Custom', 'កែសម្រួល'],
-    isPopular: true,
-  },
-  {
-    id: 'tpl_new_custom002',
-    code: 'T_CUSTOM002',
-    nameKh: 'គំរូថ្មី 002 (រចនាប័ទ្ម GIF F0031)',
-    nameEn: 'T_CUSTOM002_New Custom GIF Style 002',
-    style: 'traditional-gold',
-    badge: 'GIF F0031',
-    coverImage: weddingArtwork368,
-    previewImage: weddingArtwork368,
-    primaryColor: '#D4AF37',
-    accentColor: '#F3D372',
-    bgGradient: 'from-[#0F0F17] via-[#1A1A24] to-[#0A0A0F]',
-    fontFamily: 'Moul',
-    descriptionKh: 'គំរូរចនាប័ទ្មថ្មី 002 បង្ហាញចលនា GIF F0031 យ៉ាងរស់រវើកនៅលើផ្ទាំងរូបទីមួយ។',
-    descriptionEn: 'Dedicated custom template 002 featuring animated GIF F0031 background.',
-    musicTrackTitle: 'ភ្លេងការខ្មែរ - របាំបក់ផ្សែង (Royal Lavender Chimes)',
-    usageCount: 1,
-    tags: ['ម៉ូតថ្មី', 'Custom002', 'កែសម្រួល'],
-    isPopular: true,
-  },
-  {
-    id: 'tpl_new_custom003',
-    code: 'T_CUSTOM003',
-    nameKh: 'គំរូថ្មី 003 (រចនាប័ទ្ម Video Link)',
-    nameEn: 'T_CUSTOM003_New Custom Video Style 003',
-    style: 'traditional-gold',
-    badge: 'Video Link',
-    coverImage: weddingArtwork368,
-    previewImage: weddingArtwork368,
-    primaryColor: '#D4AF37',
-    accentColor: '#F3D372',
-    bgGradient: 'from-[#0F0F17] via-[#1A1A24] to-[#0A0A0F]',
-    fontFamily: 'Moul',
-    descriptionKh: 'គំរូរចនាប័ទ្មថ្មី 003 បញ្ចូល Link វីដេអូ (Video Background) យ៉ាងប្រណីតនិងរលូន។',
-    descriptionEn: 'Dedicated custom template 003 featuring background video link support.',
-    musicTrackTitle: 'ភ្លេងការខ្មែរ - របាំបក់ផ្សែង (Royal Lavender Chimes)',
-    usageCount: 1,
-    tags: ['ម៉ូតថ្មី', 'Custom003', 'Video'],
-    isPopular: true,
+    nameKh: 'រំដួល ០០៣ (Custom)',
+    nameEn: 'T_Custom_Minimal',
+    style: 'modern-ivory',
+    coverImage: weddingArtworkClassic,
+    previewImage: weddingArtworkClassic,
+    primaryColor: '#8C6D1F',
+    accentColor: '#D4AF37',
+    bgGradient: 'from-[#F9F7F2] to-[#FFFFFF]',
+    fontFamily: 'Kantumruy',
+    descriptionKh: 'រចនាប័ទ្មបែបសាមញ្ញ ស្រស់ស្អាត និងមានភាពទាក់ទាញខ្លាំង។',
+    descriptionEn: 'Minimalist and clean modern design with subtle ivory and gold tones.',
+    musicTrackTitle: 'Acoustic Guitar Romance',
+    usageCount: 62,
+    tags: ['សាមញ្ញ', 'ស្រស់ស្អាត'],
   }
 ];
 
@@ -320,14 +275,14 @@ export const INITIAL_COUPLES: CoupleEvent[] = [
     venueMapImage: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=600&auto=format&fit=crop',
     mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d124376.12648792036!2d103.7844054!3d13.3617852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3110168b9be57667%3A0xf63989c4457636e0!2sSiem%20Reap!5e0!3m2!1sen!2skh!4v1700000000000',
 
-    templateId: 'tpl_purple_02',
+    templateId: 'tpl_gold_01',
     customTheme: {
-      primaryColor: '#7E22CE',
-      accentColor: '#D4AF37',
+      primaryColor: '#D4AF37',
+      accentColor: '#8C6D1F',
       enablePetals: true,
       enableMusic: true,
       musicTrack: 'Khmer Classical Chimes',
-      envelopeStyle: 'royal-violet',
+      envelopeStyle: 'classic-gold',
       fontFamilyKhmer: 'moul'
     },
 

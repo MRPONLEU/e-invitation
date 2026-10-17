@@ -1754,42 +1754,6 @@ export const AdminCoupleEditorModal: React.FC<AdminCoupleEditorModalProps> = ({
                   </tbody>
                 </table>
               </div>
-
-              {/* Custom Music URL */}
-              <div className="p-5 bg-[#FAF9F6] border border-gray-200 rounded-2xl space-y-2">
-                <label className="block text-xs font-medium text-gray-900">
-                  {lang === 'km' ? 'ឬ បញ្ចូល Link បទចម្រៀង MP3 ផ្ទាល់ខ្លួន (Dropbox, Google Drive)' : 'Or Custom Audio Link (Dropbox, MP3)'}
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="url"
-                    placeholder="https://.../song.mp3"
-                    value={editingCouple.customTheme?.musicUrl || ''}
-                    onChange={(e) => {
-                      const url = e.target.value;
-                      setEditingCouple(prev => prev ? {
-                        ...prev,
-                        customTheme: {
-                          ...prev.customTheme,
-                          musicUrl: url,
-                          musicTrack: url ? 'បទចម្រៀងផ្ទាល់ខ្លួន' : prev.customTheme?.musicTrack || ''
-                        }
-                      } : null);
-                    }}
-                    className="flex-1 px-3 py-2 text-xs bg-white border border-gray-300 rounded-xl"
-                  />
-                  {editingCouple.customTheme?.musicUrl && (
-                    <button
-                      type="button"
-                      onClick={() => handleTogglePlayMusic('custom', editingCouple.customTheme?.musicUrl)}
-                      className="px-3.5 py-2 bg-amber-100 hover:bg-amber-200 text-[#8C6D1F] text-xs font-medium rounded-xl flex items-center gap-1 cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>{lang === 'km' ? 'ស្ដាប់សាកល្បង' : 'Test Audio'}</span>
-                    </button>
-                  )}
-                </div>
-              </div>
             </div>
           )}
 

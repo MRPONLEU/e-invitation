@@ -768,6 +768,84 @@ export const WeddingDetailsEditor: React.FC<WeddingDetailsEditorProps> = ({
               {lang === 'km' ? 'រូបថត & គំនូរមង្គលការ (Wedding Photos & Artworks)' : 'Photos & Artworks'}
             </h4>
 
+            {/* COUPLE PHOTO (រូបថតកូនកម្លោះ-ក្រមុំបង្ហាញកណ្ដាលធៀប) */}
+            <div className="p-4 bg-gradient-to-br from-amber-50/60 via-[#FAF9F6] to-amber-50/30 border-2 border-amber-200/80 rounded-2xl space-y-3">
+              <div className="flex items-center justify-between gap-2 border-b border-amber-100 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
+                  <h5 className="text-xs font-semibold text-amber-950 uppercase tracking-wider">
+                    {lang === 'km' ? 'រូបថតគូស្នេហ៍ (បង្ហាញចន្លោះឈ្មោះ & ឈ្មោះភ្ញៀវ)' : 'Couple Photo (Center of Invitation)'}
+                  </h5>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium font-battambang">
+                  {lang === 'km' ? 'រូបថតកណ្ដាល' : 'Center Photo'}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <div className="w-20 h-20 shrink-0 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-sm bg-black/5 relative group self-center sm:self-auto">
+                  <img 
+                    src={formatImageUrl(couple.couplePhoto) || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600&auto=format&fit=crop'} 
+                    alt="Couple Photo" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=600&auto=format&fit=crop';
+                    }}
+                  />
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <p className="text-[11px] text-gray-600 leading-tight font-battambang">
+                    {lang === 'km' 
+                      ? 'រូបថតគូស្នេហ៍ដែលបង្ហាញនៅចន្លោះឈ្មោះកូនកម្លោះ-ក្រមុំ និងឈ្មោះភ្ញៀវកិត្តិយស' 
+                      : 'Couple photo displayed between bride/groom names and guest name.'}
+                  </p>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <label className="cursor-pointer px-3 py-1.5 bg-[#D4AF37] hover:bg-[#b8962d] text-white text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-colors">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{lang === 'km' ? 'Upload រូបថត' : 'Upload Photo'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={e => handleFileUpload(e, url => {
+                          updateCouple(prev => ({ ...prev, couplePhoto: url }));
+                          showSavedAlert();
+                        })}
+                      />
+                    </label>
+
+                    {couple.couplePhoto && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateCouple(prev => ({ ...prev, couplePhoto: '' }));
+                          showSavedAlert();
+                        }}
+                        className="px-2.5 py-1.5 bg-white border border-gray-200 text-gray-600 hover:text-red-600 text-xs rounded-xl transition-colors cursor-pointer"
+                      >
+                        {lang === 'km' ? 'លុបចេញ' : 'Remove'}
+                      </button>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="https://... (Image URL)"
+                      value={couple.couplePhoto || ''}
+                      onChange={e => {
+                        updateCouple(prev => ({ ...prev, couplePhoto: e.target.value }));
+                        showSavedAlert();
+                      }}
+                      className="w-full px-3 py-1.5 text-xs bg-white border border-gray-300 rounded-xl focus:border-[#D4AF37] outline-hidden"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* 1. FRONT COVER PHOTO / ARTWORK (រូបភាពទំព័រមុខធៀបការ) */}
             <div className="p-4 bg-gradient-to-br from-purple-50/60 via-[#FAF9F6] to-purple-50/30 border-2 border-purple-200/80 rounded-2xl space-y-3">
               <div className="flex items-center justify-between gap-2 border-b border-purple-100 pb-2.5">

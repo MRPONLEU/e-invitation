@@ -38,18 +38,19 @@ import {
   Layers
 } from 'lucide-react';
 import { weddingAudioPlayer } from '../../utils/audioSynthesizer';
-import { Template02Violet, Template01ClassicGold, TemplateNewCustom, TemplateNewCustom002, TemplateNewCustom003 } from './templates';
+import { Template01ClassicGold, Template02ClassicGold, TemplateNewCustom } from './templates';
 import { WeddingGallerySlideshow } from './WeddingGallerySlideshow';
 import weddingTitleImage from '../../assets/images/frome3.png';
 import loveOrnament from '../../assets/images/love.png';
 import ponleuLogo from '../../assets/images/ponleu_logo.svg';
-import { DEFAULT_ADMIN_PROMO_FOOTER } from '../../data/initialData';
 import { TelegramIcon } from '../icons/TelegramIcon';
 import frameOverlay from '../../assets/images/T003/F0030.png';
+import t001Frame from '../../assets/images/T001/003.png';
+import t002Frame from '../../assets/images/T002/F008 (1).png';
+import t001Photo2 from '../../assets/images/T001/001.png';
+import t002Photo2 from '../../assets/images/T002/F006 (1).png';
 import guestFrameBanner from '../../assets/images/fram002.png';
 import lightEffectGif from '../../assets/images/ligt001.webp';
-import gifF0031 from '../../assets/images/T003/F0031.webp';
-import gifF0032 from '../../assets/images/T003/F0032_opt.webp';
 import { formatImageUrl } from '../../utils/imageHelper';
 import { formatVideoUrl } from '../../utils/urlHelper';
 
@@ -129,6 +130,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [lightboxZoom, setLightboxZoom] = useState(1);
   const [showHeroText, setShowHeroText] = useState(false);
+  const [isFromSlideshow, setIsFromSlideshow] = useState(false);
   const openingTimeoutRef = useRef<NodeJS.Timeout | number | null>(null);
 
   // Fullscreen event listener
@@ -156,10 +158,6 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   // Preload animated assets in background for instant zero-lag display
   useEffect(() => {
     try {
-      const p1 = new Image();
-      p1.src = gifF0032;
-      const p2 = new Image();
-      p2.src = gifF0031;
       const p3 = new Image();
       p3.src = lightEffectGif;
     } catch {}
@@ -354,10 +352,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
   // Current template
   const tpl = templates.find(t => t.id === couple.templateId) || templates[0];
-  const isPurpleTheme = tpl.id === 'tpl_purple_02' || tpl.id === 'tpl_purple_368' || tpl.code === 'T368' || tpl.code === 'T02';
   const isCustomNewTheme = tpl.id === 'tpl_new_custom' || tpl.code === 'T_CUSTOM';
-  const isCustom002Theme = tpl.id === 'tpl_new_custom002' || tpl.code === 'T_CUSTOM002';
-  const isCustom003Theme = tpl.id === 'tpl_new_custom003' || tpl.code === 'T_CUSTOM003';
+  const isClassicGoldTheme = tpl.id === 'tpl_01' || tpl.id === 'tpl_gold_01' || tpl.id === 'tpl_02' || tpl.id === 'tpl_classic_gold' || tpl.code === 'T001' || tpl.code === 'T01' || tpl.code === 'T02';
+  const activeFrameOverlay = (tpl.id === 'tpl_02' || tpl.code === 'T02') ? t002Frame : isClassicGoldTheme ? t001Frame : isCustomNewTheme ? null : frameOverlay;
 
   // Dynamic Khmer font family class
   const khmerTitleFont = couple.customTheme.fontFamilyKhmer === 'moul'
@@ -459,7 +456,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
     if (openingTimeoutRef.current) {
       clearTimeout(openingTimeoutRef.current);
     }
-    const transitionDuration = isCustom003Theme ? 10000 : 3500;
+    const transitionDuration = 3500;
     openingTimeoutRef.current = setTimeout(() => {
       setIsLightOpening(false);
       if (couple.customTheme?.showSlideshowOnOpen !== false) {
@@ -483,10 +480,21 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
       setIsPlaying(true);
     }
 
-    // សម្រាប់តែ Template02Violet (isPurpleTheme)៖ លុបការបង្ហាញ GIF ចេញ
-    if (isPurpleTheme) {
-      if (couple.customTheme?.showSlideshowOnOpen !== false) {
-        setIsSlideshowOpen(true);
+    // លុប ligt001.webp ចេញពី Template01ClassicGold / Violet ៖ បង្ហាញរូបទី២ (Photo 2 / Invitation View) តែម្ដង
+    if (tpl.id === 'tpl_01' || tpl.id === 'tpl_gold_01' || tpl.id === 'tpl_02' || tpl.id === 'tpl_classic_gold' || tpl.id === 'tpl_new_custom' || tpl.code === 'T001' || tpl.code === 'T01' || tpl.code === 'T02' || tpl.code === 'T_CUSTOM') {
+      const isTemplate02 = tpl.id === 'tpl_02' || tpl.code === 'T02';
+      const isTemplate03 = tpl.id === 'tpl_new_custom' || tpl.code === 'T_CUSTOM';
+
+      if (couple.customTheme?.showSlideshowOnOpen !== false && !isTemplate02) {
+        if (isTemplate03) {
+          // Template 03: Fade out cover (Photo 1) first then show slideshow
+          setIsCoverZooming(true);
+          setTimeout(() => {
+            setIsSlideshowOpen(true);
+          }, 800);
+        } else {
+          setIsSlideshowOpen(true);
+        }
       } else {
         setIsOpen(true);
         setIsPhoto2Visible(true);
@@ -503,6 +511,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   const handleProceedFromSlideshow = () => {
     enterFullScreen();
     setIsSlideshowOpen(false);
+    setIsFromSlideshow(true);
     setIsOpen(true);
     setIsPhoto2Visible(true);
     setShowHeroText(true);
@@ -609,72 +618,59 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           role="button"
           tabIndex={0}
           title="ចុចដើម្បីរំលង (Tap to skip)"
-          className={`absolute inset-0 z-50 cursor-pointer overflow-hidden flex items-center justify-center bg-transparent ${isCustom003Theme ? 'animate-video-fade-out-10s' : isCustom002Theme ? 'animate-gif2-fade-out' : 'animate-fade-1-to-0'}`}
+          className={`absolute inset-0 z-50 cursor-pointer overflow-hidden flex items-center justify-center bg-transparent animate-fade-1-to-0`}
         >
-          {isCustom003Theme ? (
-            <video
-              ref={(el) => {
-                if (el) {
-                  el.muted = false;
-                  el.volume = 1.0;
-                  el.play().catch(() => {
-                    if (el) {
-                      el.muted = true;
-                      el.play().catch(() => {});
-                    }
-                  });
-                }
-              }}
-              autoPlay
-              playsInline
-              src={formatVideoUrl(couple.customTheme?.transitionVideoUrl) || 'https://assets.mixkit.co/videos/preview/mixkit-burst-of-golden-particles-42789-large.mp4'}
-              className="w-full h-full object-cover pointer-events-none scale-100"
-            />
-          ) : (
-            <img
-              src={isCustom002Theme ? gifF0031 : lightEffectGif}
-              alt={isCustom002Theme ? "GIF ទី២ (F0031)" : "Light Effect GIF"}
-              className={`w-full h-full object-cover pointer-events-none ${isCustom002Theme ? 'mix-blend-normal' : 'mix-blend-screen'} scale-100`}
-            />
-          )}
-        </div>
-      )}
-
-      {/* Topmost Fixed Frame Overlay (F0030.png) - Appears together with Photo 2 when invitation is opened */}
-      {showFrame && isOpen && isPhoto2Visible && (
-        <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden select-none animate-frame-zoom-2to1">
           <img
-            src={frameOverlay}
-            alt="Wedding Frame F0030"
-            className="w-full h-full object-fill pointer-events-none select-none"
+            src={lightEffectGif}
+            alt="Light Effect GIF"
+            className={`w-full h-full object-cover pointer-events-none mix-blend-screen scale-100`}
           />
         </div>
       )}
 
-      {/* Background Couple Photo (Photo 2) behind all text - Displays with Animation Zoom from 0 to 100 over 3 seconds */}
-      {isOpen && isPhoto2Visible && (
+      {/* Topmost Fixed Frame Overlay - Appears together with Photo 2 when invitation is opened */}
+      {(showFrame || isClassicGoldTheme) && isOpen && isPhoto2Visible && activeFrameOverlay && (
+        <div className={`absolute inset-0 pointer-events-none z-30 overflow-hidden select-none ${isClassicGoldTheme ? '' : 'animate-frame-zoom-2to1'}`}>
+          <img
+            src={activeFrameOverlay}
+            alt="Wedding Frame"
+            className={`w-full h-full ${isClassicGoldTheme ? 'object-fill' : 'object-cover object-center'} pointer-events-none select-none`}
+          />
+        </div>
+      )}
+
+      {/* Background Couple Photo (Photo 2) behind all text - Rendered at z-0 underneath Image 1 */}
+      {(isOpen && isPhoto2Visible || isClassicGoldTheme) && (
         <div 
-          className="absolute inset-0 pointer-events-none z-0 overflow-hidden bg-[#0A0A0E]"
+          className={`absolute inset-0 pointer-events-none z-0 overflow-hidden ${isClassicGoldTheme ? 'bg-transparent' : 'bg-[#0A0A0E]'}`}
           style={{
-            filter: scrollTop > 40 ? `blur(${Math.min((scrollTop - 40) / 35, 6)}px)` : 'none'
+            filter: (!isClassicGoldTheme && scrollTop > 40) ? `blur(${Math.min((scrollTop - 40) / 35, 6)}px)` : 'none'
           }}
         >
           <img 
-            src={formatImageUrl(couple.coverPhoto) || formatImageUrl(couple.secondaryPhoto) || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop'}
+            src={(tpl.id === 'tpl_02' || tpl.code === 'T02') 
+              ? t002Photo2 
+              : isClassicGoldTheme 
+                ? t001Photo2 
+                : ((isFromSlideshow && couple.secondaryPhoto) 
+                    ? formatImageUrl(couple.secondaryPhoto) 
+                    : (formatImageUrl(couple.coverPhoto) || formatImageUrl(couple.secondaryPhoto) || 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop'))}
             alt="Background Couple (Photo 2)"
-            className={`w-full h-full object-cover object-center ${isCustom002Theme ? 'animate-zoom-0-to-100-3s' : 'animate-photo2-fade-in-5s'}`}
+            className={`w-full h-full object-cover object-center ${isClassicGoldTheme ? 'scale-100 opacity-100' : 'animate-photo2-fade-in-5s'}`}
             style={{
-              opacity: Math.max(0.60, 1 - Math.min(scrollTop / 350, 0.40))
+              opacity: isClassicGoldTheme ? 1 : Math.max(0.60, 1 - Math.min(scrollTop / 350, 0.40))
             }}
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200&auto=format&fit=crop';
             }}
           />
           {/* Progressive dimming overlay capped so photo remains 60% visible */}
-          <div 
-            className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-300"
-            style={{ opacity: Math.min(scrollTop / 350, 0.40) }}
-          />
+          {!isClassicGoldTheme && (
+            <div 
+              className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-300"
+              style={{ opacity: Math.min(scrollTop / 350, 0.40) }}
+            />
+          )}
         </div>
       )}
 
@@ -714,7 +710,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
       <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-40 flex items-center gap-1.5">
         
         {/* Toggle Frame Button (Shown only when template has frame) */}
-        {!isCustomNewTheme && !isCustom003Theme && (
+        {!isCustomNewTheme && !isClassicGoldTheme && (
           <button
             id="guest-frame-toggle-btn"
             onClick={() => setShowFrame(!showFrame)}
@@ -771,40 +767,24 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         </div>
       )}
 
-      {/* ENVELOPE OPENING OVERLAY / WELCOME FRONT COVER (IF NOT YET OPENED) - Smooth 1.0 to 0.0 Opacity fade out over 5s upon click */}
-      {!isOpen && !isSlideshowOpen ? (
-        <div className={`relative z-30 w-full h-full flex items-center justify-center p-0 overflow-y-auto no-scrollbar ${isCoverZooming || isLightOpening ? (isCustom003Theme ? 'animate-fade-out-10s pointer-events-none' : 'animate-fade-out-5s pointer-events-none') : 'opacity-100'}`}>
-          <div className="w-full h-full text-center animate-in fade-in zoom-in-95 duration-500 flex flex-col justify-center items-center">
-            {isPurpleTheme ? (
-              <Template02Violet
-                couple={couple}
-                currentGuest={currentGuest}
-                onOpen={handleOpenEnvelope}
-                isOpen={isOpen}
-              />
-            ) : tpl.id === 'tpl_new_custom003' || tpl.code === 'T_CUSTOM003' ? (
-              <TemplateNewCustom003
-                couple={couple}
-                currentGuest={currentGuest}
-                onOpen={handleOpenEnvelope}
-                isOpen={isOpen}
-                isOpening={isCoverZooming || isLightOpening}
-              />
-            ) : tpl.id === 'tpl_new_custom002' || tpl.code === 'T_CUSTOM002' ? (
-              <TemplateNewCustom002
-                couple={couple}
-                currentGuest={currentGuest}
-                onOpen={handleOpenEnvelope}
-                isOpen={isOpen}
-                isOpening={isCoverZooming || isLightOpening}
-              />
-            ) : tpl.id === 'tpl_new_custom' || tpl.code === 'T_CUSTOM' ? (
+      {/* ENVELOPE OPENING OVERLAY / WELCOME FRONT COVER (IF NOT YET OPENED) - Staked on top at z-30 covering Photo 2 */}
+      {!isOpen ? (
+        <div className={`relative z-30 w-full h-full flex items-center justify-center p-0 overflow-y-auto no-scrollbar ${isCoverZooming || isLightOpening ? ('animate-fade-out-5s pointer-events-none') : 'opacity-100'}`}>
+          <div className={`w-full h-full text-center flex flex-col justify-center items-center ${isClassicGoldTheme ? '' : 'animate-in fade-in zoom-in-95 duration-500'}`}>
+            {isCustomNewTheme ? (
               <TemplateNewCustom
                 couple={couple}
                 currentGuest={currentGuest}
                 onOpen={handleOpenEnvelope}
                 isOpen={isOpen}
                 isOpening={isCoverZooming || isLightOpening}
+              />
+            ) : tpl.id === 'tpl_02' || tpl.code === 'T02' ? (
+              <Template02ClassicGold
+                couple={couple}
+                currentGuest={currentGuest}
+                onOpen={handleOpenEnvelope}
+                isOpen={isOpen}
               />
             ) : (
               <Template01ClassicGold
@@ -818,79 +798,34 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         </div>
       ) : (
 
-        /* LIVE INVITATION CARD CONTENT (WHEN OPENED) WITH 0.5s ZOOM OUT ANIMATION AND 2.0s SMOOTH FADE */
+        /* LIVE INVITATION CARD CONTENT (WHEN OPENED) - Smooth animation for text content while Photo 2 remains static */
         <div onScroll={handleScroll} className="relative z-10 w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar scroll-smooth animate-zoom-out-05s animate-in fade-in duration-[2000ms]">
           
           {/* Section 1: Hero Section (Matching Exact Height of Visible Phone Viewport) */}
-          <div className="relative w-full h-full min-h-full flex flex-col justify-between p-5 sm:p-7 pt-[16.67%] sm:pt-[18%] pb-[16.67%] sm:pb-[18%] text-center text-white overflow-hidden select-none z-10 shrink-0">
-
-            {/* Ambient Floating Gold Dust Sparkles */}
-            <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-              <span className="absolute top-[18%] left-[12%] text-amber-300/60 text-xs animate-ping [animation-duration:3s]">✦</span>
-              <span className="absolute top-[28%] right-[15%] text-amber-200/50 text-sm animate-pulse [animation-duration:4s]">✨</span>
-              <span className="absolute top-[65%] left-[18%] text-amber-300/40 text-xs animate-pulse [animation-duration:3.5s]">✦</span>
-              <span className="absolute top-[75%] right-[20%] text-amber-200/60 text-xs animate-ping [animation-duration:4.5s]">✨</span>
-            </div>
-
-            {/* Top Header with Silky Smooth GPU Fade & Slide Animation - Animates after Photo 2 is shown */}
-            {showHeroText ? (
-              <div className="relative z-10 pt-3 sm:pt-5 space-y-2 flex flex-col items-center animate-smooth-fade-down delay-100">
-                <h1 className={`text-2xl sm:text-3xl font-normal ${khmerTitleFont} text-[#FFD700] [text-shadow:0_2px_12px_rgba(0,0,0,0.95),0_0_15px_rgba(255,215,0,0.4)] tracking-wide text-center leading-relaxed`}>
-                  សិរីមង្គល<br />អាពាហ៍ពិពាហ៍
-                </h1>
-                <div className="flex items-center justify-center gap-2 mt-0.5 animate-ornament-expand delay-200">
-                  <span className="h-[1px] w-6 sm:w-10 bg-gradient-to-r from-transparent to-[#F3D372]"></span>
-                  <span className="text-[#FFD700] text-[10px] sm:text-xs">❖</span>
-                  <span className="text-[10px] sm:text-xs font-serif-luxury tracking-[0.25em] text-[#FFF8DC] uppercase font-bold [text-shadow:0_1px_4px_rgba(0,0,0,0.9)]">
-                    WEDDING INVITATION
-                  </span>
-                  <span className="text-[#FFD700] text-[10px] sm:text-xs">❖</span>
-                  <span className="h-[1px] w-6 sm:w-10 bg-gradient-to-l from-transparent to-[#F3D372]"></span>
-                </div>
-              </div>
+          <div className="relative w-full h-full min-h-full flex flex-col justify-between text-center text-white overflow-hidden select-none z-10 shrink-0">
+            {/* Render Template specifically for the Hero Section part */}
+            {tpl.id === 'tpl_02' || tpl.code === 'T02' ? (
+              <Template02ClassicGold couple={couple} currentGuest={currentGuest || null} onOpen={() => {}} isOpen={true} />
+            ) : isClassicGoldTheme ? (
+              <Template01ClassicGold couple={couple} currentGuest={currentGuest || null} onOpen={() => {}} isOpen={true} />
+            ) : isCustomNewTheme ? (
+              <TemplateNewCustom couple={couple} currentGuest={currentGuest || null} onOpen={() => {}} isOpen={true} />
             ) : (
-              <div className="h-16 sm:h-24" />
+              /* Fallback Hero Layout for other templates if they don't have isOpen logic yet */
+              <div className="relative w-full h-full" />
             )}
-
-            {/* Bottom Content: Couple Names, Date & Scroll Indicator with Staggered Pure-CSS GPU Smooth Reveal - Animates after Photo 2 is shown */}
-            {showHeroText ? (
-              <div className="relative z-10 space-y-4 pb-6 sm:pb-8">
-                {/* Bride & Groom Name Display */}
-                <div className="space-y-1">
-                  <div className={`text-xl sm:text-2xl md:text-3xl font-normal ${khmerTitleFont} text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] leading-snug animate-smooth-fade-up delay-200 transform-gpu`}>
-                    {couple.groomNameKh} & {couple.brideNameKh}
-                  </div>
-
-                  {/* English Names */}
-                  <div className="text-xs sm:text-sm font-normal text-white/95 font-serif-luxury tracking-widest [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] animate-smooth-fade-up delay-400 transform-gpu">
-                    {couple.groomNameEn} & {couple.brideNameEn}
-                  </div>
-                </div>
-
-                {/* Gentle Floating Scroll-Down Indicator with Golden Glow Wave */}
-                <div className="pt-2 flex flex-col items-center justify-center gap-1.5 text-white/85 animate-smooth-fade-up delay-750">
-                  <span className="text-[11px] font-light tracking-wider [text-shadow:0_1px_4px_rgba(0,0,0,0.8)]">អូសចុះក្រោម</span>
-                  <div className="w-8 h-8 rounded-full border border-amber-300/50 bg-black/30 backdrop-blur-xs flex items-center justify-center animate-gentle-bounce animate-golden-ripple transform-gpu">
-                    <ChevronDown className="w-4 h-4 text-[#FFE58F]" />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="h-32 sm:h-40" />
-            )}
-
           </div>
 
           {/* Detailed Content Sections Container with clean transparent background, scale-95 text size, and soft subtle text shadow */}
           <div 
-            className="max-w-xl mx-auto px-4 sm:px-6 pt-20 pb-4 space-y-8 sm:space-y-10 relative z-10 text-white/95 bg-transparent -mt-32 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)] scale-95 origin-top transform-gpu"
+            className={`max-w-xl mx-auto px-4 sm:px-6 pt-20 pb-4 space-y-8 sm:space-y-10 relative z-10 ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]'} bg-transparent -mt-32 scale-95 origin-top transform-gpu`}
           >
 
             {/* Traditional Invitation Text Section */}
             <div className="text-center space-y-8 animate-in slide-in-from-bottom duration-700">
               
               <div className="space-y-1 pt-[100px]">
-                <h2 className={`text-2xl sm:text-[28px] font-normal font-muol-light text-[#D4AF37] drop-shadow-sm leading-relaxed`}>
+                <h2 className={`text-2xl sm:text-[28px] font-normal font-muol-light text-[#D4AF37] ${isClassicGoldTheme ? '' : 'drop-shadow-sm'} leading-relaxed`}>
                   សិរីមង្គល<br/>អាពាហ៍ពិពាហ៍
                 </h2>
                 {/* Decorative divider under title */}
@@ -901,25 +836,25 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-between items-start text-sm sm:text-base font-normal text-white/95 font-battambang">
+              <div className={`flex justify-between items-start text-sm sm:text-base font-normal ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'} font-battambang`}>
                 <div className="space-y-1.5 text-left flex-1">
                   <p className="leading-relaxed">
-                    <span className="font-battambang text-white/95">លោក </span>
-                    <span className="text-[#D4AF37] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] font-muol-light">{cleanParentName(couple.groomFatherKh)}</span>
+                    <span className={`font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'}`}>លោក </span>
+                    <span className={`text-[#D4AF37] ${isClassicGoldTheme ? '' : 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]'} font-muol-light`}>{cleanParentName(couple.groomFatherKh)}</span>
                   </p>
                   <p className="leading-relaxed">
-                    <span className="font-battambang text-white/95">លោកស្រី </span>
-                    <span className="text-[#D4AF37] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] font-muol-light">{cleanParentName(couple.groomMotherKh)}</span>
+                    <span className={`font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'}`}>លោកស្រី </span>
+                    <span className={`text-[#D4AF37] ${isClassicGoldTheme ? '' : 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]'} font-muol-light`}>{cleanParentName(couple.groomMotherKh)}</span>
                   </p>
                 </div>
                 <div className="space-y-1.5 text-right flex-1">
                   <p className="leading-relaxed">
-                    <span className="font-battambang text-white/95">លោក </span>
-                    <span className="text-[#D4AF37] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] font-muol-light">{cleanParentName(couple.brideFatherKh)}</span>
+                    <span className={`font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'}`}>លោក </span>
+                    <span className={`text-[#D4AF37] ${isClassicGoldTheme ? '' : 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]'} font-muol-light`}>{cleanParentName(couple.brideFatherKh)}</span>
                   </p>
                   <p className="leading-relaxed">
-                    <span className="font-battambang text-white/95">លោកស្រី </span>
-                    <span className="text-[#D4AF37] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] font-muol-light">{cleanParentName(couple.brideMotherKh)}</span>
+                    <span className={`font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'}`}>លោកស្រី </span>
+                    <span className={`text-[#D4AF37] ${isClassicGoldTheme ? '' : 'drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]'} font-muol-light`}>{cleanParentName(couple.brideMotherKh)}</span>
                   </p>
                 </div>
               </div>
@@ -928,11 +863,11 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 <h3 className="text-base sm:text-lg font-normal font-muol-light text-[#D4AF37] leading-relaxed pt-1">
                   មានកិត្តិយសសូមគោរពអញ្ជើញ
                 </h3>
-                <div className="text-sm sm:text-base leading-relaxed text-white/95 font-battambang space-y-1 sm:space-y-1.5 max-w-xl mx-auto text-center px-2 sm:px-4">
+                <div className={`text-sm sm:text-base leading-relaxed ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'} font-battambang space-y-1 sm:space-y-1.5 max-w-xl mx-auto text-center px-2 sm:px-4`}>
                   <p className="whitespace-nowrap">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី</p>
                   <p className="whitespace-nowrap">អ្នកនាងកញ្ញា និង ប្រិយមិត្តទាំងអស់អញ្ជើញចូលរួមជាអធិបតី</p>
                   <p className="whitespace-nowrap">និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធិ ពរជ័យ សិរីសួស្តី ជ័យមង្គល</p>
-                  <p className="whitespace-nowrap">ដល់គូស្វាមី ភរិយាថ្មី ក្នុង <span className="text-[#F3D372] font-semibold">ពិធីរៀបអាពាហ៍ពិពាហ៍</span></p>
+                  <p className="whitespace-nowrap">ដល់គូស្វាមី ភរិយាថ្មី ក្នុង <span className={isClassicGoldTheme ? 'text-[#cc9900] font-semibold' : 'text-[#F3D372] font-semibold'}>ពិធីរៀបអាពាហ៍ពិពាហ៍</span></p>
                   <p className="whitespace-nowrap">កូនប្រុស - កូនស្រី របស់យើងខ្ញុំ</p>
                 </div>
               </div>
@@ -948,7 +883,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   />
                   {/* Initials inside the heart - centered nicely inside the heart cavity */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none pt-4 min-[400px]:pt-6 sm:pt-8">
-                    <div className="flex items-center justify-center gap-0.5 sm:gap-1 font-muol-light text-2xl min-[400px]:text-3xl sm:text-4xl text-[#F3D372] select-none">
+                    <div className={`flex items-center justify-center gap-0.5 sm:gap-1 font-muol-light text-2xl min-[400px]:text-3xl sm:text-4xl ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} select-none`}>
                       <span>{getKhmerMonogramLetter(couple.groomNameKh) || 'វ'}</span>
                       <span>{getKhmerMonogramLetter(couple.brideNameKh) || 'ស'}</span>
                     </div>
@@ -959,20 +894,20 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 <div className="flex justify-between items-start w-full px-0 sm:px-1 -mt-7 min-[400px]:-mt-9 sm:-mt-12 relative z-10 pb-2 font-battambang">
                   {/* Left: Groom Name */}
                   <div className="text-center space-y-0.5 sm:space-y-1 flex-1 max-w-[48%]">
-                    <p className="text-xs min-[400px]:text-[13px] sm:text-sm text-[#F3D372] font-battambang font-medium">
+                    <p className={`text-xs min-[400px]:text-[13px] sm:text-sm ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} font-battambang font-medium`}>
                       កូនប្រុសនាម
                     </p>
-                    <p className="text-lg min-[400px]:text-xl sm:text-2xl font-muol-light text-[#F3D372] leading-tight tracking-wide">
+                    <p className={`text-lg min-[400px]:text-xl sm:text-2xl font-muol-light ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} leading-tight tracking-wide`}>
                       {couple.groomNameKh}
                     </p>
                   </div>
 
                   {/* Right: Bride Name */}
                   <div className="text-center space-y-0.5 sm:space-y-1 flex-1 max-w-[48%]">
-                    <p className="text-xs min-[400px]:text-[13px] sm:text-sm text-[#F3D372] font-battambang font-medium">
+                    <p className={`text-xs min-[400px]:text-[13px] sm:text-sm ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} font-battambang font-medium`}>
                       កូនស្រីនាម
                     </p>
-                    <p className="text-lg min-[400px]:text-xl sm:text-2xl font-muol-light text-[#F3D372] leading-tight tracking-wide">
+                    <p className={`text-lg min-[400px]:text-xl sm:text-2xl font-muol-light ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} leading-tight tracking-wide`}>
                       {couple.brideNameKh}
                     </p>
                   </div>
@@ -980,14 +915,14 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
               </div>
 
               {/* Date and Location matching Image 2 */}
-              <div className="space-y-1.5 sm:space-y-2 font-battambang text-white/95 pt-3 text-center max-w-lg mx-auto">
+              <div className={`space-y-1.5 sm:space-y-2 font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'} pt-3 text-center max-w-lg mx-auto`}>
                 {/* Solar Date (សូរិយគតិ) - ទំហំស្មើឈ្មោះឳពុកម្ដាយ (text-sm sm:text-base font-muol-light) */}
-                <p className="font-muol-light text-[#F3D372] text-sm sm:text-base leading-relaxed tracking-wide pb-1">
+                <p className={`font-muol-light ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} text-sm sm:text-base leading-relaxed tracking-wide pb-1`}>
                   {couple.weddingDateKh || formatKhmerDate(couple.weddingDate) || 'ថ្ងៃសៅរ៍ ទី២៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦'}
                 </p>
 
                 {/* Lunar Calendar Date (ចន្ទគតិ) */}
-                <p className="font-battambang font-medium text-sm sm:text-base leading-relaxed px-2">
+                <p className={`font-battambang font-medium text-sm sm:text-base leading-relaxed px-2 ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'}`}>
                   {(() => {
                     const fullText = (couple.auspiciousTextKh || 'ត្រូវនឹងថ្ងៃ ៤រោច ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០').startsWith('ត្រូវនឹង')
                       ? (couple.auspiciousTextKh || 'ត្រូវនឹងថ្ងៃ ៤រោច ខែកត្តិក ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០')
@@ -996,16 +931,16 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                       const rest = fullText.replace(/^ត្រូវនឹង\s*/, '');
                       return (
                         <>
-                          <span className="text-white/90">ត្រូវនឹង</span>{' '}
-                          <span className="text-[#F3D372] font-semibold">{rest}</span>
+                          <span className={isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/90'}>ត្រូវនឹង</span>{' '}
+                          <span className={isClassicGoldTheme ? 'text-[#cc9900] font-semibold' : 'text-[#F3D372] font-semibold'}>{rest}</span>
                         </>
                       );
                     }
-                    return <span className="text-[#F3D372] font-semibold">{fullText}</span>;
+                    return <span className={isClassicGoldTheme ? 'text-[#cc9900] font-semibold' : 'text-[#F3D372] font-semibold'}>{fullText}</span>;
                   })()}
                 </p>
 
-                <p className="font-battambang font-medium text-white text-sm sm:text-base leading-relaxed px-2">
+                <p className={`font-battambang font-medium ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white'} text-sm sm:text-base leading-relaxed px-2`}>
                   {couple.weddingTimeKh?.includes(couple.venueNameKh || 'កេហដ្ឋានខាងស្រី')
                     ? couple.weddingTimeKh
                     : (couple.weddingTimeKh?.includes('ស្ថិតនៅ')
@@ -1013,11 +948,11 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         : `${couple.weddingTimeKh || 'វេលាម៉ោង ១១:០០នាទីថ្ងៃត្រង់'} ស្ថិតនៅ${couple.venueNameKh || 'កេហដ្ឋានខាងស្រី'}`)}
                 </p>
 
-                <p className="font-battambang font-normal text-white/95 text-sm sm:text-base leading-relaxed px-4">
+                <p className={`font-battambang font-normal ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'} text-sm sm:text-base leading-relaxed px-4`}>
                   {couple.venueAddressKh?.replace(/^(កេហដ្ឋានខាងស្រី|គេហដ្ឋានខាងស្រី)[\s\u200B]*/, '') || 'ភូមិរំដេង ឃុំខ្នារពោធិ ស្រុកសូទ្រនិគ ខេត្តសៀមរាប។'}
                 </p>
 
-                <p className="font-battambang text-[#F3D372] italic font-medium text-sm sm:text-base pt-1 tracking-wide">
+                <p className={`font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} italic font-medium text-sm sm:text-base pt-1 tracking-wide`}>
                   ដោយមេត្រីភាព ។ សូមអរគុណ !
                 </p>
               </div>
@@ -1027,7 +962,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             <div className="text-center space-y-6 animate-in slide-in-from-bottom duration-700 delay-150 pt-10 relative">
 
               <div className="space-y-1 mb-8">
-                <h3 className="text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed drop-shadow-sm">
+                <h3 className={`text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                   កម្មវិធីសិរីមង្គល<br/>អាពាហ៍ពិពាហ៍
                 </h3>
                 {/* Decorative divider under title */}
@@ -1079,10 +1014,10 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   if (line2) {
                     return (
                       <div className="text-center pb-2.5 space-y-1">
-                        <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide drop-shadow-sm">
+                        <h4 className={`font-muol-light text-base sm:text-lg ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} leading-relaxed tracking-wide ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                           {line1}
                         </h4>
-                        <p className="font-muol-light text-sm sm:text-base text-[#F3D372] leading-relaxed tracking-wide drop-shadow-sm">
+                        <p className={`font-muol-light text-sm sm:text-base ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} leading-relaxed tracking-wide ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                           {line2}
                         </p>
                       </div>
@@ -1090,7 +1025,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                   }
 
                   return (
-                    <h4 className="font-muol-light text-base sm:text-lg text-[#F3D372] leading-relaxed tracking-wide text-center pb-2 drop-shadow-sm">
+                    <h4 className={`font-muol-light text-base sm:text-lg ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} leading-relaxed tracking-wide text-center pb-2 ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                       {line1}
                     </h4>
                   );
@@ -1105,13 +1040,13 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         {day1Agendas.length > 0 ? (
                           day1Agendas.map(item => (
                             <div key={item.id} className="flex items-start gap-4 group">
-                              <div className="w-10 h-10 rounded-full border border-[#D4AF37]/50 flex items-center justify-center shrink-0 text-[#D4AF37] bg-black/30 backdrop-blur-sm group-hover:bg-[#D4AF37]/10 transition-colors shadow-sm">
+                              <div className={`w-10 h-10 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} flex items-center justify-center shrink-0 bg-transparent transition-colors shadow-sm`}>
                                 {renderAgendaIcon(item.icon)}
                               </div>
                               <div className="space-y-1 pt-0.5 flex-1">
-                                <p className="text-sm sm:text-base font-semibold text-[#F3D372] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
-                                <h4 className="text-sm sm:text-base font-medium text-white font-battambang leading-relaxed">{item.titleKh}</h4>
-                                {item.descKh && <p className="text-xs sm:text-sm text-white/80 font-battambang">{item.descKh}</p>}
+                                <p className={`text-sm sm:text-base font-semibold ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} font-battambang tracking-wide ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>{item.time}</p>
+                                <h4 className={`text-sm sm:text-base font-medium ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white'} font-battambang leading-relaxed`}>{item.titleKh}</h4>
+                                {item.descKh && <p className={`text-xs sm:text-sm ${isClassicGoldTheme ? 'text-[#cc9900]/90' : 'text-white/80'} font-battambang`}>{item.descKh}</p>}
                               </div>
                             </div>
                           ))
@@ -1128,13 +1063,13 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         <div className="space-y-5">
                           {day2Agendas.map(item => (
                             <div key={item.id} className="flex items-start gap-4 group">
-                              <div className="w-10 h-10 rounded-full border border-[#D4AF37]/50 flex items-center justify-center shrink-0 text-[#D4AF37] bg-black/30 backdrop-blur-sm group-hover:bg-[#D4AF37]/10 transition-colors shadow-sm">
+                              <div className={`w-10 h-10 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} flex items-center justify-center shrink-0 bg-transparent transition-colors shadow-sm`}>
                                 {renderAgendaIcon(item.icon)}
                               </div>
                               <div className="space-y-1 pt-0.5 flex-1">
-                                <p className="text-sm sm:text-base font-semibold text-[#F3D372] font-battambang tracking-wide drop-shadow-sm">{item.time}</p>
-                                <h4 className="text-sm sm:text-base font-medium text-white font-battambang leading-relaxed">{item.titleKh}</h4>
-                                {item.descKh && <p className="text-xs sm:text-sm text-white/80 font-battambang">{item.descKh}</p>}
+                                <p className={`text-sm sm:text-base font-semibold ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#F3D372]'} font-battambang tracking-wide ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>{item.time}</p>
+                                <h4 className={`text-sm sm:text-base font-medium ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white'} font-battambang leading-relaxed`}>{item.titleKh}</h4>
+                                {item.descKh && <p className={`text-xs sm:text-sm ${isClassicGoldTheme ? 'text-[#cc9900]/90' : 'text-white/80'} font-battambang`}>{item.descKh}</p>}
                               </div>
                             </div>
                           ))}
@@ -1150,7 +1085,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             <div className="text-center space-y-6 pt-10 pb-4 flex flex-col items-center">
               
                <div className="space-y-1">
-                 <h3 className="text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed drop-shadow-sm">
+                 <h3 className={`text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                    ផែនទី<br/>{couple.venueNameKh || 'ទីតាំងកម្មវិធី'}
                  </h3>
                  {couple.venueAddressKh && (
@@ -1174,7 +1109,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                        setActivePhoto(couple.venueMapImage!);
                        setLightboxZoom(1);
                      }}
-                     className="w-full mx-auto overflow-hidden rounded-2xl border-2 border-[#D4AF37]/70 shadow-[0_8px_32px_rgba(212,175,55,0.25)] bg-black/40 cursor-pointer group relative transition-all duration-300 hover:border-[#FFE58F] hover:shadow-[0_12px_40px_rgba(212,175,55,0.4)]"
+                     className={`w-full mx-auto overflow-hidden rounded-2xl border-2 ${isClassicGoldTheme ? 'border-[#cc9900] shadow-none' : 'border-[#D4AF37]/70 shadow-[0_8px_32px_rgba(212,175,55,0.25)]'} ${isClassicGoldTheme ? 'bg-transparent' : 'bg-black/40'} cursor-pointer group relative transition-all duration-300 ${isClassicGoldTheme ? 'hover:border-[#cc9900] hover:shadow-none' : 'hover:border-[#FFE58F] hover:shadow-[0_12px_40px_rgba(212,175,55,0.4)]'}`}
                      title="ចុចដើម្បីមើលរូបភាពធំពេញអេក្រង់"
                    >
                      <img 
@@ -1190,18 +1125,18 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                  href={couple.venueMapUrl || `https://maps.google.com/?q=${encodeURIComponent((couple.venueNameKh || '') + ' ' + (couple.venueAddressKh || ''))}`} 
                  target="_blank" 
                  rel="noreferrer" 
-                 className="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-[#D4AF37] text-white/95 bg-black/80 hover:bg-[#D4AF37]/20 transition-all font-battambang text-[15px] shadow-sm group cursor-pointer"
+                 className={`inline-flex items-center gap-2 px-8 py-3 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900] shadow-none' : 'border-[#D4AF37] text-white/95 shadow-sm'} bg-transparent hover:bg-transparent transition-all font-battambang text-[15px] group cursor-pointer`}
                >
-                 <MapPin className="w-[18px] h-[18px] text-[#D4AF37] group-hover:scale-110 transition-transform" />
+                 <MapPin className={`w-[18px] h-[18px] ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-[#D4AF37]'} group-hover:scale-110 transition-transform`} />
                  បើកមើលក្នុង <span className="font-serif-luxury tracking-wider ml-1">Google Maps</span>
                </a>
             </div>
 
             {/* Photo Gallery - Styled for Dark Mode / Pink Background */}
             {couple.galleryPhotos && couple.galleryPhotos.length > 0 && (
-              <div className="space-y-6 pt-10 text-center border-t border-[#D4AF37]/30">
+              <div className={`space-y-6 pt-10 text-center border-t ${isClassicGoldTheme ? 'border-[#cc9900]/40' : 'border-[#D4AF37]/30'}`}>
                 <div className="space-y-1">
-                  <h3 className="text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed drop-shadow-sm">
+                  <h3 className={`text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                     កម្រង<br/>រូបភាពអនុស្សាវរីយ៍
                   </h3>
                   {/* Decorative divider under title */}
@@ -1213,16 +1148,18 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                 </div>
 
                 {/* Full-Screen Slideshow Launcher Button */}
-                <div className="flex justify-center pb-1">
-                  <button
-                    id="gallery-watch-slideshow-btn"
-                    onClick={() => setIsSlideshowOpen(true)}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#D4AF37]/25 via-[#DFBA49]/40 to-[#D4AF37]/25 hover:from-[#D4AF37]/45 hover:to-[#D4AF37]/45 border border-[#D4AF37]/70 text-[#FFE58F] text-xs font-normal transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-[#FFE58F]" />
-                    <span>{lang === 'km' ? 'ទស្សនា Slide Show រូបភាពវិចិត្រសាល' : 'Watch Gallery Slideshow'}</span>
-                  </button>
-                </div>
+                {!(tpl.id === 'tpl_02' || tpl.code === 'T02') && (
+                  <div className="flex justify-center pb-1">
+                    <button
+                      id="gallery-watch-slideshow-btn"
+                      onClick={() => setIsSlideshowOpen(true)}
+                      className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900] shadow-none' : 'border-[#D4AF37]/70 text-[#FFE58F] shadow-lg'} bg-transparent hover:bg-transparent text-xs font-normal transition-all cursor-pointer hover:scale-105 active:scale-95`}
+                    >
+                      <Play className={`w-3.5 h-3.5 ${isClassicGoldTheme ? 'fill-[#cc9900] text-[#cc9900]' : 'fill-[#FFE58F]'}`} />
+                      <span>{lang === 'km' ? 'ទស្សនា Slide Show រូបភាពវិចិត្រសាល' : 'Watch Gallery Slideshow'}</span>
+                    </button>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {(couple.galleryPhotos || []).map((photo, idx) => (
@@ -1233,7 +1170,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                         setActivePhotoIndex(idx);
                         setLightboxZoom(1);
                       }} 
-                      className="relative h-36 sm:h-44 rounded-xl overflow-hidden cursor-pointer group ring-1 ring-[#D4AF37]/40 shadow-sm bg-black/10"
+                      className={`relative h-36 sm:h-44 rounded-xl overflow-hidden cursor-pointer group ring-1 ${isClassicGoldTheme ? 'ring-[#cc9900]/50 shadow-none' : 'ring-[#D4AF37]/40 shadow-sm'} bg-transparent`}
                     >
                       <img src={photo} alt={`Pre-wedding ${idx + 1}`} className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2 pointer-events-none">
@@ -1246,9 +1183,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             )}
 
             {/* Digital Gift (KHQR) */}
-            <div className="space-y-6 text-center pt-10 border-t border-[#D4AF37]/30">
+            <div className={`space-y-6 text-center pt-10 border-t ${isClassicGoldTheme ? 'border-[#cc9900]/40' : 'border-[#D4AF37]/30'}`}>
               <div className="space-y-1">
-                <h3 className="text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed drop-shadow-sm">
+                <h3 className={`text-xl sm:text-2xl font-normal font-muol-light text-[#D4AF37] leading-relaxed ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                   ចងដៃ<br/>អាពាហ៍ពិពាហ៍
                 </h3>
                 {/* Decorative divider under title */}
@@ -1272,7 +1209,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
                     {accounts.map((ba) => (
                       <div 
                         key={ba.id} 
-                        className={`p-0 overflow-hidden rounded-xl sm:rounded-2xl border-2 border-[#D4AF37]/80 hover:border-[#FFE58F] shadow-[0_6px_24px_rgba(212,175,55,0.25)] hover:shadow-[0_10px_36px_rgba(212,175,55,0.4)] flex items-center justify-center transition-all duration-300 hover:scale-[1.02] cursor-pointer group bg-transparent ${
+                        className={`p-0 overflow-hidden rounded-xl sm:rounded-2xl border-2 ${isClassicGoldTheme ? 'border-[#cc9900] hover:border-[#cc9900] shadow-none hover:shadow-none' : 'border-[#D4AF37]/80 hover:border-[#FFE58F] shadow-[0_6px_24px_rgba(212,175,55,0.25)] hover:shadow-[0_10px_36px_rgba(212,175,55,0.4)]'} flex items-center justify-center transition-all duration-300 hover:scale-[1.02] cursor-pointer group bg-transparent ${
                           isTwoQrs ? 'w-full' : 'inline-flex'
                         }`}
                         onClick={() => {
@@ -1299,9 +1236,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             </div>
 
             {/* RSVP Form */}
-            <div className="space-y-6 pt-10 text-center border-t border-[#D4AF37]/30 relative" id="rsvp-section">
+            <div className={`space-y-6 pt-10 text-center border-t ${isClassicGoldTheme ? 'border-[#cc9900]/40' : 'border-[#D4AF37]/30'} relative`} id="rsvp-section">
 
-              <h3 className={`text-xl sm:text-2xl font-normal ${khmerTitleFont} text-[#D4AF37] leading-relaxed drop-shadow-sm`}>
+              <h3 className={`text-xl sm:text-2xl font-normal ${khmerTitleFont} text-[#D4AF37] leading-relaxed ${isClassicGoldTheme ? '' : 'drop-shadow-sm'}`}>
                 ការឆ្លើយតប<br />និងសៀវភៅជូនពរ
               </h3>
               
@@ -1314,38 +1251,42 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
               ) : (
                 <form onSubmit={handleRsvpSubmit} className="space-y-4 max-w-lg mx-auto text-left">
                   <div className="grid grid-cols-2 gap-3">
-                    <button type="button" onClick={() => setRsvpAttending('attending')} className={`p-3.5 rounded-xl border text-xs font-normal flex items-center justify-center gap-2 transition-all ${rsvpAttending === 'attending' ? 'border-[#D4AF37] bg-white/10 text-white/95 shadow-sm' : 'border-[#D4AF37]/30 text-white/70 bg-black/20'}`}>
+                    <button type="button" onClick={() => setRsvpAttending('attending')} className={`p-3.5 rounded-xl border text-xs font-normal flex items-center justify-center gap-2 transition-all ${rsvpAttending === 'attending' ? (isClassicGoldTheme ? 'border-[#cc9900] bg-[#cc9900]/10 text-[#cc9900] shadow-none font-semibold' : 'border-[#D4AF37] bg-white/10 text-white/95 shadow-sm') : (isClassicGoldTheme ? 'border-[#cc9900]/40 text-[#cc9900] bg-transparent' : 'border-[#D4AF37]/30 text-white/70 bg-black/20')}`}>
                       ✓ ខ្ញុំនឹងចូលរួម
                     </button>
-                    <button type="button" onClick={() => setRsvpAttending('declined')} className={`p-3.5 rounded-xl border text-xs font-normal flex items-center justify-center gap-2 transition-all ${rsvpAttending === 'declined' ? 'border-rose-400 bg-rose-50 text-rose-800 shadow-sm' : 'border-[#D4AF37]/30 text-white/70 bg-black/20'}`}>
+                    <button type="button" onClick={() => setRsvpAttending('declined')} className={`p-3.5 rounded-xl border text-xs font-normal flex items-center justify-center gap-2 transition-all ${rsvpAttending === 'declined' ? 'border-rose-400 bg-rose-50 text-rose-800 shadow-sm' : (isClassicGoldTheme ? 'border-[#cc9900]/40 text-[#cc9900] bg-transparent' : 'border-[#D4AF37]/30 text-white/70 bg-black/20')}`}>
                       ✕ សូមអភ័យទោស
                     </button>
                   </div>
                   <div>
-                    <input type="text" required value={rsvpName} onChange={(e) => setRsvpName(e.target.value)} placeholder="គោរមងារ និងឈ្មោះរបស់អ្នក" className="w-full px-4 py-3.5 text-sm bg-black/30 border border-[#D4AF37]/40 rounded-xl focus:border-[#D4AF37] focus:outline-none text-white/95 placeholder-gray-600 font-battambang backdrop-blur-sm" />
+                    <input type="text" required value={rsvpName} onChange={(e) => setRsvpName(e.target.value)} placeholder="គោរមងារ និងឈ្មោះរបស់អ្នក" className={`w-full px-4 py-3.5 text-sm bg-transparent border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900] placeholder-[#cc9900]/60 focus:border-[#cc9900]' : 'border-[#D4AF37]/40 text-white/95 placeholder-gray-600 focus:border-[#D4AF37]'} rounded-xl focus:outline-none font-battambang`} />
                   </div>
                   {rsvpAttending === 'attending' && (
                     <div>
-                      <select value={rsvpPax} onChange={(e) => setRsvpPax(Number(e.target.value))} className="w-full px-4 py-3.5 text-sm bg-black/30 border border-[#D4AF37]/40 rounded-xl focus:border-[#D4AF37] focus:outline-none text-white/95 appearance-none font-battambang backdrop-blur-sm">
-                        <option value={1} className="bg-[#3B1E42]">១ នាក់</option>
-                        <option value={2} className="bg-[#3B1E42]">២ នាក់</option>
-                        <option value={3} className="bg-[#3B1E42]">៣ នាក់</option>
-                        <option value={4} className="bg-[#3B1E42]">៤ នាក់</option>
+                      <select value={rsvpPax} onChange={(e) => setRsvpPax(Number(e.target.value))} className={`w-full px-4 py-3.5 text-sm bg-transparent border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900] focus:border-[#cc9900]' : 'border-[#D4AF37]/40 text-white/95 focus:border-[#D4AF37]'} rounded-xl focus:outline-none appearance-none font-battambang`}>
+                        <option value={1} className={isClassicGoldTheme ? "bg-white text-[#cc9900]" : "bg-[#3B1E42]"}>១ នាក់</option>
+                        <option value={2} className={isClassicGoldTheme ? "bg-white text-[#cc9900]" : "bg-[#3B1E42]"}>២ នាក់</option>
+                        <option value={3} className={isClassicGoldTheme ? "bg-white text-[#cc9900]" : "bg-[#3B1E42]"}>៣ នាក់</option>
+                        <option value={4} className={isClassicGoldTheme ? "bg-white text-[#cc9900]" : "bg-[#3B1E42]"}>៤ នាក់</option>
                       </select>
                     </div>
                   )}
                   <div>
-                    <textarea rows={3} value={rsvpMessage} onChange={(e) => setRsvpMessage(e.target.value)} placeholder="ពាក្យជូនពរ..." className="w-full px-4 py-3.5 text-sm bg-black/30 border border-[#D4AF37]/40 rounded-xl focus:border-[#D4AF37] focus:outline-none text-white/95 placeholder-gray-600 font-battambang backdrop-blur-sm" />
+                    <textarea rows={3} value={rsvpMessage} onChange={(e) => setRsvpMessage(e.target.value)} placeholder="ពាក្យជូនពរ..." className={`w-full px-4 py-3.5 text-sm bg-transparent border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900] placeholder-[#cc9900]/60 focus:border-[#cc9900]' : 'border-[#D4AF37]/40 text-white/95 placeholder-gray-600 focus:border-[#D4AF37]'} rounded-xl focus:outline-none font-battambang`} />
                   </div>
                   <button
                     type="submit"
-                    style={{
+                    style={isClassicGoldTheme ? {
+                      backgroundColor: '#cc9900',
+                      color: '#ffffff',
+                      WebkitAppearance: 'none'
+                    } : {
                       backgroundColor: '#D4AF37',
                       backgroundImage: 'linear-gradient(to right, #D4AF37, #C59B27)',
                       color: '#ffffff',
                       WebkitAppearance: 'none'
                     }}
-                    className="w-full py-3.5 bg-[#D4AF37] bg-gradient-to-r from-[#D4AF37] to-[#C59B27] text-white rounded-xl text-sm font-bold shadow-lg hover:brightness-110 flex items-center justify-center gap-2 transition-transform active:scale-95 font-battambang mt-2 cursor-pointer"
+                    className={`w-full py-3.5 ${isClassicGoldTheme ? 'bg-[#cc9900] text-white border border-[#cc9900] shadow-none' : 'bg-[#D4AF37] bg-gradient-to-r from-[#D4AF37] to-[#C59B27] text-white shadow-lg'} rounded-xl text-sm font-bold hover:brightness-110 flex items-center justify-center gap-2 transition-transform active:scale-95 font-battambang mt-2 cursor-pointer`}
                   >
                     <Send className="w-4 h-4" /> ផ្ញើការឆ្លើយតប
                   </button>
@@ -1354,99 +1295,87 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             </div>
 
 
-          {/* Uniform Global Branding / Promo Footer */}
-          {couple.adminPromo?.enabled !== false && (() => {
-            const footerPhone = couple.contactPhone || DEFAULT_ADMIN_PROMO_FOOTER.contactPhone;
-            const footerTelegram = couple.contactTelegram || DEFAULT_ADMIN_PROMO_FOOTER.contactTelegram;
-            const footerFacebook = couple.contactFacebook || DEFAULT_ADMIN_PROMO_FOOTER.contactFacebook;
-            const footerLocation = couple.contactLocation || DEFAULT_ADMIN_PROMO_FOOTER.contactLocation;
-            const footerLocationName = couple.contactLocationName || DEFAULT_ADMIN_PROMO_FOOTER.contactLocationName;
-            const footerLocation2 = couple.contactLocation2 || DEFAULT_ADMIN_PROMO_FOOTER.contactLocation2;
-            const footerLocationName2 = couple.contactLocationName2 || DEFAULT_ADMIN_PROMO_FOOTER.contactLocationName2;
-            const footerLogo = couple.adminPromo?.imageUrl || ponleuLogo;
-            const footerText = couple.adminPromo?.textKh || DEFAULT_ADMIN_PROMO_FOOTER.adminPromo.textKh;
-            const hasContacts = Boolean(footerPhone || footerTelegram || footerFacebook || footerLocation || footerLocation2);
+          {/* Footer Branding Removed */}
 
-            return (
-              <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
-                <div className="p-2 sm:p-3 w-full space-y-2.5">
-                  {/* Logo Display */}
-                  <div className="flex items-center justify-center pt-1 pb-1">
-                    <img 
-                      src={footerLogo} 
-                      alt="Ponleu Printing Logo" 
-                      className="h-12 max-w-[280px] object-contain filter drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]" 
-                    />
-                  </div>
-
-                  <div className="text-sm sm:text-base font-battambang text-white/95 whitespace-pre-line leading-relaxed">
-                    {footerText}
-                  </div>
-
-                  {/* Contact Icons */}
-                  {hasContacts && (
-                    <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-                      {footerPhone && (
-                        <a 
-                          href={`tel:${footerPhone.replace(/\s+/g, '')}`} 
-                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                          title={footerPhone}
-                        >
-                          <Phone className="w-4 h-4 text-emerald-400" />
-                        </a>
-                      )}
-                      {footerTelegram && (
-                        <a 
-                          href={footerTelegram.startsWith('http') ? footerTelegram : `https://t.me/${footerTelegram.replace('@', '')}`} 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                          title="Telegram"
-                        >
-                          <TelegramIcon className="w-4 h-4 text-sky-400" />
-                        </a>
-                      )}
-                      {footerFacebook && (
-                        <a 
-                          href={footerFacebook.startsWith('http') ? footerFacebook : `https://facebook.com/${footerFacebook}`} 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="w-8 h-8 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center justify-center"
-                          title="Facebook"
-                        >
-                          <Facebook className="w-4 h-4 text-blue-400" />
-                        </a>
-                      )}
-                      {footerLocation && (
-                        <a 
-                          href={footerLocation} 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
-                          title={footerLocationName || 'Location ហាង ទី១'}
-                        >
-                          <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                          <span>{footerLocationName || 'ទីតាំងហាងទី១'}</span>
-                        </a>
-                      )}
-                      {footerLocation2 && (
-                        <a 
-                          href={footerLocation2} 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="h-8 px-3 rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/20 transition-all text-[#D4AF37] flex items-center gap-1.5 text-xs font-battambang"
-                          title={footerLocationName2 || 'Location ហាង ទី២'}
-                        >
-                          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          <span>{footerLocationName2 || 'ទីតាំងហាងទី២'}</span>
-                        </a>
-                      )}
-                    </div>
-                  )}
+          {(couple.adminPromo?.enabled !== false || couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
+            <div className="w-full text-center mt-2 pt-2 pb-6 sm:pb-8">
+              <div className="p-2 sm:p-3 w-full space-y-2.5">
+                {/* Logo Display */}
+                <div className="flex items-center justify-center pt-1 pb-1">
+                  <img 
+                    src={couple.adminPromo?.imageUrl || ponleuLogo} 
+                    alt="Ponleu Printing Logo" 
+                    className={`h-12 max-w-[280px] object-contain ${isClassicGoldTheme ? '' : 'filter drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]'}`} 
+                  />
                 </div>
+
+                <div className={`text-sm sm:text-base font-battambang ${isClassicGoldTheme ? 'text-[#cc9900]' : 'text-white/95'} whitespace-pre-line leading-relaxed`}>
+                  {couple.adminPromo?.textKh || 'រៀបចំដោយ ពន្លឺ-បោះពុម្ភ / ទំនាក់ទំនង៖ 097 370 7998'}
+                </div>
+
+                {/* Contact Icons */}
+                {(couple.contactFacebook || couple.contactTelegram || couple.contactPhone || couple.contactLocation || couple.contactLocation2) && (
+                  <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+                    {couple.contactPhone && (
+                      <a 
+                        href={`tel:${couple.contactPhone.replace(/\s+/g, '')}`} 
+                        className={`w-8 h-8 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} hover:bg-transparent transition-all flex items-center justify-center`}
+                        title={couple.contactPhone}
+                      >
+                        <Phone className="w-4 h-4 text-emerald-400" />
+                      </a>
+                    )}
+                    {couple.contactTelegram && (
+                      <a 
+                        href={couple.contactTelegram.startsWith('http') ? couple.contactTelegram : `https://t.me/${couple.contactTelegram.replace('@', '')}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className={`w-8 h-8 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} hover:bg-transparent transition-all flex items-center justify-center`}
+                        title="Telegram"
+                      >
+                        <TelegramIcon className="w-4 h-4 text-sky-400" />
+                      </a>
+                    )}
+                    {couple.contactFacebook && (
+                      <a 
+                        href={couple.contactFacebook.startsWith('http') ? couple.contactFacebook : `https://facebook.com/${couple.contactFacebook}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className={`w-8 h-8 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} hover:bg-transparent transition-all flex items-center justify-center`}
+                        title="Facebook"
+                      >
+                        <Facebook className="w-4 h-4 text-blue-400" />
+                      </a>
+                    )}
+                    {couple.contactLocation && (
+                      <a 
+                        href={couple.contactLocation} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className={`h-8 px-3 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} hover:bg-transparent transition-all flex items-center gap-1.5 text-xs font-battambang`}
+                        title={couple.contactLocationName || 'Location ហាង ទី១'}
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                        <span>{couple.contactLocationName || 'ទីតាំងហាងទី១'}</span>
+                      </a>
+                    )}
+                    {couple.contactLocation2 && (
+                      <a 
+                        href={couple.contactLocation2} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className={`h-8 px-3 rounded-full border ${isClassicGoldTheme ? 'border-[#cc9900] text-[#cc9900]' : 'border-[#D4AF37]/50 text-[#D4AF37]'} hover:bg-transparent transition-all flex items-center gap-1.5 text-xs font-battambang`}
+                        title={couple.contactLocationName2 || 'Location ហាង ទី២'}
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>{couple.contactLocationName2 || 'ទីតាំងហាងទី២'}</span>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
-            );
-          })()}
+            </div>
+          )}
         </div>
 
       {/* Lightbox Modal for Photo Gallery & Map with Prev/Next Navigation rendered via Portal to break free from any scroll/transform parent */}

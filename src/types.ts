@@ -152,6 +152,7 @@ export interface CoupleEvent {
   coverPhoto: string;
   cardBackgroundImage?: string;
   secondaryPhoto?: string;
+  couplePhoto?: string;
   galleryPhotos: string[];
   
   // Story & Quotes

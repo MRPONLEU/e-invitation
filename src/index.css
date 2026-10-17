@@ -485,6 +485,22 @@ span[class*="h-[1px]"] {
   will-change: transform;
 }
 
+@keyframes pullOutFromBottom {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-pull-out {
+  animation: pullOutFromBottom 2.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
 /* Bright Golden Flash Burst & Zoom Out Optical Effects */
 @keyframes divineFlashBurst {
   0% {
@@ -665,6 +681,20 @@ span[class*="h-[1px]"] {
   .invitation-container .max-w-md {
     max-width: 82cqw !important;
   }
+}
+
+/* 3D Flip Utilities */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
 }
 
 
