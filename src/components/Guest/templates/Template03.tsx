@@ -33,7 +33,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
     return (
       <div className="relative w-full h-full overflow-hidden flex flex-col items-center select-none">
         {/* Content Overlay restored and repositioned */}
-        <div className="relative z-10 w-full h-full flex flex-col items-center p-6 text-center" style={{ paddingTop: '40px', paddingBottom: '100px' }}>
+        <div className="relative z-10 w-full h-full flex flex-col items-center p-6 text-center" style={{ paddingTop: '20px', paddingBottom: '100px' }}>
           {/* Top Header */}
           <div className="animate-smooth-fade-down flex flex-col items-center">
             <img 
@@ -55,7 +55,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
             </div>
           </div>
 
-          <div className="flex-grow-[6]" style={{ paddingBottom: '14px', paddingTop: '84px' }} /> {/* Adjusted via Focus Mode */}
+          <div className="flex-grow-[6]" style={{ paddingBottom: '14px', paddingTop: '44px' }} /> {/* Adjusted via Focus Mode */}
 
           {/* Couple Names Section - Positioned at the bottom next to scroll indicator */}
           <div className="flex flex-col items-center gap-1 animate-smooth-fade-up" style={{ marginTop: '0px', marginBottom: '29px' }}>
@@ -107,7 +107,7 @@ export const TemplateNewCustom: React.FC<TemplateNewCustomProps> = ({
       <div className="absolute inset-0 flex flex-col justify-between p-6 z-20 text-center pointer-events-none">
         
         {/* Top Header - Stylized Title Image */}
-        <div className="pt-8 sm:pt-12 space-y-3 animate-smooth-fade-down flex flex-col items-center">
+        <div className="pt-4 sm:pt-6 space-y-3 animate-smooth-fade-down flex flex-col items-center">
           <div className="relative inline-block px-4">
              <img 
                src={weddingTitleImage} 

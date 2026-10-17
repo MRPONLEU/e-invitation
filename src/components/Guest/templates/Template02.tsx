@@ -6,6 +6,7 @@ import flowerFrame from '../../../assets/images/T001/003.png';
 import openBtnImage from '../../../assets/images/T001/004.png';
 import guestFrameBanner from '../../../assets/images/fram002.png';
 import coverImage from '../../../assets/images/T002/F007.png';
+import frameBackground from '../../../assets/images/T002/F0010 (1).png';
 import { formatImageUrl } from '../../../utils/imageHelper';
 
 import photo2Default from '../../../assets/images/T001/001.png';
@@ -87,11 +88,20 @@ export const Template02ClassicGold: React.FC<Template02ClassicGoldProps> = ({
   // If card is open (Hero Section view)
   if (isOpen) {
     return (
-      <div className="relative w-full h-full flex flex-col items-center justify-end pb-[20%] bg-transparent select-none">
-        {/* Main Content at 3/4 Position */}
-        <div className="flex flex-col items-center gap-12">
+      <div className="relative w-full h-full flex flex-col items-center justify-end pb-[60%] select-none overflow-hidden">
+        {/* Full Background Image */}
+        <div className="absolute inset-0 z-0 animate-pull-out">
+          <img 
+            src={frameBackground} 
+            alt="Wedding Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-10 flex flex-col items-center gap-12 animate-pull-out">
           {/* Top Titles */}
-          <div className="text-center space-y-1 animate-smooth-fade-down">
+          <div className="text-center space-y-1">
             <h2 className="text-3xl sm:text-4xl font-muol-light text-[#e6b800] leading-relaxed">
               សិរីមង្គល
             </h2>
@@ -108,7 +118,7 @@ export const Template02ClassicGold: React.FC<Template02ClassicGoldProps> = ({
           </div>
 
           {/* Couple Names Section (Gold) */}
-          <div className="text-center space-y-0 animate-smooth-fade-up">
+          <div className="text-center space-y-0">
             <h2 className="text-2xl sm:text-3xl font-muol-light text-[#e6b800] leading-tight">
               {couple.groomNameKh}
             </h2>
